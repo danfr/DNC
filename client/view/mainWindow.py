@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'irc.ui'
+# Form implementation generated from reading ui file 'mainWindow.ui'
 #
-# Created: Mon Mar 30 12:18:37 2015
+# Created: Mon Mar 30 21:05:16 2015
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,9 +26,9 @@ except AttributeError:
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName(_fromUtf8("Dialog"))
-        Dialog.resize(675, 540)
+        Dialog.resize(774, 540)
         self.verticalLayoutWidget = QtGui.QWidget(Dialog)
-        self.verticalLayoutWidget.setGeometry(QtCore.QRect(500, 100, 160, 361))
+        self.verticalLayoutWidget.setGeometry(QtCore.QRect(600, 100, 160, 361))
         self.verticalLayoutWidget.setObjectName(_fromUtf8("verticalLayoutWidget"))
         self.verticalLayout = QtGui.QVBoxLayout(self.verticalLayoutWidget)
         self.verticalLayout.setMargin(0)
@@ -41,14 +41,27 @@ class Ui_Dialog(object):
         self.label.setFont(font)
         self.label.setObjectName(_fromUtf8("label"))
         self.verticalLayout.addWidget(self.label)
-        self.listView = QtGui.QListView(self.verticalLayoutWidget)
-        self.listView.setObjectName(_fromUtf8("listView"))
-        self.verticalLayout.addWidget(self.listView)
-        self.listView_2 = QtGui.QListView(Dialog)
-        self.listView_2.setGeometry(QtCore.QRect(20, 140, 471, 321))
-        self.listView_2.setObjectName(_fromUtf8("listView_2"))
+        self.listNames = QtGui.QListWidget(self.verticalLayoutWidget)
+        self.listNames.setMinimumSize(QtCore.QSize(50, 0))
+        self.listNames.setMaximumSize(QtCore.QSize(200, 16777215))
+        self.listNames.setBaseSize(QtCore.QSize(0, 0))
+        font = QtGui.QFont()
+        font.setFamily(_fromUtf8("Arial"))
+        font.setPointSize(14)
+        font.setItalic(False)
+        font.setStyleStrategy(QtGui.QFont.PreferAntialias)
+        self.listNames.setFont(font)
+        self.listNames.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.listNames.setAcceptDrops(False)
+        self.listNames.setStyleSheet(_fromUtf8(""))
+        self.listNames.setFrameShape(QtGui.QFrame.NoFrame)
+        self.listNames.setFrameShadow(QtGui.QFrame.Sunken)
+        self.listNames.setLineWidth(1)
+        self.listNames.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.listNames.setObjectName(_fromUtf8("listNames"))
+        self.verticalLayout.addWidget(self.listNames)
         self.horizontalLayoutWidget = QtGui.QWidget(Dialog)
-        self.horizontalLayoutWidget.setGeometry(QtCore.QRect(20, 470, 641, 61))
+        self.horizontalLayoutWidget.setGeometry(QtCore.QRect(20, 470, 741, 69))
         self.horizontalLayoutWidget.setObjectName(_fromUtf8("horizontalLayoutWidget"))
         self.horizontalLayout = QtGui.QHBoxLayout(self.horizontalLayoutWidget)
         self.horizontalLayout.setMargin(0)
@@ -60,7 +73,7 @@ class Ui_Dialog(object):
         self.pushButton.setObjectName(_fromUtf8("pushButton"))
         self.horizontalLayout.addWidget(self.pushButton)
         self.horizontalLayoutWidget_2 = QtGui.QWidget(Dialog)
-        self.horizontalLayoutWidget_2.setGeometry(QtCore.QRect(20, 30, 641, 41))
+        self.horizontalLayoutWidget_2.setGeometry(QtCore.QRect(470, 20, 291, 51))
         self.horizontalLayoutWidget_2.setObjectName(_fromUtf8("horizontalLayoutWidget_2"))
         self.horizontalLayout_2 = QtGui.QHBoxLayout(self.horizontalLayoutWidget_2)
         self.horizontalLayout_2.setMargin(0)
@@ -75,7 +88,7 @@ class Ui_Dialog(object):
         self.pushButton_3.setObjectName(_fromUtf8("pushButton_3"))
         self.horizontalLayout_2.addWidget(self.pushButton_3)
         self.horizontalLayoutWidget_3 = QtGui.QWidget(Dialog)
-        self.horizontalLayoutWidget_3.setGeometry(QtCore.QRect(20, 90, 471, 41))
+        self.horizontalLayoutWidget_3.setGeometry(QtCore.QRect(20, 100, 561, 40))
         self.horizontalLayoutWidget_3.setObjectName(_fromUtf8("horizontalLayoutWidget_3"))
         self.horizontalLayout_3 = QtGui.QHBoxLayout(self.horizontalLayoutWidget_3)
         self.horizontalLayout_3.setMargin(0)
@@ -86,6 +99,28 @@ class Ui_Dialog(object):
         self.pushButton_4 = QtGui.QPushButton(self.horizontalLayoutWidget_3)
         self.pushButton_4.setObjectName(_fromUtf8("pushButton_4"))
         self.horizontalLayout_3.addWidget(self.pushButton_4)
+        self.txtOutput = QtGui.QTextEdit(Dialog)
+        self.txtOutput.setGeometry(QtCore.QRect(20, 160, 561, 291))
+        self.txtOutput.setMinimumSize(QtCore.QSize(400, 0))
+        font = QtGui.QFont()
+        font.setFamily(_fromUtf8("Arial"))
+        font.setPointSize(14)
+        font.setItalic(False)
+        self.txtOutput.setFont(font)
+        self.txtOutput.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.txtOutput.setAcceptDrops(False)
+        self.txtOutput.setFrameShape(QtGui.QFrame.NoFrame)
+        self.txtOutput.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+        self.txtOutput.setTextInteractionFlags(QtCore.Qt.TextBrowserInteraction)
+        self.txtOutput.setObjectName(_fromUtf8("txtOutput"))
+        self.label_2 = QtGui.QLabel(Dialog)
+        self.label_2.setGeometry(QtCore.QRect(30, 30, 421, 31))
+        font = QtGui.QFont()
+        font.setPointSize(16)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_2.setFont(font)
+        self.label_2.setObjectName(_fromUtf8("label_2"))
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
@@ -93,9 +128,16 @@ class Ui_Dialog(object):
     def retranslateUi(self, Dialog):
         Dialog.setWindowTitle(_translate("Dialog", "Dialog", None))
         self.label.setText(_translate("Dialog", "Nick list", None))
+        self.listNames.setSortingEnabled(True)
         self.pushButton.setText(_translate("Dialog", "Send message", None))
         self.pushButton_2.setText(_translate("Dialog", "Connect", None))
         self.pushButton_3.setText(_translate("Dialog", "Disconnect", None))
         self.pushButton_5.setText(_translate("Dialog", "Disable", None))
         self.pushButton_4.setText(_translate("Dialog", "Enable", None))
+        self.txtOutput.setHtml(_translate("Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'Arial\'; font-size:14pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:\'Inconsolata\';\"><br /></p></body></html>", None))
+        self.label_2.setText(_translate("Dialog", "Welcome to DNC", None))
 
