@@ -2,9 +2,14 @@ from mainWindow import Ui_Dialog
 from PyQt4 import QtGui, QtCore
 import datetime
 import time
+from socket import *
+
+Host = "127.0.0.1"
+Port = 2222
+Addr = (Host, Port)
+
 
 class start(QtGui.QDialog):
-
     def __init__(self):
         super(start, self).__init__()
         self.createWidgets()
@@ -13,7 +18,7 @@ class start(QtGui.QDialog):
         return ('[%s] ' % str(datetime.datetime.fromtimestamp(int(time.time())).strftime('%H:%M')))
 
 
-    def ShowMessageAsText( self, txt ):
+    def ShowMessageAsText(self, txt):
         self.message_buffer += '\n' + self.getTimeStamp() + txt
 
 
@@ -47,26 +52,42 @@ class start(QtGui.QDialog):
         self.ShowMessageAsText("super et toi ?")
         self.ShowMessageAsText("Yo les poulets !")
 
+        self.connectActions()
 
-        #self.UpdateMainDisplay()
+
+        # self.UpdateMainDisplay()
 
         self.ui.txtOutput.setText(self.message_buffer)
 
     def connectActions(self):
-        self.ui.pushButton_2.clicked.connect(self.admin)
+        self.ui.pushButton_2.clicked.connect(self.connecter)
+        self.ui.pushButton_3.clicked.connect(self.deco)
         self.ui.pushButton.clicked.connect(self.client)
 
+    def connecter(self):
+        self.s = socket(AF_INET, SOCK_STREAM)
+        self.s.connect(Addr)
 
+    def deco(self):
+        self.s.close()
 
+    def client(self):
 
+        cmd = self.ui.lineEdit.text()
+        if cmd.lower() == "quit":
+            exit(0)
+        try:
+            self.s.send(cmd.encode())
+            # data , addr = s.recvfrom(4096)
+            # print(data.decode())
+        except timeout:
+            print("Erreur : Timeout. Le serveur ne repond pas.")
 
-    #def client(self):
-     #   self.hide()
-      #  self.admin = mainUtilisateur(self)
 
 
 if __name__ == "__main__":
     import sys
+
     app = QtGui.QApplication(sys.argv)
     myapp = start()
     myapp.show()
