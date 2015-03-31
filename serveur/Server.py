@@ -6,52 +6,53 @@ from serveur import Log
 
 
 def handleConnection(connection, client_address) :
-    try:
-        log.printL("Connection from IP -> {}".format(client_address), Log.lvl.INFO)
-        while True:
-            data = connection.recv(4096)
-            if data:
-                log.printL("Request from IP -> {}"
-                           " {}".format(client_address,data.decode()), Log.lvl.INFO)
-                threading.Thread(target=handleRequest, args=(connection, data.decode())).start()
-            else:
-                break
-    except Exception as e :
-        log.printL(str(e), Log.lvl.FAIL)
+    #try:
+    log.printL("Connection from IP -> {}".format(client_address), Log.lvl.INFO)
+    while True:
+        data = connection.recv(4096)
+        if data:
+            log.printL("Request from IP -> {}"
+                       " {}".format(client_address,data.decode()), Log.lvl.INFO)
+            threading.Thread(target=handleRequest, args=(connection, data.decode())).start()
+        else:
+            break
+    """except Exception as e :
+        log.printL(str(e), Log.lvl.FAIL)"""
 
 
 def handleRequest(connection, data):
-    try:
-        arrayData = data.split(" ")
-        if(not arrayData[0][0] == "/"):
-            broadcastMsg( "NEW_MSG {} {} ".format(usersConnected[connection][1], data))
+    #try:
+    arrayData = data.split(" ")
+    if(not arrayData[0][0] == "/"):
+        broadcastMsg( "NEW_MSG {} {} ".format(usersConnected[connection][1], data))
+        return
+    else :
+        if  arrayData[0] == "/name" :
+            changeName(connection, arrayData[1])
             return
-        else :
-            if  arrayData[0] == "/name" :
-                changeName(connection, arrayData[1])
-                return
-            if arrayData[0] == "/quit" :
-                quit(connection)
-                return
-            if arrayData[0] == "/askpm" :
-                askPrivateMsg(connection,arrayData[1])
-                return
-            if arrayData[0] == "/acceptpm" :
-                acceptPrivateMsg(connection,arrayData[1])
-                return
-            if arrayData[0] == "/rejectpm" :
-                rejectPrivateMsg(connection,arrayData[1])
-                return
-            if arrayData[0] == "/pm" :
-                privateMsg(connection,arrayData[1],arrayData[2:])
-                return
-        connection.send("ERR_COMMAND_NOT_FOUND".encode())
-    except Exception as e :
-        log.printL(str(e), Log.lvl.FAIL)
+        if arrayData[0] == "/quit" :
+            quit(connection)
+            return
+        if arrayData[0] == "/askpm" :
+            askPrivateMsg(connection,arrayData[1])
+            return
+        if arrayData[0] == "/acceptpm" :
+            acceptPrivateMsg(connection,arrayData[1])
+            return
+        if arrayData[0] == "/rejectpm" :
+            rejectPrivateMsg(connection,arrayData[1])
+            return
+        if arrayData[0] == "/pm" :
+            privateMsg(connection,arrayData[1],arrayData[2:])
+            return
+    connection.send("ERR_COMMAND_NOT_FOUND".encode())
+    """except Exception as e :
+        log.printL(str(e), Log.lvl.FAIL)"""
 
 
 def broadcastMsg(message):
-    sock.sendall(message.encode())
+    for con, value in usersConnected.items() :
+        con.send(message.encode())
 
 
 def userListActive(connection):
@@ -132,11 +133,11 @@ def privateMsg(connection, pseudo, msg):
 
 
 def quit(connection) :
-    broadcastMsg("HAS_LEFT {}".format(usersConnected[connection][1]))
     connection.send("SUCCESSFUL_LOGOUT".encode())
     connection.close()
-    usersConnected.__delitem__(connection)
     log.printL("Disconnection from IP -> {}".format(usersConnected[connection][0]), Log.lvl.INFO)
+    usersConnected.pop(connection)
+    broadcastMsg("HAS_LEFT {}".format(usersConnected[connection][1]))
 
 
 def getConnectionByPseudo(pseudo):

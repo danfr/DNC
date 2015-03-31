@@ -55,8 +55,8 @@ class start(QtGui.QDialog):
             exit(0)
         try:
             self.s.send(cmd.encode())
-            # data , addr = s.recvfrom(4096)
-            # print(data.decode())
+            data = self.s.recv(4096)
+            print(data.decode())
         except timeout:
             print("Erreur : Timeout. Le serveur ne repond pas.")
 
