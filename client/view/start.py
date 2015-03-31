@@ -19,7 +19,7 @@ class start(QtGui.QDialog):
 
 
     def ShowMessageAsText(self, txt):
-        self.message_buffer += '\n' + self.getTimeStamp() + txt
+        self.message_buffer += '<br><span style="color : red"> ' + self.getTimeStamp() + '</span>' + txt + ''
 
 
     def createWidgets(self):
@@ -29,10 +29,9 @@ class start(QtGui.QDialog):
         self.ui.lineEdit.setDisabled(True)
         self.ui.pushButton.setDisabled(True)
         self.ui.pushButton_3.setDisabled(True)
-
         self.message_buffer = ""
-        self.ShowMessageAsText("coucou ! comment ça va ?")
         self.connectActions()
+
 
 
         # self.UpdateMainDisplay()
@@ -50,6 +49,22 @@ class start(QtGui.QDialog):
         self.ui.pushButton_2.setDisabled(True)
         self.ui.pushButton_3.setDisabled(False)
 
+
+    """
+            try :
+                while 1 :
+                    data = self.s.recv(4096)
+                    if not data :
+                        break
+                    messgServeur = (data.decode())
+                    self.ShowMessageAsText(messgServeur)
+                    self.ui.txtOutput.setText(self.message_buffer)
+                self.s.close()
+            except timeout:
+                print("Erreur : Timeout. Le serveur ne repond pas.")
+    """
+
+
     def deco(self):
         self.s.close()
         self.ui.lineEdit.setDisabled(True)
@@ -59,18 +74,20 @@ class start(QtGui.QDialog):
     def client(self):
 
         cmd = self.ui.lineEdit.text()
-        self.ui.lineEdit.setText('')
-        if cmd.lower() == "quit":
-            exit(0)
-        try:
-            self.s.send(cmd.encode())
-            data = self.s.recv(4096)
-            messgServeur = (data.decode())
-            self.ShowMessageAsText(messgServeur)
-            self.ui.txtOutput.setText(self.message_buffer)
-        except timeout:
-            print("Erreur : Timeout. Le serveur ne repond pas.")
-
+        if cmd != "":
+            self.ui.lineEdit.setText('')
+            if cmd.lower() == "quit":
+                exit(0)
+            try:
+                self.s.send(cmd.encode())
+                data = self.s.recv(4096)
+                messgServeur = (data.decode())
+                self.ShowMessageAsText(messgServeur)
+                self.ui.txtOutput.setText(self.message_buffer)
+                sb = self.ui.txtOutput.verticalScrollBar()
+                sb.setValue(sb.maximum())
+            except timeout:
+                print("Erreur : Timeout. Le serveur ne repond pas.")
 
 
 if __name__ == "__main__":
