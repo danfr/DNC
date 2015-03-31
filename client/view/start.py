@@ -28,30 +28,6 @@ class start(QtGui.QDialog):
 
         self.message_buffer = ""
         self.ShowMessageAsText("coucou ! comment ça va ?")
-        self.ShowMessageAsText("ce site est une turie !")
-        self.ShowMessageAsText("super et toi ?")
-        self.ShowMessageAsText("Yo les poulets !")
-        self.ShowMessageAsText("coucou ! comment ça va ?")
-        self.ShowMessageAsText("ce site est une turie !")
-        self.ShowMessageAsText("super et toi ?")
-        self.ShowMessageAsText("Yo les poulets !")
-        self.ShowMessageAsText("coucou ! comment ça va ?")
-        self.ShowMessageAsText("ce site est une turie !")
-        self.ShowMessageAsText("super et toi ?")
-        self.ShowMessageAsText("Yo les poulets !")
-        self.ShowMessageAsText("coucou ! comment ça va ?")
-        self.ShowMessageAsText("ce site est une turie !")
-        self.ShowMessageAsText("super et toi ?")
-        self.ShowMessageAsText("Yo les poulets !")
-        self.ShowMessageAsText("coucou ! comment ça va ?")
-        self.ShowMessageAsText("ce site est une turie !")
-        self.ShowMessageAsText("super et toi ?")
-        self.ShowMessageAsText("Yo les poulets !")
-        self.ShowMessageAsText("coucou ! comment ça va ?")
-        self.ShowMessageAsText("ce site est une turie !")
-        self.ShowMessageAsText("super et toi ?")
-        self.ShowMessageAsText("Yo les poulets !")
-
         self.connectActions()
 
 
