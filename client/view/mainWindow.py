@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainWindow.ui'
 #
-# Created: Mon Mar 30 21:05:16 2015
+# Created: Tue Mar 31 12:14:51 2015
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -81,12 +81,12 @@ class Ui_Dialog(object):
         self.lineEdit_2 = QtGui.QLineEdit(self.horizontalLayoutWidget_2)
         self.lineEdit_2.setObjectName(_fromUtf8("lineEdit_2"))
         self.horizontalLayout_2.addWidget(self.lineEdit_2)
-        self.pushButton_2 = QtGui.QPushButton(self.horizontalLayoutWidget_2)
-        self.pushButton_2.setObjectName(_fromUtf8("pushButton_2"))
-        self.horizontalLayout_2.addWidget(self.pushButton_2)
         self.pushButton_3 = QtGui.QPushButton(self.horizontalLayoutWidget_2)
         self.pushButton_3.setObjectName(_fromUtf8("pushButton_3"))
         self.horizontalLayout_2.addWidget(self.pushButton_3)
+        self.pushButton_2 = QtGui.QPushButton(self.horizontalLayoutWidget_2)
+        self.pushButton_2.setObjectName(_fromUtf8("pushButton_2"))
+        self.horizontalLayout_2.addWidget(self.pushButton_2)
         self.horizontalLayoutWidget_3 = QtGui.QWidget(Dialog)
         self.horizontalLayoutWidget_3.setGeometry(QtCore.QRect(20, 100, 561, 40))
         self.horizontalLayoutWidget_3.setObjectName(_fromUtf8("horizontalLayoutWidget_3"))
@@ -110,7 +110,7 @@ class Ui_Dialog(object):
         self.txtOutput.setFocusPolicy(QtCore.Qt.NoFocus)
         self.txtOutput.setAcceptDrops(False)
         self.txtOutput.setFrameShape(QtGui.QFrame.NoFrame)
-        self.txtOutput.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+        self.txtOutput.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
         self.txtOutput.setTextInteractionFlags(QtCore.Qt.TextBrowserInteraction)
         self.txtOutput.setObjectName(_fromUtf8("txtOutput"))
         self.label_2 = QtGui.QLabel(Dialog)
@@ -130,8 +130,8 @@ class Ui_Dialog(object):
         self.label.setText(_translate("Dialog", "Nick list", None))
         self.listNames.setSortingEnabled(True)
         self.pushButton.setText(_translate("Dialog", "Send message", None))
-        self.pushButton_2.setText(_translate("Dialog", "Connect", None))
         self.pushButton_3.setText(_translate("Dialog", "Disconnect", None))
+        self.pushButton_2.setText(_translate("Dialog", "Connect", None))
         self.pushButton_5.setText(_translate("Dialog", "Disable", None))
         self.pushButton_4.setText(_translate("Dialog", "Enable", None))
         self.txtOutput.setHtml(_translate("Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"

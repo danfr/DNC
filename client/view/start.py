@@ -74,6 +74,7 @@ class start(QtGui.QDialog):
     def client(self):
 
         cmd = self.ui.lineEdit.text()
+        self.ui.lineEdit.setText('')
         if cmd.lower() == "quit":
             exit(0)
         try:
