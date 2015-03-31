@@ -129,16 +129,16 @@
      <widget class="QLineEdit" name="lineEdit_2"/>
     </item>
     <item>
-     <widget class="QPushButton" name="pushButton_2">
+     <widget class="QPushButton" name="pushButton_3">
       <property name="text">
-       <string>Connect</string>
+       <string>Disconnect</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QPushButton" name="pushButton_3">
+     <widget class="QPushButton" name="pushButton_2">
       <property name="text">
-       <string>Disconnect</string>
+       <string>Connect</string>
       </property>
      </widget>
     </item>
