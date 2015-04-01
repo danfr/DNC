@@ -23,29 +23,40 @@ def handleConnection(connection, client_address) :
 def handleRequest(connection, data):
     #try:
     arrayData = data.split(" ")
-    if(not arrayData[0][0] == "/"):
-        broadcastMsg( "NEW_MSG {} {} ".format(usersConnected[connection][1], data))
-        return
-    else :
-        if  arrayData[0] == "/name" :
-            changeName(connection, arrayData[1])
+    if  arrayData[0] == "/newname" :
+        pass
+    if usersConnected[connection][1] is not None :
+        if(not arrayData[0][0] == "/"):
+            broadcastMsg( "NEW_MSG {} {} ".format(usersConnected[connection][1], data))
             return
-        if arrayData[0] == "/quit" :
-            quit(connection)
-            return
-        if arrayData[0] == "/askpm" :
-            askPrivateMsg(connection,arrayData[1])
-            return
-        if arrayData[0] == "/acceptpm" :
-            acceptPrivateMsg(connection,arrayData[1])
-            return
-        if arrayData[0] == "/rejectpm" :
-            rejectPrivateMsg(connection,arrayData[1])
-            return
-        if arrayData[0] == "/pm" :
-            privateMsg(connection,arrayData[1],arrayData[2:])
-            return
-    connection.send("ERR_COMMAND_NOT_FOUND".encode())
+        else :
+            if  arrayData[0] == "/name" :
+                changeName(connection, arrayData[1])
+                return
+            if arrayData[0] == "/quit" :
+                quit(connection)
+                return
+            if arrayData[0] == "/askpm" :
+                askPrivateMsg(connection,arrayData[1])
+                return
+            if arrayData[0] == "/acceptpm" :
+                acceptPrivateMsg(connection,arrayData[1])
+                return
+            if arrayData[0] == "/rejectpm" :
+                rejectPrivateMsg(connection,arrayData[1])
+                return
+            if arrayData[0] == "/pm" :
+                privateMsg(connection,arrayData[1],arrayData[2:])
+                return
+            if arrayData[0] == "/enable":
+                enableUser(connection)
+                return
+            if arrayData[0] == "/disable":
+                disableUser(connection)
+                return
+        connection.send("ERR_COMMAND_NOT_FOUND".encode())
+    else:
+        connection.send("CMD_NOT_ALLOWED".encode())
     """except Exception as e :
         log.printL(str(e), Log.lvl.FAIL)"""
 
@@ -132,6 +143,22 @@ def privateMsg(connection, pseudo, msg):
             connection.send("SUCC_PM_SENDED".encode())
 
 
+def enableUser(connection):
+    if usersConnected[connection][2] == False :
+        usersConnected[connection][2] = True
+        connection.send("SUCC_ENABLED".encode())
+    else:
+        connection.send("ERR_NOT_DISABLED".encode())
+
+
+def disableUser(connection):
+    if usersConnected[connection][2] == True :
+        usersConnected[connection][2] = False
+        connection.send("SUCC_DISABLED".encode())
+    else:
+        connection.send("ERR_NOT_ENABLED".encode())
+
+
 def quit(connection) :
     connection.send("SUCCESSFUL_LOGOUT".encode())
     connection.close()
@@ -178,7 +205,7 @@ def main():
         while True :
             #Connection client
             connection, client_address = sock.accept()
-            usersConnected[connection] = [client_address,"Anonymous",True] # ip pseudo status
+            usersConnected[connection] = [client_address,None,True] # ip pseudo status
             threading.Thread(target=handleConnection,args=(connection,client_address)).start()
     except KeyboardInterrupt :
         # Disable to received more requests on socket
