@@ -52,7 +52,7 @@ def handleRequest(connection, data):
         connection.send("ERR_COMMAND_NOT_FOUND".encode())
     else:
         if  arrayData[0] == "/newname" :
-            newName(connection)
+            newName(connection, arrayData[1])
             return
         if arrayData[0] == "/quit" :
             quit(connection)
@@ -91,7 +91,7 @@ def changeName(connection, pseudo):
 
 def newName(connection, pseudo):
     broadcastMsg("HAS_JOIN {} ".format(pseudo))
-    connection.send("SUCC_VALID_NICKNAME")
+    connection.send("SUCC_VALID_NICKNAME".encode())
     usersConnected[connection][1] = pseudo
 
 
