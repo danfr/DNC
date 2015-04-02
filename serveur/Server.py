@@ -23,8 +23,6 @@ def handleConnection(connection, client_address) :
 def handleRequest(connection, data):
     #try:
     arrayData = data.split(" ")
-    if  arrayData[0] == "/newname" :
-        pass
     if usersConnected[connection][1] is not None :
         if(not arrayData[0][0] == "/"):
             broadcastMsg( "NEW_MSG {} {} ".format(usersConnected[connection][1], data))
@@ -32,9 +30,6 @@ def handleRequest(connection, data):
         else :
             if  arrayData[0] == "/name" :
                 changeName(connection, arrayData[1])
-                return
-            if arrayData[0] == "/quit" :
-                quit(connection)
                 return
             if arrayData[0] == "/askpm" :
                 askPrivateMsg(connection,arrayData[1])
@@ -56,6 +51,12 @@ def handleRequest(connection, data):
                 return
         connection.send("ERR_COMMAND_NOT_FOUND".encode())
     else:
+        if  arrayData[0] == "/newname" :
+            newName(connection)
+            return
+        if arrayData[0] == "/quit" :
+            quit(connection)
+            return
         connection.send("CMD_NOT_ALLOWED".encode())
     """except Exception as e :
         log.printL(str(e), Log.lvl.FAIL)"""
@@ -63,7 +64,8 @@ def handleRequest(connection, data):
 
 def broadcastMsg(message):
     for con, value in usersConnected.items() :
-        con.send(message.encode())
+        if usersConnected[con][1]  is not None :
+            con.send(message.encode())
 
 
 def userListActive(connection):
@@ -84,6 +86,12 @@ def userListAway(connection):
 
 def changeName(connection, pseudo):
     broadcastMsg("NAME_CHANGED {} {}".format(usersConnected[connection][1], pseudo))
+    usersConnected[connection][1] = pseudo
+
+
+def newName(connection, pseudo):
+    broadcastMsg("HAS_JOIN {} ".format(pseudo))
+    connection.send("SUCC_VALID_NICKNAME")
     usersConnected[connection][1] = pseudo
 
 
