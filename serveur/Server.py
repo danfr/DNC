@@ -25,7 +25,7 @@ def handleRequest(connection, data):
     if usersConnected[connection][1] is not None :
         if(not arrayData[0][0] == "/"):
             connection.sendall("SUCC_MESSAGE_SENDED".encode())
-            broadcastMsg( "NEW_MSG {} {} ".format(usersConnected[connection][1], data))
+            broadcastMsg(connection,"NEW_MSG {} {} ".format(usersConnected[connection][1], data))
             return
         else :
             if  arrayData[0] == "/name" :
@@ -77,7 +77,7 @@ def broadcastMsg(connection,message):
 def userListActive(connection):
     l = "USERLIST "
     for con, value in usersConnected.items() :
-        if value[2] == True :
+        if value[2] :
             l += value[1] + " "
     connection.sendall(l[:-1].encode())
 
@@ -85,7 +85,7 @@ def userListActive(connection):
 def userListAway(connection):
     l = "USERAWAY "
     for con,value in usersConnected.items() :
-        if value[2] == False :
+        if value[2]:
             l += value[1] + " "
     connection.sendall(l[:-1].encode())
 
