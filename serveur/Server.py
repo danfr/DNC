@@ -1,16 +1,12 @@
-import argparse
-import os
-import socket
-import threading
-import sys
-import configparser
-import re
+import os, socket, threading, sys, configparser, re
 from serveur import Log
 
 
 def handleConnection(connection, client_address) :
     #try:
     log.printL("Connection from IP -> {}".format(client_address), Log.lvl.INFO)
+    userListActive(connection)
+    userListAway(connection)
     while True:
         data = connection.recv(4096)
         if data:
@@ -28,6 +24,7 @@ def handleRequest(connection, data):
     arrayData = data.split(" ")
     if usersConnected[connection][1] is not None :
         if(not arrayData[0][0] == "/"):
+            connection.sendall("SUCC_MESSAGE_SENDED".encode())
             broadcastMsg( "NEW_MSG {} {} ".format(usersConnected[connection][1], data))
             return
         else :
@@ -55,7 +52,7 @@ def handleRequest(connection, data):
             if arrayData[0] == "/quit" :
                 quit(connection)
                 return
-        connection.send("ERR_COMMAND_NOT_FOUND".encode())
+        connection.sendall("ERR_COMMAND_NOT_FOUND".encode())
     else:
         if  arrayData[0] == "/newname" :
             newName(connection, arrayData[1])
@@ -63,122 +60,126 @@ def handleRequest(connection, data):
         if arrayData[0] == "/quit" :
             quit(connection)
             return
-        connection.send("ERR_NO_NICKNAME".encode())
+        connection.sendall("ERR_NO_NICKNAME".encode())
     """except Exception as e :
         log.printL(str(e), Log.lvl.FAIL)"""
 
 
-def broadcastMsg(message):
+def broadcastMsg(connection,message):
     for con, value in usersConnected.items() :
-        if usersConnected[con][1]  is not None :
+        if usersConnected[con][1]  is not None or con != connection:
             try:
-                con.send(message.encode())
+                con.sendall(message.encode())
             except Exception as e :
                 log.printL(str(e), Log.lvl.FAIL)
 
 
 def userListActive(connection):
     l = "USERLIST "
-    for con,value in usersConnected :
+    for con, value in usersConnected.items() :
         if value[2] == True :
             l += value[1] + " "
-    connection.send(l[:-1].encode())
+    connection.sendall(l[:-1].encode())
 
 
 def userListAway(connection):
     l = "USERAWAY "
-    for con,value in usersConnected :
+    for con,value in usersConnected.items() :
         if value[2] == False :
             l += value[1] + " "
-    connection.send(l[:-1].encode())
+    connection.sendall(l[:-1].encode())
 
 
 def changeName(connection, pseudo):
     if not re.match("^\w{3,15}$",pseudo) :
-        connection.send("ERR_INVALID_NICKNAME".encode())
+        connection.sendall("ERR_INVALID_NICKNAME".encode())
     else:
-        broadcastMsg("NAME_CHANGED {} {}".format(usersConnected[connection][1], pseudo))
+        broadcastMsg(connection,"NAME_CHANGED {} {}".format(usersConnected[connection][1], pseudo))
+        connection.sendall("SUCC_VALID_NICKNAME".encode())
         usersConnected[connection][1] = pseudo
 
 
 def newName(connection, pseudo):
-    broadcastMsg("HAS_JOIN {} ".format(pseudo))
-    connection.send("SUCC_VALID_NICKNAME".encode())
-    usersConnected[connection][1] = pseudo
+    if not re.match("^\w{3,15}$",pseudo) :
+        connection.sendall("ERR_INVALID_NICKNAME".encode())
+    else:
+        broadcastMsg(connection, "HAS_JOIN {} ".format(pseudo))
+        connection.sendall("SUCC_CHANNEL_JOINED".encode())
+        usersConnected[connection][1] = pseudo
 
 
 def askPrivateMsg(connection,pseudo):
     c = getConnectionByPseudo(pseudo)
     if c is None :
-        connection.send("ERR_USER_NOT_FOUND".encode())
+        connection.sendall("ERR_USER_NOT_FOUND".encode())
     else:
         pm =  (connection,c)
         if pm in askPM :
-            connection.send("ALREADY_ASKED".encode())
+            connection.sendall("ALREADY_ASKED".encode())
         else:
             askPM.append(pm)
-            c.send("ASKING_FOR_PM {}".format(pseudo).encode())
-            connection.send("SUCC_INVITED".encode())
+            c.sendall("ASKING_FOR_PM {}".format(pseudo).encode())
+            connection.sendall("SUCC_INVITED".encode())
 
 
 def acceptPrivateMsg(connection, pseudo):
     c = getConnectionByPseudo(pseudo)
     if c is None :
-        connection.send("ERR_USER_NOT_FOUND".encode())
+        connection.sendall("ERR_USER_NOT_FOUND".encode())
     else:
         pm = (connection,c)
         if pm not in askPM :
-            connection.send("ERR_USER_HAS_NOT_ASK".encode())
+            connection.sendall("ERR_USER_HAS_NOT_ASK".encode())
         else:
             askPM.remove(pm)
             validatePM.append(pm)
-            connection.send("SUCC_PRIVATE_DISCUSSION_ACCEPTED".encode())
+            connection.sendall("SUCC_PRIVATE_DISCUSSION_ACCEPTED".encode())
 
 
 def rejectPrivateMsg(connection, pseudo):
     c = getConnectionByPseudo(pseudo)
     if c is None :
-        connection.send("ERR_USER_NOT_FOUND".encode())
+        connection.sendall("ERR_USER_NOT_FOUND".encode())
     else:
         pm = (connection,c)
         if pm not in askPM :
-            connection.send("ERR_USER_HAS_NOT_ASK".encode())
+            connection.sendall("ERR_USER_HAS_NOT_ASK".encode())
         else:
             askPM.remove(pm)
-            connection.send("SUCC_PRIVATE_DISCUSSION_REFUSED".encode())
+            connection.sendall("SUCC_PRIVATE_DISCUSSION_REFUSED".encode())
 
 
 def privateMsg(connection, pseudo, msg):
     c = getConnectionByPseudo(pseudo)
     if c is None :
-        connection.send("ERR_DEST_NOT_FOUND".encode())
+        connection.sendall("ERR_DEST_NOT_FOUND".encode())
     else:
         pm = (connection,c)
         if sorted(pm) not in sorted(validatePM) :
-            connection.send("ERR_NOT_ACCEPTED".encode())
+            connection.sendall("ERR_NOT_ACCEPTED".encode())
         else:
-            c.send("NEW_PM {} {}".format(pseudo,msg).encode())
-            connection.send("SUCC_PM_SENDED".encode())
+            c.sendall("NEW_PM {} {}".format(pseudo,msg).encode())
+            connection.sendall("SUCC_PM_SENDED".encode())
 
 
 def enableUser(connection):
     if usersConnected[connection][2] == False :
         usersConnected[connection][2] = True
-        connection.send("SUCC_ENABLED".encode())
+        connection.sendall("SUCC_ENABLED".encode())
     else:
-        connection.send("ERR_NOT_DISABLED".encode())
+        connection.sendall("ERR_NOT_DISABLED".encode())
 
 
 def disableUser(connection):
     if usersConnected[connection][2] == True :
         usersConnected[connection][2] = False
-        connection.send("SUCC_DISABLED".encode())
+        connection.sendall("SUCC_DISABLED".encode())
     else:
-        connection.send("ERR_NOT_ENABLED".encode())
+        connection.sendall("ERR_NOT_ENABLED".encode())
 
 
 def quit(connection) :
-    connection.send("SUCCESSFUL_LOGOUT".encode())
+    connection.sendall("SUCCESSFUL_LOGOUT".encode())
     connection.close()
     log.printL("Disconnection from IP -> {}".format(usersConnected[connection][0]), Log.lvl.INFO)
     usersConnected.pop(connection)
