@@ -200,8 +200,6 @@ def main():
     global askFT, validateFT
     askPM = []
     validatePM = []
-
-    log.printL("Server start", Log.lvl.INFO)
     config = configparser.ConfigParser()
     if not os.path.isfile("dncserver.conf")  :
         config['NETWORK'] = {'port': '2222'}
@@ -210,6 +208,8 @@ def main():
           config.write(configfile)
     config.read("dncserver.conf")
     log = Log.Log(config["LOG"]["logdirectory"])
+    log.printL("Configuration Log", Log.lvl.INFO)
+    log.printL("Server start", Log.lvl.INFO)
 
 
     #Init socket serv
@@ -242,7 +242,3 @@ def main():
         sock.close()
         log.printL("Server shutdown", Log.lvl.INFO)
         sys.exit(0)
-
-
-if __name__ == '__main__':
-    main()
