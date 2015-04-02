@@ -64,21 +64,21 @@ class Log(object):
         error.log -> error
         Write all message on terminal too
         """
-        if not os.path.exists("log"):
-            os.makedirs("log")
+        if not os.path.exists(directory):
+            os.makedirs(directory)
         self.logger = logging.getLogger()
         self.logger.setLevel(logging.DEBUG)
         formatter = logging.Formatter('%(asctime)-15s :: %(levelname)s :: %(message)s')
-        file_handler = RotatingFileHandler('log/activity.log', 'a', 1000000, 1)
+        file_handler = RotatingFileHandler(directory+'/activity.log', 'a', 1000000, 1)
         file_handler.setLevel(logging.DEBUG)
         file_handler.setFormatter(formatter)
         self.logger.addHandler(file_handler)
-        file_handler_warning = RotatingFileHandler('log/warning.log', 'a', 1000000, 1)
+        file_handler_warning = RotatingFileHandler(directory+'/warning.log', 'a', 1000000, 1)
         f1 = SingleLevelFilter(logging.WARNING, False)
         file_handler_warning.addFilter(f1)
         file_handler_warning.setFormatter(formatter)
         self.logger.addHandler(file_handler_warning)
-        file_handler_error = RotatingFileHandler('log/error.log', 'a', 1000000, 1)
+        file_handler_error = RotatingFileHandler(directory+'/error.log', 'a', 1000000, 1)
         file_handler_error.setLevel(logging.ERROR)
         file_handler_error.setFormatter(formatter)
         self.logger.addHandler(file_handler_error)
