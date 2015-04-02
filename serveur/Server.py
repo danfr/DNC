@@ -5,8 +5,8 @@ from serveur import Log
 def handleConnection(connection, client_address) :
     #try:
     log.printL("Connection from IP -> {}".format(client_address), Log.lvl.INFO)
-    userListActive(connection)
-    userListAway(connection)
+    #userListActive(connection)
+    #userListAway(connection)
     while True:
         data = connection.recv(4096)
         if data:
