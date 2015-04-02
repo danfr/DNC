@@ -67,7 +67,7 @@ def handleRequest(connection, data):
 
 def broadcastMsg(connection,message):
     for con, value in usersConnected.items() :
-        if usersConnected[con][1]  is not None or con != connection:
+        if usersConnected[con][1]  is not None and con != connection:
             try:
                 con.sendall(message.encode())
             except Exception as e :
