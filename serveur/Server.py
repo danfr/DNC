@@ -1,7 +1,10 @@
 import argparse
+import os
 import socket
 import threading
 import sys
+import configparser
+import re
 from serveur import Log
 
 
@@ -49,6 +52,9 @@ def handleRequest(connection, data):
             if arrayData[0] == "/disable":
                 disableUser(connection)
                 return
+            if arrayData[0] == "/quit" :
+                quit(connection)
+                return
         connection.send("ERR_COMMAND_NOT_FOUND".encode())
     else:
         if  arrayData[0] == "/newname" :
@@ -57,7 +63,7 @@ def handleRequest(connection, data):
         if arrayData[0] == "/quit" :
             quit(connection)
             return
-        connection.send("CMD_NOT_ALLOWED".encode())
+        connection.send("ERR_NO_NICKNAME".encode())
     """except Exception as e :
         log.printL(str(e), Log.lvl.FAIL)"""
 
@@ -65,7 +71,10 @@ def handleRequest(connection, data):
 def broadcastMsg(message):
     for con, value in usersConnected.items() :
         if usersConnected[con][1]  is not None :
-            con.send(message.encode())
+            try:
+                con.send(message.encode())
+            except Exception as e :
+                log.printL(str(e), Log.lvl.FAIL)
 
 
 def userListActive(connection):
@@ -85,8 +94,11 @@ def userListAway(connection):
 
 
 def changeName(connection, pseudo):
-    broadcastMsg("NAME_CHANGED {} {}".format(usersConnected[connection][1], pseudo))
-    usersConnected[connection][1] = pseudo
+    if not re.match("^\w{3,15}$",pseudo) :
+        connection.send("ERR_INVALID_NICKNAME".encode())
+    else:
+        broadcastMsg("NAME_CHANGED {} {}".format(usersConnected[connection][1], pseudo))
+        usersConnected[connection][1] = pseudo
 
 
 def newName(connection, pseudo):
@@ -105,9 +117,7 @@ def askPrivateMsg(connection,pseudo):
             connection.send("ALREADY_ASKED".encode())
         else:
             askPM.append(pm)
-            c.send("NEW_MESSAGE {0} demande une conversation privé \n"
-                   "/acceptpm {0} pour accepter\n"
-                   "/reject {0} pour refuser".format(pseudo))
+            c.send("ASKING_FOR_PM {}".format(pseudo).encode())
             connection.send("SUCC_INVITED".encode())
 
 
@@ -190,23 +200,23 @@ def main():
     global askFT, validateFT
     askPM = []
     validatePM = []
-    log = Log.Log()
 
-    #Configuration
-    parser = argparse.ArgumentParser(usage="usage='%(prog)s [options]",description='Server DNC')
-    parser.add_argument('--port', type=int, dest='port', action='store',
-                 default=8000, help='port (default=8000)')
-    parser.add_argument('--usermax', type=int, dest='usermax', action='store',
-                 default=None, help='usermax (default=None)')
-    args = parser.parse_args()
-    log.printL("Configuration load {}".format(args), Log.lvl.INFO)
     log.printL("Server start", Log.lvl.INFO)
+    config = configparser.ConfigParser()
+    if not os.path.isfile("dncserver.conf")  :
+        config['NETWORK'] = {'port': '2222'}
+        config['LOG'] = {'logDirectory': 'log'}
+        with open('dncserver.conf', 'w') as configfile:
+          config.write(configfile)
+    config.read("dncserver.conf")
+    log = Log.Log(config["LOG"]["logdirectory"])
+
 
     #Init socket serv
     sock = socket.socket()
-    sock.bind(("", args.port))
+    sock.bind(("", int(config["NETWORK"]["port"])))
     sock.listen(5)
-    log.printL("Server Listen on port {}".format(args.port), Log.lvl.INFO)
+    log.printL("Server Listen on port {}".format(config["NETWORK"]["port"]), Log.lvl.INFO)
 
 
     try :

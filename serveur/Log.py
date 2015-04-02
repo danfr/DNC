@@ -56,7 +56,7 @@ class Log(object):
     Log Manager
     """
 
-    def __init__(self):
+    def __init__(self,directory):
         """
         Define 3 differents utils :
         activity.log -> all activity
