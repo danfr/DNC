@@ -20,12 +20,14 @@ class start(QtGui.QDialog):
 
         html = html.replace('<', '&#60;')
         html = html.replace('>', '&#62;')
+        html = html.replace(':-)', '&#9786;')
+        html = html.replace(':-(', '&#9785;')
 
         return html
 
 
     def ShowMessageAsText(self, txt):
-        self.message_buffer += '<br><span style="color : red"> ' + self.getTimeStamp() + '</span>' + self.htmlToText(txt) + ''
+        self.message_buffer += '<br><span style="color : grey"> ' + self.getTimeStamp() + '</span> <span style="color : red"> &#60;BOB&#62; </span> ' + self.htmlToText(txt) + ''
         
     def UpdateChat(self, messgServeur) :
         self.ShowMessageAsText(messgServeur)
