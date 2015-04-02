@@ -4,7 +4,9 @@
 """
 
 import logging
+import os
 from logging.handlers import RotatingFileHandler
+
 
 
 class bcolors:
@@ -62,6 +64,8 @@ class Log(object):
         error.log -> error
         Write all message on terminal too
         """
+        if not os.path.exists("log"):
+            os.makedirs("log")
         self.logger = logging.getLogger()
         self.logger.setLevel(logging.DEBUG)
         formatter = logging.Formatter('%(asctime)-15s :: %(levelname)s :: %(message)s')
