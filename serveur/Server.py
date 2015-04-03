@@ -3,20 +3,22 @@ from serveur import Log
 
 
 def handleConnection(connection, client_address) :
-    #try:
-    log.printL("Connection from IP -> {}".format(client_address), Log.lvl.INFO)
-    #userListActive(connection)
-    #userListAway(connection)
-    while True:
-        data = connection.recv(4096)
-        if data:
-            log.printL("Request from IP -> {}"
-                       " {}".format(client_address,data.decode()), Log.lvl.INFO)
-            threading.Thread(target=handleRequest, args=(connection, data.decode())).start()
-        else:
-            break
-    """except Exception as e :
-        log.printL(str(e), Log.lvl.FAIL)"""
+    try:
+        log.printL("Connection from IP -> {}".format(client_address), Log.lvl.INFO)
+        #userListActive(connection)
+        #userListAway(connection)
+        while True:
+            data = connection.recv(4096)
+            if data:
+                log.printL("Request from IP -> {}"
+                           " {}".format(client_address,data.decode()), Log.lvl.INFO)
+                threading.Thread(target=handleRequest, args=(connection, data.decode())).start()
+            else:
+                break
+    except Exception as e :
+        log.printL(str(e), Log.lvl.FAIL)
+    finally:
+        quit
 
 
 def handleRequest(connection, data):
@@ -66,8 +68,9 @@ def handleRequest(connection, data):
 
 
 def broadcastMsg(connection,message):
+    log.printL(usersConnected, Log.lvl.DEBUG)
     for con, value in usersConnected.items() :
-        if usersConnected[con][1]  is not None and con != connection:
+        if usersConnected[con][1] is not None and con != connection and connection[con][2] == True:
             try:
                 con.sendall(message.encode())
             except Exception as e :
@@ -182,8 +185,10 @@ def quit(connection) :
     connection.sendall("SUCCESSFUL_LOGOUT".encode())
     connection.close()
     log.printL("Disconnection from IP -> {}".format(usersConnected[connection][0]), Log.lvl.INFO)
+    pseudo = usersConnected[connection][1]
     usersConnected.pop(connection)
-    broadcastMsg("HAS_LEFT {}".format(usersConnected[connection][1]))
+    broadcastMsg(connection,"HAS_LEFT {}".format(pseudo))
+
 
 
 def getConnectionByPseudo(pseudo):
