@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../../../../../../Images/Homer-Simpson-homer-simpson-3065329-800-600.jpg</normaloff>../../../../../../Images/Homer-Simpson-homer-simpson-3065329-800-600.jpg</iconset>
+  </property>
   <widget class="QWidget" name="verticalLayoutWidget">
    <property name="geometry">
     <rect>
@@ -206,14 +210,7 @@
     <item>
      <widget class="QPushButton" name="pushButton_5">
       <property name="text">
-       <string>Disable</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QPushButton" name="pushButton_4">
-      <property name="text">
-       <string>Enable</string>
+       <string>Away From Keyboard</string>
       </property>
      </widget>
     </item>

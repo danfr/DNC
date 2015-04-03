@@ -2,7 +2,7 @@ from mainWindow import Ui_Dialog
 from PyQt4 import QtGui, QtCore
 from PySide.QtCore import *
 from PySide.QtGui import *
-import time, threading, datetime, time, random
+import time, threading, datetime, time, random,re
 from socket import *
 
 Host = "127.0.0.1"
@@ -81,13 +81,21 @@ class start(QtGui.QDialog):
 
     def ShowMessageAsText(self, txt):
         
+        if re.match("^ERR_", txt):
+            self.ShowMessageErreur("Erreur !")
         
         self.message_buffer += '<br> <span style="color : #E6E6E6"> '+  txt.split(" ")[0] +' </span>'
         
-         
-
+        
         if txt.split(" ")[0] == "SUCCESSFUL_LOGOUT" : 
              self.ShowMessageOK("Sucessful logout !")
+             
+        if txt.split(" ")[0] == "SUCC_DISABLED" : 
+             self.ShowMessageOK("You are AFK !")
+
+        if txt.split(" ")[0] == "SUCC_ENABLED" : 
+             self.ShowMessageOK("You are back !")
+              
 
         if txt.split(" ")[0] == "SUCC_VALID_NICKNAME" : 
              self.ShowMessageOK("Sucessful nickname change !")
@@ -134,7 +142,39 @@ class start(QtGui.QDialog):
         self.ui.pushButton_3.clicked.connect(self.deco)
         self.ui.pushButton.clicked.connect(self.client)
         self.ui.pushButton_6.clicked.connect(self.changeN)
+        
+        self.ui.pushButton_5.clicked.connect(self.away)
+        
 
+    def away(self):
+
+        if self.bouton == "disable" : 
+            cmdAway = "/disable "
+            try:
+                self.s.send(cmdAway.encode())
+                self.ui.pushButton_5.setText("Back")
+
+            except timeout:
+                self.ShowMessageErreur("Erreur : Timeout. Le serveur ne repond pas")
+                self.ui.txtOutput.setText(self.message_buffer)
+                sb = self.ui.txtOutput.verticalScrollBar()
+                sb.setValue(sb.maximum())
+            self.bouton = "enable"
+            
+        elif self.bouton == "enable" :
+            self.bouton = "disable"
+            cmdAway = "/enable "
+            try:
+                self.s.send(cmdAway.encode())
+                self.ui.pushButton_5.setText("Away From Keyboard")
+
+            except timeout:
+                self.ShowMessageErreur("Erreur : Timeout. Le serveur ne repond pas")
+                self.ui.txtOutput.setText(self.message_buffer)
+                sb = self.ui.txtOutput.verticalScrollBar()
+                sb.setValue(sb.maximum())
+
+        
     def changeN(self):
         changePseudo = self.ui.lineEdit_2.text()
         cmdChange = "/name "+changePseudo
@@ -168,6 +208,8 @@ class start(QtGui.QDialog):
         self.ui.pushButton.setDisabled(False)
         self.ui.pushButton_2.setDisabled(True)
         self.ui.pushButton_3.setDisabled(False)
+        self.ui.lineEdit_4.setDisabled(True)
+        self.ui.lineEdit_3.setDisabled(True)
         self.thread.start()
         
 
@@ -198,6 +240,9 @@ class start(QtGui.QDialog):
         self.ui.pushButton_3.setDisabled(True)
         self.ui.pushButton_6.setDisabled(True)
         
+        self.ui.lineEdit_4.setDisabled(False)
+        self.ui.lineEdit_3.setDisabled(False)
+        
     def ecoute(self):
         while 1 :
             data = self.s.recv(4096)
@@ -225,6 +270,7 @@ class start(QtGui.QDialog):
         self.ui.pushButton_3.setDisabled(True)
         self.ui.pushButton_6.setDisabled(True)
         self.message_buffer = ""
+        self.bouton = "disable"
 
         self.connectActions()
 

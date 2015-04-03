@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainWindow.ui'
 #
-# Created: Fri Apr  3 14:33:44 2015
+# Created: Fri Apr  3 20:01:13 2015
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -27,6 +27,9 @@ class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName(_fromUtf8("Dialog"))
         Dialog.resize(774, 540)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8("../../../../../../Images/Homer-Simpson-homer-simpson-3065329-800-600.jpg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        Dialog.setWindowIcon(icon)
         self.verticalLayoutWidget = QtGui.QWidget(Dialog)
         self.verticalLayoutWidget.setGeometry(QtCore.QRect(600, 100, 160, 361))
         self.verticalLayoutWidget.setObjectName(_fromUtf8("verticalLayoutWidget"))
@@ -115,9 +118,6 @@ class Ui_Dialog(object):
         self.pushButton_5 = QtGui.QPushButton(self.horizontalLayoutWidget_3)
         self.pushButton_5.setObjectName(_fromUtf8("pushButton_5"))
         self.horizontalLayout_3.addWidget(self.pushButton_5)
-        self.pushButton_4 = QtGui.QPushButton(self.horizontalLayoutWidget_3)
-        self.pushButton_4.setObjectName(_fromUtf8("pushButton_4"))
-        self.horizontalLayout_3.addWidget(self.pushButton_4)
         self.txtOutput = QtGui.QTextEdit(Dialog)
         self.txtOutput.setGeometry(QtCore.QRect(20, 160, 561, 291))
         self.txtOutput.setMinimumSize(QtCore.QSize(400, 0))
@@ -158,8 +158,7 @@ class Ui_Dialog(object):
         self.pushButton_6.setText(_translate("Dialog", "Change pseudo", None))
         self.pushButton_3.setText(_translate("Dialog", "Disconnect", None))
         self.pushButton_2.setText(_translate("Dialog", "Connect", None))
-        self.pushButton_5.setText(_translate("Dialog", "Disable", None))
-        self.pushButton_4.setText(_translate("Dialog", "Enable", None))
+        self.pushButton_5.setText(_translate("Dialog", "Away From Keyboard", None))
         self.txtOutput.setHtml(_translate("Dialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
