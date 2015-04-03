@@ -18,7 +18,7 @@ def handleConnection(connection, client_address) :
     except Exception as e :
         log.printL(str(e), Log.lvl.FAIL)
     finally:
-        quit
+        quit(connection)
 
 
 def handleRequest(connection, data):
