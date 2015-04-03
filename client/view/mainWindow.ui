@@ -2,12 +2,15 @@
 <ui version="4.0">
  <class>Dialog</class>
  <widget class="QDialog" name="Dialog">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>774</width>
-    <height>540</height>
+    <width>814</width>
+    <height>557</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,12 +20,18 @@
    <iconset>
     <normaloff>../../../../../../Images/Homer-Simpson-homer-simpson-3065329-800-600.jpg</normaloff>../../../../../../Images/Homer-Simpson-homer-simpson-3065329-800-600.jpg</iconset>
   </property>
+  <property name="sizeGripEnabled">
+   <bool>false</bool>
+  </property>
+  <property name="modal">
+   <bool>false</bool>
+  </property>
   <widget class="QWidget" name="verticalLayoutWidget">
    <property name="geometry">
     <rect>
      <x>600</x>
      <y>100</y>
-     <width>160</width>
+     <width>201</width>
      <height>361</height>
     </rect>
    </property>
@@ -102,7 +111,7 @@
     <rect>
      <x>20</x>
      <y>470</y>
-     <width>741</width>
+     <width>781</width>
      <height>69</height>
     </rect>
    </property>

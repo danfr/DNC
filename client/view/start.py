@@ -84,7 +84,7 @@ class start(QtGui.QDialog):
         if re.match("^ERR_", txt):
             self.ShowMessageErreur("Erreur !")
         
-        self.message_buffer += '<br> <span style="color : #E6E6E6"> '+  txt.split(" ")[0] +' </span>'
+        self.message_buffer += '<br> <span style="color : #E6E6E6"> '+  txt +' </span>'
         
         
         if txt.split(" ")[0] == "SUCCESSFUL_LOGOUT" : 
@@ -101,15 +101,35 @@ class start(QtGui.QDialog):
              self.ShowMessageOK("Sucessful nickname change !")
              
              
-             
+             #HAS_LEFT anonymous52 
         if txt.split(" ")[0] == "NAME_CHANGED" : 
-             self.ShowMessageNameChange(txt.split(" ")[1], txt.split(" ")[2])
+            self.ShowMessageNameChange(txt.split(" ")[1], txt.split(" ")[2])
+            self.ui.listNames.clear()
+            self.s.send("/userlist".encode())
         
         if txt.split(" ")[0] == "HAS_JOIN" : 
              self.ShowMessageHasJoin(txt.split(" ")[1])
+             self.ui.listNames.addItem(txt.split(" ")[1])
+             
+        if txt.split(" ")[0] == "HAS_LEFT" : 
+            self.ShowMessageHasLeft(txt.split(" ")[1])
+            self.ui.listNames.clear()
+            self.s.send("/userlist".encode())
+             
+             #self.ui.listNames.removeItemWidget(1)
+             #self.ui.listNames.addItem(txt.split(" ")[1])
+        
         
         if txt.split(" ")[0] == "SUCC_CHANNEL_JOINED" or txt.split(" ")[0] == "SUCC_CHANNEL_JOINEDUSERLIST" : 
              self.ShowMessageHasJoin(self.pseudo)
+            
+            
+        if re.compile('USERLIST').search(txt.split(" ")[0] ) : 
+            n = len(txt.split(" ")[1:]) +1
+            for i in range(1,n) :
+                self.ui.listNames.addItem(str(txt.split(" ")[i]))
+            print(str(txt.split(" ")[1:]))
+
          
              
         if txt.split(" ")[0] == "NEW_MSG" : 
@@ -122,6 +142,9 @@ class start(QtGui.QDialog):
     def ShowMessageHasJoin (self, txt) : 
         self.message_buffer += '<br> <span style="color : #FF00FF; font-weight: bold;"> '+  self.htmlToText(txt) +' has joined DNC </span>'
         
+    def ShowMessageHasLeft (self, txt) : 
+        self.message_buffer += '<br> <span style="color : #FF00FF; font-weight: bold;"> '+  self.htmlToText(txt) +' has left DNC </span>'        
+
     def ShowMessageNameChange (self, txt, txt2) : 
         self.message_buffer += '<br> <span style="color : #FF00FF; font-weight: bold;"> '+  self.htmlToText(txt) +' is now : '+self.htmlToText(txt2)+' </span>'
 
@@ -181,6 +204,8 @@ class start(QtGui.QDialog):
         try:
             self.s.send(cmdChange.encode())
             self.pseudo = changePseudo
+            self.ui.listNames.clear()
+            self.s.send("/userlist".encode())
 
 
         except timeout:

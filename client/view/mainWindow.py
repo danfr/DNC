@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainWindow.ui'
 #
-# Created: Fri Apr  3 20:01:13 2015
+# Created: Fri Apr  3 22:17:37 2015
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,12 +26,15 @@ except AttributeError:
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName(_fromUtf8("Dialog"))
-        Dialog.resize(774, 540)
+        Dialog.setEnabled(True)
+        Dialog.resize(814, 557)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(_fromUtf8("../../../../../../Images/Homer-Simpson-homer-simpson-3065329-800-600.jpg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Dialog.setWindowIcon(icon)
+        Dialog.setSizeGripEnabled(False)
+        Dialog.setModal(False)
         self.verticalLayoutWidget = QtGui.QWidget(Dialog)
-        self.verticalLayoutWidget.setGeometry(QtCore.QRect(600, 100, 160, 361))
+        self.verticalLayoutWidget.setGeometry(QtCore.QRect(600, 100, 201, 361))
         self.verticalLayoutWidget.setObjectName(_fromUtf8("verticalLayoutWidget"))
         self.verticalLayout = QtGui.QVBoxLayout(self.verticalLayoutWidget)
         self.verticalLayout.setMargin(0)
@@ -64,7 +67,7 @@ class Ui_Dialog(object):
         self.listNames.setObjectName(_fromUtf8("listNames"))
         self.verticalLayout.addWidget(self.listNames)
         self.horizontalLayoutWidget = QtGui.QWidget(Dialog)
-        self.horizontalLayoutWidget.setGeometry(QtCore.QRect(20, 470, 741, 69))
+        self.horizontalLayoutWidget.setGeometry(QtCore.QRect(20, 470, 781, 69))
         self.horizontalLayoutWidget.setObjectName(_fromUtf8("horizontalLayoutWidget"))
         self.horizontalLayout = QtGui.QHBoxLayout(self.horizontalLayoutWidget)
         self.horizontalLayout.setMargin(0)
