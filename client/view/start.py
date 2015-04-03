@@ -79,20 +79,27 @@ class start(QtGui.QDialog):
     def ShowMessageAsText(self, txt):
         
         
-        self.message_buffer += txt
+        self.message_buffer += '<br> <span style="color : #E6E6E6"> '+  txt +' </span>'
+        
+        
+        if txt.split(" ")[0] == "NAME_CHANGED" : 
+             self.ShowMessageNameChange(txt.split(" ")[1], txt.split(" ")[2])
         
         if txt.split(" ")[0] == "HAS_JOIN" : 
-             self.ShowMessageAsAdmin(txt.split(" ")[1])
+             self.ShowMessageHasJoin(txt.split(" ")[1])
 
         if txt.split(" ")[0] == "NEW_MSG" : 
             self.message_buffer += '<br><span style="color : grey"> ' + self.getTimeStamp() + '</span> <span style="color : red"> &#60; '+txt.split(" ")[1] +' &#62; </span> ' + self.htmlToText(' '.join(txt.split(" ")[2:])) + ''
 
         if txt == "SUCC_MESSAGE_SENDED" : 
-            self.message_buffer += '<br><span style="color : grey"> ' + self.getTimeStamp() + '</span> <span style="color : red"> &#60; '+ 'MOI' +' &#62; </span> ' + self.htmlToText(self.cmd) + ''
+            self.message_buffer += '<br><span style="color : grey"> ' + self.getTimeStamp() + '</span> <span style="color : red"> &#60; '+ self.pseudo +' &#62; </span> ' + self.htmlToText(self.cmd) + ''
             
         
-    def ShowMessageAsAdmin (self, txt) : 
+    def ShowMessageHasJoin (self, txt) : 
         self.message_buffer += '<br> <span style="color : #FF00FF; font-weight: bold;"> '+  self.htmlToText(txt) +' has joined DNC </span>'
+        
+    def ShowMessageNameChange (self, txt, txt2) : 
+        self.message_buffer += '<br> <span style="color : #FF00FF; font-weight: bold;"> '+  self.htmlToText(txt) +' is now : '+self.htmlToText(txt2)+' </span>'
 
     def UpdateChat(self) :
         if self.queueMsg  :
@@ -104,6 +111,7 @@ class start(QtGui.QDialog):
                 sb = self.ui.txtOutput.verticalScrollBar()
                 sb.setValue(sb.maximum())
         
+
 
     def connectActions(self):
         self.ui.pushButton_2.clicked.connect(self.connecter)
@@ -134,6 +142,12 @@ class start(QtGui.QDialog):
             if not data :
                 break
             messgServeur = (data.decode())
+             
+            
+            if messgServeur == "ERR_INVALID_NICKNAME" :
+                self.pseudo = "INVALID_NICKNAME"
+                
+                
             self.UpdateChat(messgServeur)
 
 
@@ -157,8 +171,12 @@ class start(QtGui.QDialog):
             self.s.settimeout(5.0)
             try:
                 self.s.send(self.cmd.encode())
-                #if self.cmd = ""
-
+                
+                if self.cmd.split(" ")[0] == "/newname":
+                    self.pseudo = self.cmd.split(" ")[1]
+                    
+                if self.cmd.split(" ")[0] == "/name":
+                    self.pseudo = self.cmd.split(" ")[1]
 
             except timeout:
                 self.ShowMessageErreur("Erreur : Timeout. Le serveur ne repond pas")
