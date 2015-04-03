@@ -91,10 +91,17 @@ class start(QtGui.QDialog):
              self.ShowMessageOK("Sucessful logout !")
              
         if txt.split(" ")[0] == "SUCC_DISABLED" : 
-             self.ShowMessageOK("You are AFK !")
+            self.ShowMessageOK("You are AFK !")
+            self.ui.listNames.clear()
+            self.s.send("/userlistaway".encode())
+             #listNames_2
 
         if txt.split(" ")[0] == "SUCC_ENABLED" : 
-             self.ShowMessageOK("You are back !")
+            self.ShowMessageOK("You are back !")
+            self.ui.listNames.clear()
+            self.ui.listNames_2.clear()
+            self.s.send("/userlist".encode())
+            self.s.send("/userlistaway".encode())
               
 
         if txt.split(" ")[0] == "SUCC_VALID_NICKNAME" : 
@@ -115,10 +122,7 @@ class start(QtGui.QDialog):
             self.ShowMessageHasLeft(txt.split(" ")[1])
             self.ui.listNames.clear()
             self.s.send("/userlist".encode())
-             
-             #self.ui.listNames.removeItemWidget(1)
-             #self.ui.listNames.addItem(txt.split(" ")[1])
-        
+                   
         
         if txt.split(" ")[0] == "SUCC_CHANNEL_JOINED" or txt.split(" ")[0] == "SUCC_CHANNEL_JOINEDUSERLIST" : 
              self.ShowMessageHasJoin(self.pseudo)
@@ -130,6 +134,12 @@ class start(QtGui.QDialog):
                 self.ui.listNames.addItem(str(txt.split(" ")[i]))
             print(str(txt.split(" ")[1:]))
 
+        if re.compile('USERAWAY').search(txt.split(" ")[0] ) : 
+            n = len(txt.split(" ")[1:]) +1
+            for i in range(1,n) :
+                self.ui.listNames_2.addItem(str(txt.split(" ")[i]))
+            print(str(txt.split(" ")[1:]))
+            
          
              
         if txt.split(" ")[0] == "NEW_MSG" : 
