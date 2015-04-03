@@ -68,7 +68,7 @@ def handleRequest(connection, data):
 
 
 def broadcastMsg(connection,message):
-    log.printL(usersConnected, Log.lvl.DEBUG)
+    log.printL("User Connected : {}".format(usersConnected), Log.lvl.DEBUG)
     for con, value in usersConnected.items() :
         if usersConnected[con][1] is not None and con != connection and connection[con][2] == True:
             try:
