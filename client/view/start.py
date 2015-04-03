@@ -55,6 +55,7 @@ class start(QtGui.QDialog):
         self.thread = MyThread()
         self.thread.finished.connect(self.UpdateChat)
         
+                        
         self.createWidgets()
         
     def setNewMsg (self,msg) :
@@ -76,8 +77,23 @@ class start(QtGui.QDialog):
         self.message_buffer += '<br> <span style="color : red; font-weight: bold;"> '+  self.htmlToText(txt) +' </span>'
 
     def ShowMessageAsText(self, txt):
-        self.message_buffer += '<br><span style="color : grey"> ' + self.getTimeStamp() + '</span> <span style="color : red"> &#60;BOB&#62; </span> ' + self.htmlToText(txt) + ''
         
+        
+        self.message_buffer += txt
+        
+        if txt.split(" ")[0] == "HAS_JOIN" : 
+             self.ShowMessageAsAdmin(txt.split(" ")[1])
+
+        if txt.split(" ")[0] == "NEW_MSG" : 
+            self.message_buffer += '<br><span style="color : grey"> ' + self.getTimeStamp() + '</span> <span style="color : red"> &#60; '+txt.split(" ")[1] +' &#62; </span> ' + self.htmlToText(' '.join(txt.split(" ")[2:])) + ''
+
+        if txt == "SUCC_MESSAGE_SENDED" : 
+            self.message_buffer += '<br><span style="color : grey"> ' + self.getTimeStamp() + '</span> <span style="color : red"> &#60; '+ 'MOI' +' &#62; </span> ' + self.htmlToText(self.cmd) + ''
+            
+        
+    def ShowMessageAsAdmin (self, txt) : 
+        self.message_buffer += '<br> <span style="color : #FF00FF; font-weight: bold;"> '+  self.htmlToText(txt) +' has joined DNC </span>'
+
     def UpdateChat(self) :
         if self.queueMsg  :
             m = self.queueMsg.pop(0)
@@ -95,6 +111,7 @@ class start(QtGui.QDialog):
         self.ui.pushButton.clicked.connect(self.client)
 
     def connecter(self):
+        #lineEdit_2
         self.s = socket(AF_INET, SOCK_STREAM)
         self.s.connect(Addr)
         self.thread.setConfig(self.s,self)
@@ -104,8 +121,6 @@ class start(QtGui.QDialog):
         self.ui.pushButton_3.setDisabled(False)
         self.thread.start()
 
-
-        #threading.Thread(target=self.ecoute).start()
         
     def deco(self):
         self.s.close()
@@ -134,37 +149,16 @@ class start(QtGui.QDialog):
 
 
 
-    """
-            try :
-                while 1 :
-                    data = self.s.recv(4096)
-                    if not data :
-                        break
-                    messgServeur = (data.decode())
-                    self.ShowMessageAsText(messgServeur)
-                    self.ui.txtOutput.setText(self.message_buffer)
-                self.s.close()
-            except timeout:
-                print("Erreur : Timeout. Le serveur ne repond pas.")
-    """
-
-
-
-
     def client(self):
 
-        cmd = self.ui.lineEdit.text()
-        if cmd != "":
+        self.cmd = self.ui.lineEdit.text()
+        if self.cmd != "":
             self.ui.lineEdit.setText('')
             self.s.settimeout(5.0)
             try:
-                self.s.send(cmd.encode())
-                data = self.s.recv(4096)
-                messgServeur = (data.decode())
-                self.ShowMessageAsText(messgServeur)
-                self.ui.txtOutput.setText(self.message_buffer)
-                sb = self.ui.txtOutput.verticalScrollBar()
-                sb.setValue(sb.maximum())
+                self.s.send(self.cmd.encode())
+                #if self.cmd = ""
+
 
             except timeout:
                 self.ShowMessageErreur("Erreur : Timeout. Le serveur ne repond pas")
