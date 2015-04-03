@@ -2,12 +2,12 @@ from mainWindow import Ui_Dialog
 from PyQt4 import QtGui, QtCore
 from PySide.QtCore import *
 from PySide.QtGui import *
-import time, threading, datetime, time
+import time, threading, datetime, time, random
 from socket import *
 
 Host = "127.0.0.1"
 Port = 2222
-Addr = (Host, Port)
+
 
 
 class MySignal(QObject):
@@ -75,22 +75,34 @@ class start(QtGui.QDialog):
 
     def ShowMessageErreur(self, txt):
         self.message_buffer += '<br> <span style="color : red; font-weight: bold;"> '+  self.htmlToText(txt) +' </span>'
+        
+    def ShowMessageOK(self, txt):
+        self.message_buffer += '<br> <span style="color : green; font-weight: bold;"> '+  self.htmlToText(txt) +' </span>'
 
     def ShowMessageAsText(self, txt):
         
         
-        self.message_buffer += '<br> <span style="color : #E6E6E6"> '+  txt +' </span>'
+        self.message_buffer += '<br> <span style="color : #E6E6E6"> '+  txt.split(" ")[0] +' </span>'
         
+         
 
+        if txt.split(" ")[0] == "SUCCESSFUL_LOGOUT" : 
+             self.ShowMessageOK("Sucessful logout !")
+
+        if txt.split(" ")[0] == "SUCC_VALID_NICKNAME" : 
+             self.ShowMessageOK("Sucessful nickname change !")
+             
+             
+             
         if txt.split(" ")[0] == "NAME_CHANGED" : 
              self.ShowMessageNameChange(txt.split(" ")[1], txt.split(" ")[2])
         
         if txt.split(" ")[0] == "HAS_JOIN" : 
              self.ShowMessageHasJoin(txt.split(" ")[1])
         
-        if txt.split(" ")[0] == "SUCC_CHANNEL_JOINED" : 
+        if txt.split(" ")[0] == "SUCC_CHANNEL_JOINED" or txt.split(" ")[0] == "SUCC_CHANNEL_JOINEDUSERLIST" : 
              self.ShowMessageHasJoin(self.pseudo)
-             
+         
              
         if txt.split(" ")[0] == "NEW_MSG" : 
             self.message_buffer += '<br><span style="color : grey"> ' + self.getTimeStamp() + '</span> <span style="color : red"> &#60; '+txt.split(" ")[1] +' &#62; </span> ' + self.htmlToText(' '.join(txt.split(" ")[2:])) + ''
@@ -121,9 +133,34 @@ class start(QtGui.QDialog):
         self.ui.pushButton_2.clicked.connect(self.connecter)
         self.ui.pushButton_3.clicked.connect(self.deco)
         self.ui.pushButton.clicked.connect(self.client)
+        self.ui.pushButton_6.clicked.connect(self.changeN)
 
+    def changeN(self):
+        changePseudo = self.ui.lineEdit_2.text()
+        cmdChange = "/name "+changePseudo
+        try:
+            self.s.send(cmdChange.encode())
+            self.pseudo = changePseudo
+
+
+        except timeout:
+            self.ShowMessageErreur("Erreur : Timeout. Le serveur ne repond pas")
+            self.ui.txtOutput.setText(self.message_buffer)
+            sb = self.ui.txtOutput.verticalScrollBar()
+            sb.setValue(sb.maximum())
+
+        
+        
     def connecter(self):
-        #lineEdit_2
+
+        ip= self.ui.lineEdit_4.text()
+        port = int(self.ui.lineEdit_3.text())
+        if ip is None or port is None :
+            Addr = (Host, Port)
+        else :
+            Addr = (ip,port)
+        
+
         self.s = socket(AF_INET, SOCK_STREAM)
         self.s.connect(Addr)
         self.thread.setConfig(self.s,self)
@@ -132,13 +169,34 @@ class start(QtGui.QDialog):
         self.ui.pushButton_2.setDisabled(True)
         self.ui.pushButton_3.setDisabled(False)
         self.thread.start()
+        
+
+        cmd2 = self.ui.lineEdit_2.text()
+        if cmd2 != "":
+            self.s.settimeout(5.0)
+        cmdPseudo = "/newname "+cmd2
+        try:
+            self.s.send(cmdPseudo.encode())
+            self.pseudo = cmd2
+            self.ui.pushButton_6.setDisabled(False)
+                
+
+        except timeout:
+            self.ShowMessageErreur("Erreur : Timeout. Le serveur ne repond pas")
+            self.ui.txtOutput.setText(self.message_buffer)
+            sb = self.ui.txtOutput.verticalScrollBar()
+            sb.setValue(sb.maximum())
 
         
     def deco(self):
-        self.s.close()
+        quitter = "/quit"
+        self.s.send(quitter.encode())
+        #self.s.close()
         self.ui.lineEdit.setDisabled(True)
         self.ui.pushButton.setDisabled(True)
         self.ui.pushButton_2.setDisabled(False)
+        self.ui.pushButton_3.setDisabled(True)
+        self.ui.pushButton_6.setDisabled(True)
         
     def ecoute(self):
         while 1 :
@@ -159,10 +217,15 @@ class start(QtGui.QDialog):
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
         
+        ano = "anonymous" + ''.join(str(random.randint(1,9)) for _ in range(2))
+        self.ui.lineEdit_2.setText(ano)
+        
         self.ui.lineEdit.setDisabled(True)
         self.ui.pushButton.setDisabled(True)
         self.ui.pushButton_3.setDisabled(True)
+        self.ui.pushButton_6.setDisabled(True)
         self.message_buffer = ""
+
         self.connectActions()
 
 
