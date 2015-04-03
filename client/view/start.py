@@ -81,13 +81,17 @@ class start(QtGui.QDialog):
         
         self.message_buffer += '<br> <span style="color : #E6E6E6"> '+  txt +' </span>'
         
-        
+
         if txt.split(" ")[0] == "NAME_CHANGED" : 
              self.ShowMessageNameChange(txt.split(" ")[1], txt.split(" ")[2])
         
         if txt.split(" ")[0] == "HAS_JOIN" : 
              self.ShowMessageHasJoin(txt.split(" ")[1])
-
+        
+        if txt.split(" ")[0] == "SUCC_CHANNEL_JOINED" : 
+             self.ShowMessageHasJoin(self.pseudo)
+             
+             
         if txt.split(" ")[0] == "NEW_MSG" : 
             self.message_buffer += '<br><span style="color : grey"> ' + self.getTimeStamp() + '</span> <span style="color : red"> &#60; '+txt.split(" ")[1] +' &#62; </span> ' + self.htmlToText(' '.join(txt.split(" ")[2:])) + ''
 
