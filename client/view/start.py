@@ -78,6 +78,10 @@ class start(QtGui.QDialog):
         
     def ShowMessageOK(self, txt):
         self.message_buffer += '<br> <span style="color : green; font-weight: bold;"> '+  self.htmlToText(txt) +' </span>'
+    
+    def ShowMessageInfo (self, txt) : 
+        self.message_buffer += '<br> <span style="color : #FF00FF; font-weight: bold;"> '+  self.htmlToText(txt) +' </span>'
+   
 
     def ShowMessageAsText(self, txt):
         
@@ -86,6 +90,22 @@ class start(QtGui.QDialog):
         
         self.message_buffer += '<br> <span style="color : #E6E6E6"> '+  txt +' </span>'
         
+        if txt.split(" ")[0] == "IS_NOW_DISABLE":
+            self.ShowMessageInfo(txt.split(" ")[1]+" is Away From Keyboard")
+            self.ui.listNames.clear()
+            self.ui.listNames_2.clear()
+            self.s.send("/userlist".encode())
+            self.s.send("/userlistaway".encode())
+        
+        
+        if txt.split(" ")[0] == "IS_NOW_ENABLE":
+            self.ShowMessageInfo(txt.split(" ")[1]+" is Back !!")
+            self.ui.listNames.clear()
+            self.ui.listNames_2.clear()
+            self.s.send("/userlist".encode())
+            self.s.send("/userlistaway".encode())
+        
+        
         
         if txt.split(" ")[0] == "SUCCESSFUL_LOGOUT" : 
              self.ShowMessageOK("Sucessful logout !")
@@ -93,8 +113,10 @@ class start(QtGui.QDialog):
         if txt.split(" ")[0] == "SUCC_DISABLED" : 
             self.ShowMessageOK("You are AFK !")
             self.ui.listNames.clear()
+            self.ui.listNames_2.clear()
+            self.s.send("/userlist".encode())
             self.s.send("/userlistaway".encode())
-             #listNames_2
+            
 
         if txt.split(" ")[0] == "SUCC_ENABLED" : 
             self.ShowMessageOK("You are back !")
