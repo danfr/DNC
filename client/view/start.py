@@ -131,7 +131,7 @@ class start(QtGui.QDialog):
         if re.compile('USERLIST').search(txt.split(" ")[0] ) : 
             n = len(txt.split(" ")[1:]) +1
             for i in range(1,n) :
-                self.ui.listNames.addItem(str(txt.split(" ")[i]))
+                self.ui.listNames.addItem(str(txt.split(" ")[i]).replace("USERAWAY",""))
             print(str(txt.split(" ")[1:]))
 
         if re.compile('USERAWAY').search(txt.split(" ")[0] ) : 
