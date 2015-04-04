@@ -4,10 +4,14 @@ from PySide.QtCore import *
 from PySide.QtGui import *
 import time, threading, datetime, time, random,re
 from socket import *
-
+from pm import Ui_Form
 Host = "127.0.0.1"
 Port = 2222
 
+#def selectFile():
+#    lineEdit.setText(QFileDialog.getOpenFileName())
+
+#pushButton.clicked.connect(selectFile)
 
 
 class MySignal(QObject):
@@ -46,6 +50,24 @@ class MyThread(QThread):
             self.s = s
             self.gui = gui
                         
+class privateMessage () :
+   def __init__(self,main):
+
+        #self.queueMsg= []
+        #self.thread = MyThread()
+        #self.thread.finished.connect(self.UpdateChat)
+        
+        self.main = main
+        self.g = QtGui.QWidget()
+        self.ui = Ui_Form()
+        self.ui.setupUi(self.g)
+        self.g.show()
+        
+        def selectFile():
+            self.ui.lineEdit.setText(''.join(QFileDialog.getOpenFileName()))
+
+        self.ui.pushButton_2.clicked.connect(selectFile)
+
                         
 
 class start(QtGui.QDialog):
@@ -86,7 +108,7 @@ class start(QtGui.QDialog):
     def ShowMessageAsText(self, txt):
         
         if re.match("^ERR_", txt):
-            self.ShowMessageErreur("Erreur !")
+            self.ShowMessageErreur("Erreur ! : " + txt)
         
         self.message_buffer += '<br> <span style="color : #E6E6E6"> '+  txt +' </span>'
         
@@ -107,6 +129,16 @@ class start(QtGui.QDialog):
         
         
         
+        
+        if txt.split(" ")[0] == "SUCC_INVITED" : 
+             self.ShowMessageOK("invitation requested")
+             
+        if txt.split(" ")[0] == "ASKING_FOR_PM" : 
+             self.ShowMessageOK("private discution from "+ txt.split(" ")[1] )
+             #ouvrir fenetre !!!!
+             self.admin = privateMessage(self)
+          
+             
         if txt.split(" ")[0] == "SUCCESSFUL_LOGOUT" : 
              self.ShowMessageOK("Sucessful logout !")
              
