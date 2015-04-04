@@ -128,11 +128,13 @@ def askPrivateMsg(connection, pseudo):
             connection.sendall("ALREADY_ASKED".encode())
         else:
             askPM.append(pm)
-            c.sendall("ASKING_FOR_PM {}".format(pseudo).encode())
+            log.printL("askPm []".format(askPM), Log.lvl.DEBUG)
+            c.sendall("ASKING_FOR_PM {}".format(usersConnected[connection][1]).encode())
             connection.sendall("SUCC_INVITED".encode())
 
 
 def acceptPrivateMsg(connection, pseudo):
+    log.printL("askPm []".format(askPM), Log.lvl.DEBUG)
     c = getConnectionByPseudo(pseudo)
     if c is None:
         connection.sendall("ERR_USER_NOT_FOUND".encode())
@@ -176,6 +178,7 @@ def enableUser(connection):
     if usersConnected[connection][2] == False:
         usersConnected[connection][2] = True
         connection.sendall("SUCC_ENABLED".encode())
+        broadcastMsg(connection,"IS_NOW_ENABLE {}".format(usersConnected[connection][1]))
     else:
         connection.sendall("ERR_NOT_DISABLED".encode())
 
@@ -184,6 +187,7 @@ def disableUser(connection):
     if usersConnected[connection][2] == True:
         usersConnected[connection][2] = False
         connection.sendall("SUCC_DISABLED".encode())
+        broadcastMsg(connection,"IS_NOW_DISABLE {}".format(usersConnected[connection][1]))
     else:
         connection.sendall("ERR_NOT_ENABLED".encode())
 
