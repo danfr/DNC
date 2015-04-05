@@ -8,11 +8,6 @@ from pm import Ui_Form
 Host = "127.0.0.1"
 Port = 2222
 
-#def selectFile():
-#    lineEdit.setText(QFileDialog.getOpenFileName())
-
-#pushButton.clicked.connect(selectFile)
-
 
 class MySignal(QObject):
         sig = Signal(str)
@@ -51,22 +46,48 @@ class MyThread(QThread):
             self.gui = gui
                         
 class privateMessage () :
-   def __init__(self,main):
-
-        #self.queueMsg= []
-        #self.thread = MyThread()
-        #self.thread.finished.connect(self.UpdateChat)
-        
+    def __init__(self,main,s):
+       
         self.main = main
+        self.s = s
         self.g = QtGui.QWidget()
         self.ui = Ui_Form()
         self.ui.setupUi(self.g)
         self.g.show()
-        
-        def selectFile():
-            self.ui.lineEdit.setText(''.join(QFileDialog.getOpenFileName()))
+        old = start()
 
-        self.ui.pushButton_2.clicked.connect(selectFile)
+        self.queueMsg= []
+        self.thread = MyThread()
+        self.thread.finished.connect(old.UpdateChat)
+
+        self.ui.pushButton.clicked.connect(self.send)
+        self.ui.pushButton_2.clicked.connect(self.selectFile)
+
+        
+    def selectFile(self):
+        self.ui.lineEdit.setText(''.join(QFileDialog.getOpenFileName()))
+
+
+
+    def send(self):
+        self.cmd = self.ui.lineEdit.text()
+        if self.cmd != "":
+            self.ui.lineEdit.setText('')
+            self.s.settimeout(5.0)
+            try:
+                self.s.send(self.cmd.encode())
+                
+                if self.cmd.split(" ")[0] == "/newname":
+                    self.pseudo = self.cmd.split(" ")[1]
+                    
+                if self.cmd.split(" ")[0] == "/name":
+                    self.pseudo = self.cmd.split(" ")[1]
+
+            except timeout:
+                self.ShowMessageErreur("Erreur : Timeout. Le serveur ne repond pas")
+                self.ui.txtOutput.setText(self.message_buffer)
+                sb = self.ui.txtOutput.verticalScrollBar()
+                sb.setValue(sb.maximum())
 
                         
 
@@ -136,7 +157,7 @@ class start(QtGui.QDialog):
         if txt.split(" ")[0] == "ASKING_FOR_PM" : 
              self.ShowMessageOK("private discution from "+ txt.split(" ")[1] )
              #ouvrir fenetre !!!!
-             self.admin = privateMessage(self)
+             self.admin = privateMessage(self,self.s)
           
              
         if txt.split(" ")[0] == "SUCCESSFUL_LOGOUT" : 
