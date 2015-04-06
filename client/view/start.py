@@ -103,6 +103,11 @@ class privateMessage () :
                 sb.setValue(sb.maximum())
 
     def ShowMessageAsTextPm(self,txt) :
+        
+            if txt.split(" ")[0] == "SUCC_PRIVATE_DISCUSSION_ACCEPTED ":
+                 self.message_buffer2 += '<br> <span style="color : green"> Chalange Accepted ! </span>'
+      
+                
             if txt.split(" ")[0] == "NEW_MSG" : 
                 self.message_buffer2 += '<br><span style="color : grey"> ' + self.getTimeStamp() + '</span> <span style="color : red"> &#60; '+txt.split(" ")[1] +' &#62; </span> ' + self.htmlToText(' '.join(txt.split(" ")[2:])) + ''
 
@@ -140,7 +145,8 @@ class start(QtGui.QDialog):
         html = html.replace('(y)', '<img src="img/like.png" alt="like face">')
         html = html.replace('8|', '<img src="img/lunette.png" alt="lunette face">')
         html = html.replace('3:)', '<img src="img/hell.png" alt="hell face">')
-        html = html.replace(':pedobear', '<img src="img/pedo.gif" alt="hell face">')
+        html = html.replace(':pedobear', '<img src="img/pedo.gif"  alt="hell face">')
+        html = html.replace(':homer', '<img src="img/homer.gif"  alt="homer face">')
         
 
         return html
@@ -179,7 +185,9 @@ class start(QtGui.QDialog):
         
         
         
-        
+        if txt.split(" ")[0] == "SUCC_PRIVATE_DISCUSSION_ACCEPTED":
+             self.message_buffer += '<br> <span style="color : green"> PRIVATE DISCUSSION ? challenge accepted ! '
+                 
         if txt.split(" ")[0] == "SUCC_INVITED" : 
              self.ShowMessageOK("invitation requested")
              self.admin = privateMessage(self,self.s,self.demande)
@@ -289,8 +297,7 @@ class start(QtGui.QDialog):
         self.ui.listNames.itemActivated.connect(self.someMethod)
                
     def someMethod(self,item):
-
-        nom = item.text()
+        nom = item.text().replace("SUCC_INVITED","")
         cmdPM = "/askpm "+nom
         try:
             self.s.send(cmdPM.encode())
