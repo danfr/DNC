@@ -20,56 +20,56 @@ def handleConnection(connection, client_address):
 
 
 def handleRequest(connection, data):
-    try:
-        arrayData = data.split(" ")
-        if usersConnected[connection][1] is not None:
-            if (not arrayData[0][0] == "/"):
-                connection.sendall("SUCC_MESSAGE_SENDED".encode())
-                broadcastMsg(connection, "NEW_MSG {} {} ".format(usersConnected[connection][1], data))
-                return
-            else:
-                if arrayData[0] == "/name":
-                    changeName(connection, arrayData[1])
-                    return
-                if arrayData[0] == "/userlist":
-                    userListActive(connection)
-                    return
-                if arrayData[0] == "/userlistaway":
-                    userListAway(connection)
-                    return
-                if arrayData[0] == "/askpm":
-                    askPrivateMsg(connection, arrayData[1])
-                    return
-                if arrayData[0] == "/acceptpm":
-                    acceptPrivateMsg(connection, arrayData[1])
-                    return
-                if arrayData[0] == "/rejectpm":
-                    rejectPrivateMsg(connection, arrayData[1])
-                    return
-                if arrayData[0] == "/pm":
-                    privateMsg(connection, arrayData[1], arrayData[2:])
-                    return
-                if arrayData[0] == "/enable":
-                    enableUser(connection)
-                    return
-                if arrayData[0] == "/disable":
-                    disableUser(connection)
-                    return
-                if arrayData[0] == "/quit":
-                    connection.shutdown(socket.SHUT_RD)
-                    return
-            connection.sendall("ERR_COMMAND_NOT_FOUND".encode())
+    #try:
+    arrayData = data.split(" ")
+    if usersConnected[connection][1] is not None:
+        if (not arrayData[0][0] == "/"):
+            connection.sendall("SUCC_MESSAGE_SENDED".encode())
+            broadcastMsg(connection, "NEW_MSG {} {} ".format(usersConnected[connection][1], data))
+            return
         else:
-            if arrayData[0] == "/newname":
-                newName(connection, arrayData[1])
+            if arrayData[0] == "/name":
+                changeName(connection, arrayData[1])
+                return
+            if arrayData[0] == "/userlist":
+                userListActive(connection)
+                return
+            if arrayData[0] == "/userlistaway":
+                userListAway(connection)
+                return
+            if arrayData[0] == "/askpm":
+                askPrivateMsg(connection, arrayData[1])
+                return
+            if arrayData[0] == "/acceptpm":
+                acceptPrivateMsg(connection, arrayData[1])
+                return
+            if arrayData[0] == "/rejectpm":
+                rejectPrivateMsg(connection, arrayData[1])
+                return
+            if arrayData[0] == "/pm":
+                privateMsg(connection, arrayData[1], arrayData[2:])
+                return
+            if arrayData[0] == "/enable":
+                enableUser(connection)
+                return
+            if arrayData[0] == "/disable":
+                disableUser(connection)
                 return
             if arrayData[0] == "/quit":
                 connection.shutdown(socket.SHUT_RD)
                 return
-            connection.sendall("ERR_NO_NICKNAME".encode())
-    except Exception as e :
+        connection.sendall("ERR_COMMAND_NOT_FOUND".encode())
+    else:
+        if arrayData[0] == "/newname":
+            newName(connection, arrayData[1])
+            return
+        if arrayData[0] == "/quit":
+            connection.shutdown(socket.SHUT_RD)
+            return
+        connection.sendall("ERR_NO_NICKNAME".encode())
+    """except Exception as e :
         log.printL("Handle request fail : {}".format(str(e)), Log.lvl.FAIL)
-        connection.sendall("ERR_INTERNAL_SERVER_ERROR".encode())
+        connection.sendall("ERR_INTERNAL_SERVER_ERROR".encode())"""
 
 
 def broadcastMsg(connection, message):
@@ -128,18 +128,18 @@ def askPrivateMsg(connection, pseudo):
             connection.sendall("ALREADY_ASKED".encode())
         else:
             askPM.append(pm)
-            log.printL("askPm []".format(askPM), Log.lvl.DEBUG)
+            log.printL("askPm {}".format(askPM), Log.lvl.DEBUG)
             c.sendall("ASKING_FOR_PM {}".format(usersConnected[connection][1]).encode())
             connection.sendall("SUCC_INVITED".encode())
 
 
 def acceptPrivateMsg(connection, pseudo):
-    log.printL("askPm []".format(askPM), Log.lvl.DEBUG)
+    log.printL("askPm {}".format(askPM), Log.lvl.DEBUG)
     c = getConnectionByPseudo(pseudo)
     if c is None:
         connection.sendall("ERR_USER_NOT_FOUND".encode())
     else:
-        pm = (connection, c)
+        pm = (c, connection)
         if pm not in askPM:
             connection.sendall("ERR_USER_HAS_NOT_ASK".encode())
         else:
@@ -153,7 +153,7 @@ def rejectPrivateMsg(connection, pseudo):
     if c is None:
         connection.sendall("ERR_USER_NOT_FOUND".encode())
     else:
-        pm = (connection, c)
+        pm = (c, connection)
         if pm not in askPM:
             connection.sendall("ERR_USER_HAS_NOT_ASK".encode())
         else:
@@ -172,6 +172,50 @@ def privateMsg(connection, pseudo, msg):
         else:
             c.sendall("NEW_PM {} {}".format(pseudo, msg).encode())
             connection.sendall("SUCC_PM_SENDED".encode())
+
+
+def askFile(connection, pseudo, file):
+    c = getConnectionByPseudo(pseudo)
+    if c is None:
+        connection.sendall("ERR_USER_NOT_FOUND".encode())
+    else:
+        f = (connection, c, file)
+        if f in askFT:
+            connection.sendall("ERR_ALREADY_ONE".encode())
+        else:
+            askFT.append(f)
+            log.printL("askPm {}".format(askPM), Log.lvl.DEBUG)
+            c.sendall("HAS_ASKED_FILE {} {}".format(pseudo, file))
+            connection.sendall("SUCC_ASKED_FILE".encode())
+
+
+def acceptFile(connection, pseudo, file, ip, port):
+    log.printL("askFT {}".format(askPM), Log.lvl.DEBUG)
+    c = getConnectionByPseudo(pseudo)
+    if c is None:
+        connection.sendall("ERR_USER_NOT_FOUND".encode())
+    else:
+        f = (c, connection, file)
+        if f not in askFT:
+            connection.sendall("ERR_USER_HAS_NOT_ASK".encode())
+        else:
+            askFT.remove(f)
+            connection.sendall("SUCC_FILE_ACCEPTED".encode())
+            c.sendall("CAN_SEND_FILE {} {} {} {}".format(file,pseudo,ip,port).encode())
+
+
+def rejectFile(connection, pseudo, file):
+    c = getConnectionByPseudo(pseudo)
+    if c is None:
+        connection.sendall("ERR_USER_NOT_FOUND".encode())
+    else:
+        f = (c, connection, file)
+        if f not in askFT:
+            connection.sendall("ERR_USER_HAS_NOT_ASK".encode())
+        else:
+            askPM.remove(f)
+            connection.sendall("SUCC_FILE_REFUSED".encode())
+
 
 
 def enableUser(connection):
@@ -216,10 +260,11 @@ def main():
     # Global vars
     global usersConnected, log, sock
     global askPM, validatePM
-    global askFT, validateFT
+    global askFT
     usersConnected = {}
     askPM = []
     validatePM = []
+    askFT = []
     config = configparser.ConfigParser()
     if not os.path.isfile("dncserver.conf"):
         config['NETWORK'] = {'port': '2222'}
