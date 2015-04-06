@@ -4,7 +4,7 @@ from PySide.QtCore import *
 from PySide.QtGui import *
 import time, threading, datetime, time, random,re
 from socket import *
-from pm import Ui_Form
+from pmWindow import Ui_Dialog2
 Host = "127.0.0.1"
 Port = 2222
 
@@ -46,26 +46,29 @@ class MyThread(QThread):
             self.gui = gui
                         
 class privateMessage () :
-    def __init__(self,main,s):
+    def __init__(self,main,s, pmPerson):
        
         self.main = main
         self.s = s
+        self.pmPerson = pmPerson
         self.g = QtGui.QWidget()
-        self.ui = Ui_Form()
+        self.ui = Ui_Dialog2()
         self.ui.setupUi(self.g)
         self.g.show()
         old = start()
+        self.message_buffer2 = ""
 
-        self.queueMsg= []
+        self.queueMsg2= []
         self.thread = MyThread()
-        self.thread.finished.connect(old.UpdateChat)
+        self.thread.finished.connect(self.UpdateChatP)
 
         self.ui.pushButton.clicked.connect(self.send)
         self.ui.pushButton_2.clicked.connect(self.selectFile)
+        self.ui.label_2.setText(pmPerson)
 
         
     def selectFile(self):
-        self.ui.lineEdit.setText(''.join(QFileDialog.getOpenFileName()))
+        self.ui.lineEdit.setText('/pmfile '+self.pmPerson+ ' '.join(QFileDialog.getOpenFileName()))
 
 
 
@@ -88,8 +91,24 @@ class privateMessage () :
                 self.ui.txtOutput.setText(self.message_buffer)
                 sb = self.ui.txtOutput.verticalScrollBar()
                 sb.setValue(sb.maximum())
+                
+    def UpdateChatP(self) :
+        if self.queueMsg2  :
+            m = self.queueMsg2.pop(0)
+            if  m :
+                self.thread.start()
+                self.ShowMessageAsTextPm(m)
+                self.ui.txtOutput.setText(self.message_buffer2)
+                sb = self.ui.txtOutput.verticalScrollBar()
+                sb.setValue(sb.maximum())
 
-                        
+    def ShowMessageAsTextPm(self,txt) :
+            if txt.split(" ")[0] == "NEW_MSG" : 
+                self.message_buffer2 += '<br><span style="color : grey"> ' + self.getTimeStamp() + '</span> <span style="color : red"> &#60; '+txt.split(" ")[1] +' &#62; </span> ' + self.htmlToText(' '.join(txt.split(" ")[2:])) + ''
+
+            if txt == "SUCC_MESSAGE_SENDED" : 
+                self.message_buffer += '<br><span style="color : grey"> ' + self.getTimeStamp() + '</span> <span style="color : red"> &#60; '+ self.pseudo +' &#62; </span> ' + self.htmlToText(self.cmd) + ''
+      
 
 class start(QtGui.QDialog):
     def __init__(self):
@@ -153,11 +172,11 @@ class start(QtGui.QDialog):
         
         if txt.split(" ")[0] == "SUCC_INVITED" : 
              self.ShowMessageOK("invitation requested")
+             self.admin = privateMessage(self,self.s,self.demande)
              
         if txt.split(" ")[0] == "ASKING_FOR_PM" : 
              self.ShowMessageOK("private discution from "+ txt.split(" ")[1] )
-             #ouvrir fenetre !!!!
-             self.admin = privateMessage(self,self.s)
+             self.admin = privateMessage(self,self.s,txt.split(" ")[1])
           
              
         if txt.split(" ")[0] == "SUCCESSFUL_LOGOUT" : 
@@ -182,7 +201,9 @@ class start(QtGui.QDialog):
         if txt.split(" ")[0] == "SUCC_VALID_NICKNAME" : 
              self.ShowMessageOK("Sucessful nickname change !")
              
-             
+        if txt.split(" ")[0] == "ERR_INVALID_NICKNAME" :
+            self.pseudo = "INVALID_NICKNAME"
+                
              #HAS_LEFT anonymous52 
         if txt.split(" ")[0] == "NAME_CHANGED" : 
             self.ShowMessageNameChange(txt.split(" ")[1], txt.split(" ")[2])
@@ -250,9 +271,27 @@ class start(QtGui.QDialog):
         self.ui.pushButton_3.clicked.connect(self.deco)
         self.ui.pushButton.clicked.connect(self.client)
         self.ui.pushButton_6.clicked.connect(self.changeN)
-        
         self.ui.pushButton_5.clicked.connect(self.away)
         
+        #self.connect(self.ui.listNames,
+        #     QtCore.SIGNAL("itemDoubleClicked(QListWidgetItem *)"),
+        #     self.someMethod)
+        self.ui.listNames.itemActivated.connect(self.someMethod)
+               
+    def someMethod(self,item):
+
+        nom = item.text()
+        cmdPM = "/askpm "+nom
+        try:
+            self.s.send(cmdPM.encode())
+            self.demande = nom
+
+        except timeout:
+            self.ShowMessageErreur("Erreur : Timeout. Le serveur ne repond pas")
+            self.ui.txtOutput.setText(self.message_buffer)
+            sb = self.ui.txtOutput.verticalScrollBar()
+            sb.setValue(sb.maximum())
+
 
     def away(self):
 
@@ -400,6 +439,9 @@ class start(QtGui.QDialog):
                     
                 if self.cmd.split(" ")[0] == "/name":
                     self.pseudo = self.cmd.split(" ")[1]
+                
+                if self.cmd.split(" ")[0]=="/askpm":
+                    self.demande = self.cmd.split(" ")[1]
 
             except timeout:
                 self.ShowMessageErreur("Erreur : Timeout. Le serveur ne repond pas")

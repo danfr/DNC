@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainWindow.ui'
 #
-# Created: Sat Apr  4 23:06:45 2015
+# Created: Sun Apr  5 15:23:56 2015
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -27,7 +27,7 @@ class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName(_fromUtf8("Dialog"))
         Dialog.setEnabled(True)
-        Dialog.resize(827, 558)
+        Dialog.resize(813, 558)
         Dialog.setMaximumSize(QtCore.QSize(827, 558))
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(_fromUtf8("../../../../../../Images/Homer-Simpson-homer-simpson-3065329-800-600.jpg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
