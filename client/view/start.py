@@ -130,8 +130,18 @@ class start(QtGui.QDialog):
 
         html = html.replace('<', '&#60;')
         html = html.replace('>', '&#62;')
-        html = html.replace(':-)', '&#9786;')
-        html = html.replace(':-(', '&#9785;')
+        html = html.replace(':-)', '<img src="img/happy.png" alt="Smiley face">')
+        html = html.replace(':-(', '<img src="img/sad.png" alt="sad face">')
+        html = html.replace(':-p', '<img src="img/langue.png" alt="langue face">')
+        html = html.replace(';-)', '<img src="img/oeil.png" alt="oeil face">')
+        html = html.replace(':-D', '<img src="img/veryHappy.png" alt="very happy face">')
+        html = html.replace(':-o', '<img src="img/etonne.png" alt="etonne face">')
+        html = html.replace(':\'(', '<img src="img/cry.png" alt="cry face">')
+        html = html.replace('(y)', '<img src="img/like.png" alt="like face">')
+        html = html.replace('8|', '<img src="img/lunette.png" alt="lunette face">')
+        html = html.replace('3:)', '<img src="img/hell.png" alt="hell face">')
+        html = html.replace(':pedobear', '<img src="img/pedo.gif" alt="hell face">')
+        
 
         return html
 
