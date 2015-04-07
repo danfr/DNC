@@ -46,10 +46,11 @@ class MyThread(QThread):
             self.gui = gui
                         
 class privateMessage () :
-    def __init__(self,main,s, pmPerson):
+    def __init__(self,main,s, pmPerson, pmPerso):
        
         self.main = main
         self.s = s
+        self.pmPerso = pmPerso
         self.pmPerson = pmPerson
         self.g = QtGui.QWidget()
         self.ui = Ui_Dialog2()
@@ -63,32 +64,59 @@ class privateMessage () :
         self.thread.finished.connect(self.UpdateChatP)
 
         self.ui.pushButton.clicked.connect(self.send)
+        self.ui.pushButton_3.clicked.connect(self.accept)
         self.ui.pushButton_2.clicked.connect(self.selectFile)
         self.ui.label_2.setText(pmPerson)
 
+    def accept(self):
+        self.cmAcc = "/acceptpm "+self.pmPerson
+        try:
+            self.s.send(self.cmAcc.encode())
+
+        except timeout:
+            self.ShowMessageErreur("Erreur : Timeout. Le serveur ne repond pas")
+            self.ui.txtOutput.setText(self.message_buffer2)
+            sb = self.ui.txtOutput.verticalScrollBar()
+            sb.setValue(sb.maximum())
         
     def selectFile(self):
         self.ui.lineEdit.setText('/pmfile '+self.pmPerson+ ' '.join(QFileDialog.getOpenFileName()))
 
+    def htmlToText( self, html ):
 
+        html = html.replace('<', '&#60;')
+        html = html.replace('>', '&#62;')
+        html = html.replace(':-)', '<img src="img/happy.png" alt="Smiley face">')
+        html = html.replace(':-(', '<img src="img/sad.png" alt="sad face">')
+        html = html.replace(':-p', '<img src="img/langue.png" alt="langue face">')
+        html = html.replace(';-)', '<img src="img/oeil.png" alt="oeil face">')
+        html = html.replace(':-D', '<img src="img/veryHappy.png" alt="very happy face">')
+        html = html.replace(':-o', '<img src="img/etonne.png" alt="etonne face">')
+        html = html.replace(':\'(', '<img src="img/cry.png" alt="cry face">')
+        html = html.replace('(y)', '<img src="img/like.png" alt="like face">')
+        html = html.replace('8|', '<img src="img/lunette.png" alt="lunette face">')
+        html = html.replace('3:)', '<img src="img/hell.png" alt="hell face">')
+        html = html.replace(':pedobear', '<img src="img/pedo.gif"  alt="hell face">')
+        html = html.replace(':homer', '<img src="img/homer.gif"  alt="homer face">')
+
+
+        return html
+
+    def ShowMessageErreur(self, txt):
+        self.message_buffer2 += '<br> <span style="color : red; font-weight: bold;"> '+  self.htmlToText(txt) +' </span>'
 
     def send(self):
-        self.cmd = self.ui.lineEdit.text()
-        if self.cmd != "":
+        self.cmdP = self.ui.lineEdit.text()
+        if self.cmdP != "":
             self.ui.lineEdit.setText('')
             self.s.settimeout(5.0)
+            self.cmd = "/pm " +self.pmPerson+ " " + self.cmdP
             try:
                 self.s.send(self.cmd.encode())
-                
-                if self.cmd.split(" ")[0] == "/newname":
-                    self.pseudo = self.cmd.split(" ")[1]
-                    
-                if self.cmd.split(" ")[0] == "/name":
-                    self.pseudo = self.cmd.split(" ")[1]
 
             except timeout:
                 self.ShowMessageErreur("Erreur : Timeout. Le serveur ne repond pas")
-                self.ui.txtOutput.setText(self.message_buffer)
+                self.ui.txtOutput.setText(self.message_buffer2)
                 sb = self.ui.txtOutput.verticalScrollBar()
                 sb.setValue(sb.maximum())
                 
@@ -98,22 +126,30 @@ class privateMessage () :
             if  m :
                 self.thread.start()
                 self.ShowMessageAsTextPm(m)
-                self.ui.txtOutput.setText(self.message_buffer2)
-                sb = self.ui.txtOutput.verticalScrollBar()
-                sb.setValue(sb.maximum())
+                #self.ui.txtOutput.setText(self.message_buffer2)
+                #sb = self.ui.txtOutput.verticalScrollBar()
+                #sb.setValue(sb.maximum())
 
-    def ShowMessageAsTextPm(self,txt) :
-        
-            if txt.split(" ")[0] == "SUCC_PRIVATE_DISCUSSION_ACCEPTED ":
+    def getTimeStamp(self):
+        return ('[%s] ' % str(datetime.datetime.fromtimestamp(int(time.time())).strftime('%H:%M')))
+
+    def ShowMessageAsTextPm(self, txt) :
+
+            self.message_buffer2 += '<br><span style="color : grey">'+txt+'</span>'
+            if txt.split(" ")[0] == "SUCC_PM_SENDED":
+                self.message_buffer2 += '<br><span style="color : grey"> ' + self.getTimeStamp() + '</span> <span style="color : red"> &#60; '+self.pmPerso +' &#62; </span> ' + self.htmlToText(self.cmdP) + ''
+
+
+            if txt.split(" ")[0] == "SUCC_PRIVATE_DISCUSSION_ACCEPTED":
                  self.message_buffer2 += '<br> <span style="color : green"> Chalange Accepted ! </span>'
-      
-                
-            if txt.split(" ")[0] == "NEW_MSG" : 
-                self.message_buffer2 += '<br><span style="color : grey"> ' + self.getTimeStamp() + '</span> <span style="color : red"> &#60; '+txt.split(" ")[1] +' &#62; </span> ' + self.htmlToText(' '.join(txt.split(" ")[2:])) + ''
+  
+            if txt.split(" ")[0] == "NEW_PM" :
+                self.message_buffer2 += '<br><span style="color : grey"> ' + self.getTimeStamp() + '</span> <span style="color : red"> &#60; '+ self.pmPerso +' &#62; </span> ' + self.htmlToText(' '.join(txt.split(" ")[2:])) + ''
 
-            if txt == "SUCC_MESSAGE_SENDED" : 
-                self.message_buffer += '<br><span style="color : grey"> ' + self.getTimeStamp() + '</span> <span style="color : red"> &#60; '+ self.pseudo +' &#62; </span> ' + self.htmlToText(self.cmd) + ''
-      
+
+            self.ui.txtOutput.setText(self.message_buffer2)
+            sb = self.ui.txtOutput.verticalScrollBar()
+            sb.setValue(sb.maximum())
 
 class start(QtGui.QDialog):
     def __init__(self):
@@ -187,16 +223,27 @@ class start(QtGui.QDialog):
         
         if txt.split(" ")[0] == "SUCC_PRIVATE_DISCUSSION_ACCEPTED":
              self.message_buffer += '<br> <span style="color : green"> PRIVATE DISCUSSION ? challenge accepted ! '
-                 
+
         if txt.split(" ")[0] == "SUCC_INVITED" : 
              self.ShowMessageOK("invitation requested")
-             self.admin = privateMessage(self,self.s,self.demande)
+             self.private2 = privateMessage(self,self.s,self.demande,self.pseudo)
              
         if txt.split(" ")[0] == "ASKING_FOR_PM" : 
              self.ShowMessageOK("private discution from "+ txt.split(" ")[1] )
-             self.admin = privateMessage(self,self.s,txt.split(" ")[1])
-          
-             
+             self.private2 = privateMessage(self,self.s,txt.split(" ")[1],self.pseudo)
+
+
+
+        if txt.split(" ")[0] == "SUCC_PM_SENDED" :
+            self.private2.ShowMessageAsTextPm(txt.split(" ")[0])
+
+        if txt.split(" ")[0] == "NEW_PM" : 
+            self.private2.ShowMessageAsTextPm(txt)
+
+        #if txt.split(" ")[0] == "SUCC_PM_SENDED":
+        #    self.private
+            
+
         if txt.split(" ")[0] == "SUCCESSFUL_LOGOUT" : 
              self.ShowMessageOK("Sucessful logout !")
              
@@ -221,8 +268,8 @@ class start(QtGui.QDialog):
              
         if txt.split(" ")[0] == "ERR_INVALID_NICKNAME" :
             self.pseudo = "INVALID_NICKNAME"
-                
-             #HAS_LEFT anonymous52 
+
+             #HAS_LEFT anonymous52
         if txt.split(" ")[0] == "NAME_CHANGED" : 
             self.ShowMessageNameChange(txt.split(" ")[1], txt.split(" ")[2])
             self.ui.listNames.clear()
