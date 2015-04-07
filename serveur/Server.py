@@ -167,7 +167,8 @@ def privateMsg(connection, pseudo, msg):
         connection.sendall("ERR_DEST_NOT_FOUND".encode())
     else:
         pm = (connection, c)
-        if sorted(pm) not in sorted(validatePM):
+        pmr = (c,connection)
+        if pm not in validatePM or pmr not in validatePM:
             connection.sendall("ERR_NOT_ACCEPTED".encode())
         else:
             c.sendall("NEW_PM {} {}".format(pseudo, msg).encode())
