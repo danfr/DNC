@@ -245,7 +245,9 @@ class start(QtGui.QDialog):
             
 
         if txt.split(" ")[0] == "SUCCESSFUL_LOGOUT" : 
-             self.ShowMessageOK("Sucessful logout !")
+            self.ShowMessageOK("Sucessful logout !")
+            self.ui.listNames.clear()
+            self.ui.listNames_2.clear()
              
         if txt.split(" ")[0] == "SUCC_DISABLED" : 
             self.ShowMessageOK("You are AFK !")
@@ -286,7 +288,11 @@ class start(QtGui.QDialog):
                    
         
         if txt.split(" ")[0] == "SUCC_CHANNEL_JOINED" or txt.split(" ")[0] == "SUCC_CHANNEL_JOINEDUSERLIST" : 
-             self.ShowMessageHasJoin(self.pseudo)
+            self.ShowMessageHasJoin(self.pseudo)
+            self.ui.listNames.clear()
+            self.ui.listNames_2.clear()
+            #self.s.send("/userlist".encode())
+            #self.s.send("/userlistaway".encode())
             
             
         if re.compile('USERLIST').search(txt.split(" ")[0] ) : 

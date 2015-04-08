@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>813</width>
+    <width>827</width>
     <height>558</height>
    </rect>
   </property>
@@ -24,7 +24,10 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>../../../../../../Images/Homer-Simpson-homer-simpson-3065329-800-600.jpg</normaloff>../../../../../../Images/Homer-Simpson-homer-simpson-3065329-800-600.jpg</iconset>
+    <normaloff>../../../../../../../../../../Images/Homer-Simpson-homer-simpson-3065329-800-600.jpg</normaloff>../../../../../../../../../../Images/Homer-Simpson-homer-simpson-3065329-800-600.jpg</iconset>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">     background-color: #EFEFEF</string>
   </property>
   <property name="sizeGripEnabled">
    <bool>false</bool>
@@ -94,7 +97,12 @@
        <bool>false</bool>
       </property>
       <property name="styleSheet">
-       <string notr="true"/>
+       <string notr="true">
+      position: relative;
+      border-radius: 2px;
+      font-size: 0.9em;
+background-color: #DEDEDE;
+      color: #646464;</string>
       </property>
       <property name="frameShape">
        <enum>QFrame::NoFrame</enum>
@@ -151,7 +159,11 @@
        <bool>false</bool>
       </property>
       <property name="styleSheet">
-       <string notr="true"/>
+       <string notr="true">      position: relative;
+      border-radius: 2px;
+      font-size: 0.9em;
+background-color: #DEDEDE;
+      color: #646464;</string>
       </property>
       <property name="frameShape">
        <enum>QFrame::NoFrame</enum>
@@ -176,19 +188,55 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>508</y>
+     <y>510</y>
      <width>781</width>
      <height>41</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
-     <widget class="QLineEdit" name="lineEdit"/>
+     <widget class="QLineEdit" name="lineEdit">
+      <property name="styleSheet">
+       <string notr="true">    border: solid 1px #ccc;
+    font-size:20px;
+    background-color:rgb(255, 255, 255);</string>
+      </property>
+     </widget>
     </item>
     <item>
      <widget class="QPushButton" name="pushButton">
+      <property name="styleSheet">
+       <string notr="true">QPushButton {
+  vertical-align: top;
+  color: white;
+  text-align: center;
+  background: #3498db;
+  border: 0;
+  border-bottom: 2px solid #2a8bcc;
+}
+
+QPushButton : !enabled { 
+
+  vertical-align: top;
+  color: white;
+  text-align: center;
+  background: rgb(255, 255, 255);
+  border: 0;
+  border-bottom: 2px solid #2a8bcc;
+
+}</string>
+      </property>
+      <property name="inputMethodHints">
+       <set>Qt::ImhNone</set>
+      </property>
       <property name="text">
        <string>Send message</string>
+      </property>
+      <property name="default">
+       <bool>false</bool>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
       </property>
      </widget>
     </item>
@@ -213,6 +261,11 @@
     </item>
     <item>
      <widget class="QLineEdit" name="lineEdit_4">
+      <property name="styleSheet">
+       <string notr="true">    border: solid 1px #ccc;
+    font-size:15px;
+    background-color:rgb(255, 255, 255);</string>
+      </property>
       <property name="inputMask">
        <string/>
       </property>
@@ -230,6 +283,11 @@
     </item>
     <item>
      <widget class="QLineEdit" name="lineEdit_3">
+      <property name="styleSheet">
+       <string notr="true">    border: solid 1px #ccc;
+    font-size:15px;
+    background-color:rgb(255, 255, 255);</string>
+      </property>
       <property name="text">
        <string>2222</string>
       </property>
@@ -244,6 +302,11 @@
     </item>
     <item>
      <widget class="QLineEdit" name="lineEdit_2">
+      <property name="styleSheet">
+       <string notr="true">    border: solid 1px #ccc;
+    font-size:15px;
+    background-color:rgb(255, 255, 255);</string>
+      </property>
       <property name="text">
        <string>anonymous</string>
       </property>
@@ -251,6 +314,16 @@
     </item>
     <item>
      <widget class="QPushButton" name="pushButton_6">
+      <property name="styleSheet">
+       <string notr="true">
+  vertical-align: top;
+  color: white;
+  text-align: center;
+  background: #3498db;
+  border: 0;
+  border-bottom: 2px solid #2a8bcc;
+</string>
+      </property>
       <property name="text">
        <string>Change pseudo</string>
       </property>
@@ -258,6 +331,16 @@
     </item>
     <item>
      <widget class="QPushButton" name="pushButton_3">
+      <property name="styleSheet">
+       <string notr="true">
+  vertical-align: top;
+  color: white;
+  text-align: center;
+  background: #3498db;
+  border: 0;
+  border-bottom: 2px solid #2a8bcc;
+</string>
+      </property>
       <property name="text">
        <string>Disconnect</string>
       </property>
@@ -265,6 +348,16 @@
     </item>
     <item>
      <widget class="QPushButton" name="pushButton_2">
+      <property name="styleSheet">
+       <string notr="true">
+  vertical-align: top;
+  color: white;
+  text-align: center;
+  background: #3498db;
+  border: 0;
+  border-bottom: 2px solid #2a8bcc;
+</string>
+      </property>
       <property name="text">
        <string>Connect</string>
       </property>
@@ -284,6 +377,16 @@
    <layout class="QHBoxLayout" name="horizontalLayout_3">
     <item>
      <widget class="QPushButton" name="pushButton_5">
+      <property name="styleSheet">
+       <string notr="true">
+  vertical-align: top;
+  color: white;
+  text-align: center;
+  background: #3498db;
+  border: 0;
+  border-bottom: 2px solid #2a8bcc;
+</string>
+      </property>
       <property name="text">
        <string>Away From Keyboard</string>
       </property>
@@ -318,6 +421,13 @@
    </property>
    <property name="acceptDrops">
     <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">      position: relative;
+      border-radius: 2px;
+      font-size: 0.9em;
+background-color: #FAFAFA;
+      color: #646464;</string>
    </property>
    <property name="frameShape">
     <enum>QFrame::NoFrame</enum>
@@ -356,6 +466,13 @@ p, li { white-space: pre-wrap; }
     <string>Welcome to DNC</string>
    </property>
   </widget>
+  <zorder>verticalLayoutWidget</zorder>
+  <zorder>horizontalLayoutWidget</zorder>
+  <zorder>horizontalLayoutWidget_2</zorder>
+  <zorder>horizontalLayoutWidget_3</zorder>
+  <zorder>txtOutput</zorder>
+  <zorder>label_2</zorder>
+  <zorder>listNames</zorder>
  </widget>
  <resources/>
  <connections/>

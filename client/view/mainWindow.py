@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainWindow.ui'
 #
-# Created: Sun Apr  5 15:23:56 2015
+# Created: Wed Apr  8 16:42:34 2015
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -27,11 +27,12 @@ class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName(_fromUtf8("Dialog"))
         Dialog.setEnabled(True)
-        Dialog.resize(813, 558)
+        Dialog.resize(827, 558)
         Dialog.setMaximumSize(QtCore.QSize(827, 558))
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(_fromUtf8("../../../../../../Images/Homer-Simpson-homer-simpson-3065329-800-600.jpg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8("../../../../../../../../../../Images/Homer-Simpson-homer-simpson-3065329-800-600.jpg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Dialog.setWindowIcon(icon)
+        Dialog.setStyleSheet(_fromUtf8("     background-color: #EFEFEF"))
         Dialog.setSizeGripEnabled(False)
         Dialog.setModal(False)
         self.verticalLayoutWidget = QtGui.QWidget(Dialog)
@@ -63,7 +64,12 @@ class Ui_Dialog(object):
         self.listNames.setFont(font)
         self.listNames.setFocusPolicy(QtCore.Qt.NoFocus)
         self.listNames.setAcceptDrops(False)
-        self.listNames.setStyleSheet(_fromUtf8(""))
+        self.listNames.setStyleSheet(_fromUtf8("\n"
+"      position: relative;\n"
+"      border-radius: 2px;\n"
+"      font-size: 0.9em;\n"
+"background-color: #DEDEDE;\n"
+"      color: #646464;"))
         self.listNames.setFrameShape(QtGui.QFrame.NoFrame)
         self.listNames.setFrameShadow(QtGui.QFrame.Sunken)
         self.listNames.setLineWidth(1)
@@ -85,7 +91,11 @@ class Ui_Dialog(object):
         self.listNames_2.setFont(font)
         self.listNames_2.setFocusPolicy(QtCore.Qt.NoFocus)
         self.listNames_2.setAcceptDrops(False)
-        self.listNames_2.setStyleSheet(_fromUtf8(""))
+        self.listNames_2.setStyleSheet(_fromUtf8("      position: relative;\n"
+"      border-radius: 2px;\n"
+"      font-size: 0.9em;\n"
+"background-color: #DEDEDE;\n"
+"      color: #646464;"))
         self.listNames_2.setFrameShape(QtGui.QFrame.NoFrame)
         self.listNames_2.setFrameShadow(QtGui.QFrame.Sunken)
         self.listNames_2.setLineWidth(1)
@@ -93,15 +103,40 @@ class Ui_Dialog(object):
         self.listNames_2.setObjectName(_fromUtf8("listNames_2"))
         self.verticalLayout.addWidget(self.listNames_2)
         self.horizontalLayoutWidget = QtGui.QWidget(Dialog)
-        self.horizontalLayoutWidget.setGeometry(QtCore.QRect(20, 508, 781, 41))
+        self.horizontalLayoutWidget.setGeometry(QtCore.QRect(20, 510, 781, 41))
         self.horizontalLayoutWidget.setObjectName(_fromUtf8("horizontalLayoutWidget"))
         self.horizontalLayout = QtGui.QHBoxLayout(self.horizontalLayoutWidget)
         self.horizontalLayout.setMargin(0)
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
         self.lineEdit = QtGui.QLineEdit(self.horizontalLayoutWidget)
+        self.lineEdit.setStyleSheet(_fromUtf8("    border: solid 1px #ccc;\n"
+"    font-size:20px;\n"
+"    background-color:rgb(255, 255, 255);"))
         self.lineEdit.setObjectName(_fromUtf8("lineEdit"))
         self.horizontalLayout.addWidget(self.lineEdit)
         self.pushButton = QtGui.QPushButton(self.horizontalLayoutWidget)
+        self.pushButton.setStyleSheet(_fromUtf8("QPushButton {\n"
+"  vertical-align: top;\n"
+"  color: white;\n"
+"  text-align: center;\n"
+"  background: #3498db;\n"
+"  border: 0;\n"
+"  border-bottom: 2px solid #2a8bcc;\n"
+"}\n"
+"\n"
+"QPushButton : !enabled { \n"
+"\n"
+"  vertical-align: top;\n"
+"  color: white;\n"
+"  text-align: center;\n"
+"  background: rgb(255, 255, 255);\n"
+"  border: 0;\n"
+"  border-bottom: 2px solid #2a8bcc;\n"
+"\n"
+"}"))
+        self.pushButton.setInputMethodHints(QtCore.Qt.ImhNone)
+        self.pushButton.setDefault(False)
+        self.pushButton.setFlat(False)
         self.pushButton.setObjectName(_fromUtf8("pushButton"))
         self.horizontalLayout.addWidget(self.pushButton)
         self.horizontalLayoutWidget_2 = QtGui.QWidget(Dialog)
@@ -114,6 +149,9 @@ class Ui_Dialog(object):
         self.label_3.setObjectName(_fromUtf8("label_3"))
         self.horizontalLayout_2.addWidget(self.label_3)
         self.lineEdit_4 = QtGui.QLineEdit(self.horizontalLayoutWidget_2)
+        self.lineEdit_4.setStyleSheet(_fromUtf8("    border: solid 1px #ccc;\n"
+"    font-size:15px;\n"
+"    background-color:rgb(255, 255, 255);"))
         self.lineEdit_4.setInputMask(_fromUtf8(""))
         self.lineEdit_4.setObjectName(_fromUtf8("lineEdit_4"))
         self.horizontalLayout_2.addWidget(self.lineEdit_4)
@@ -121,21 +159,51 @@ class Ui_Dialog(object):
         self.label_4.setObjectName(_fromUtf8("label_4"))
         self.horizontalLayout_2.addWidget(self.label_4)
         self.lineEdit_3 = QtGui.QLineEdit(self.horizontalLayoutWidget_2)
+        self.lineEdit_3.setStyleSheet(_fromUtf8("    border: solid 1px #ccc;\n"
+"    font-size:15px;\n"
+"    background-color:rgb(255, 255, 255);"))
         self.lineEdit_3.setObjectName(_fromUtf8("lineEdit_3"))
         self.horizontalLayout_2.addWidget(self.lineEdit_3)
         self.label_5 = QtGui.QLabel(self.horizontalLayoutWidget_2)
         self.label_5.setObjectName(_fromUtf8("label_5"))
         self.horizontalLayout_2.addWidget(self.label_5)
         self.lineEdit_2 = QtGui.QLineEdit(self.horizontalLayoutWidget_2)
+        self.lineEdit_2.setStyleSheet(_fromUtf8("    border: solid 1px #ccc;\n"
+"    font-size:15px;\n"
+"    background-color:rgb(255, 255, 255);"))
         self.lineEdit_2.setObjectName(_fromUtf8("lineEdit_2"))
         self.horizontalLayout_2.addWidget(self.lineEdit_2)
         self.pushButton_6 = QtGui.QPushButton(self.horizontalLayoutWidget_2)
+        self.pushButton_6.setStyleSheet(_fromUtf8("\n"
+"  vertical-align: top;\n"
+"  color: white;\n"
+"  text-align: center;\n"
+"  background: #3498db;\n"
+"  border: 0;\n"
+"  border-bottom: 2px solid #2a8bcc;\n"
+""))
         self.pushButton_6.setObjectName(_fromUtf8("pushButton_6"))
         self.horizontalLayout_2.addWidget(self.pushButton_6)
         self.pushButton_3 = QtGui.QPushButton(self.horizontalLayoutWidget_2)
+        self.pushButton_3.setStyleSheet(_fromUtf8("\n"
+"  vertical-align: top;\n"
+"  color: white;\n"
+"  text-align: center;\n"
+"  background: #3498db;\n"
+"  border: 0;\n"
+"  border-bottom: 2px solid #2a8bcc;\n"
+""))
         self.pushButton_3.setObjectName(_fromUtf8("pushButton_3"))
         self.horizontalLayout_2.addWidget(self.pushButton_3)
         self.pushButton_2 = QtGui.QPushButton(self.horizontalLayoutWidget_2)
+        self.pushButton_2.setStyleSheet(_fromUtf8("\n"
+"  vertical-align: top;\n"
+"  color: white;\n"
+"  text-align: center;\n"
+"  background: #3498db;\n"
+"  border: 0;\n"
+"  border-bottom: 2px solid #2a8bcc;\n"
+""))
         self.pushButton_2.setObjectName(_fromUtf8("pushButton_2"))
         self.horizontalLayout_2.addWidget(self.pushButton_2)
         self.horizontalLayoutWidget_3 = QtGui.QWidget(Dialog)
@@ -145,6 +213,14 @@ class Ui_Dialog(object):
         self.horizontalLayout_3.setMargin(0)
         self.horizontalLayout_3.setObjectName(_fromUtf8("horizontalLayout_3"))
         self.pushButton_5 = QtGui.QPushButton(self.horizontalLayoutWidget_3)
+        self.pushButton_5.setStyleSheet(_fromUtf8("\n"
+"  vertical-align: top;\n"
+"  color: white;\n"
+"  text-align: center;\n"
+"  background: #3498db;\n"
+"  border: 0;\n"
+"  border-bottom: 2px solid #2a8bcc;\n"
+""))
         self.pushButton_5.setObjectName(_fromUtf8("pushButton_5"))
         self.horizontalLayout_3.addWidget(self.pushButton_5)
         self.txtOutput = QtGui.QTextEdit(Dialog)
@@ -157,6 +233,11 @@ class Ui_Dialog(object):
         self.txtOutput.setFont(font)
         self.txtOutput.setFocusPolicy(QtCore.Qt.NoFocus)
         self.txtOutput.setAcceptDrops(False)
+        self.txtOutput.setStyleSheet(_fromUtf8("      position: relative;\n"
+"      border-radius: 2px;\n"
+"      font-size: 0.9em;\n"
+"background-color: #FAFAFA;\n"
+"      color: #646464;"))
         self.txtOutput.setFrameShape(QtGui.QFrame.NoFrame)
         self.txtOutput.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
         self.txtOutput.setTextInteractionFlags(QtCore.Qt.TextBrowserInteraction)
