@@ -49,6 +49,15 @@ def handleRequest(connection, data):
             if arrayData[0] == "/pm":
                 privateMsg(connection, arrayData[1], " ".join(arrayData[2:]))
                 return
+            if arrayData[0] == "/pmfile":
+                askFile(connection,arrayData[1],arrayData[2])
+                return
+            if arrayData[0] == "/acceptfile":
+                acceptFile(connection, arrayData[1], arrayData[2],arrayData[3])
+                return
+            if arrayData[0] == "/rejectfile":
+                rejectFile(connection, arrayData[1], " ".join(arrayData[2:]))
+                return
             if arrayData[0] == "/enable":
                 enableUser(connection)
                 return
@@ -67,7 +76,10 @@ def handleRequest(connection, data):
             connection.shutdown(socket.SHUT_RD)
             return
         connection.sendall("ERR_NO_NICKNAME".encode())
-    """except Exception as e :
+    """except IndexError:
+        log.printL("Parameter missing in the request", Log.lvl.WARNING)
+        connection.sendall("ERR_PARAMETER_MISSING".encode())
+    except Exception as e :
         log.printL("Handle request fail : {}".format(str(e)), Log.lvl.FAIL)
         connection.sendall("ERR_INTERNAL_SERVER_ERROR".encode())"""
 
@@ -101,6 +113,8 @@ def userListAway(connection):
 def changeName(connection, pseudo):
     if not re.match("^\w{3,15}$", pseudo):
         connection.sendall("ERR_INVALID_NICKNAME".encode())
+    elif getConnectionByPseudo(pseudo) is not None:
+        connection.sendall("ERR_NICKNAME_ALREADY_USED")
     else:
         broadcastMsg(connection, "NAME_CHANGED {} {}".format(usersConnected[connection][1], pseudo))
         connection.sendall("SUCC_VALID_NICKNAME".encode())
@@ -110,6 +124,8 @@ def changeName(connection, pseudo):
 def newName(connection, pseudo):
     if not re.match("^\w{3,15}$", pseudo):
         connection.sendall("ERR_INVALID_NICKNAME".encode())
+    elif getConnectionByPseudo(pseudo) is not None:
+        connection.sendall("ERR_NICKNAME_ALREADY_USED".encode())
     else:
         broadcastMsg(connection, "HAS_JOIN {} ".format(pseudo))
         connection.sendall("SUCC_CHANNEL_JOINED".encode())
@@ -146,6 +162,7 @@ def acceptPrivateMsg(connection, pseudo):
             askPM.remove(pm)
             validatePM.append(pm)
             connection.sendall("SUCC_PRIVATE_DISCUSSION_ACCEPTED".encode())
+            c.sendall("SUCC_PRIVATE_DISCUSSION_OK {}".format(usersConnected[connection][1]).encode())
 
 
 def rejectPrivateMsg(connection, pseudo):
@@ -159,15 +176,17 @@ def rejectPrivateMsg(connection, pseudo):
             if pm in validatePM :
                 validatePM.remove(pm)
                 connection.sendall("SUCC_PRIVATE_DISCUSSION_REFUSED".encode())
+                c.sendall("SUCC_PRIVATE_DISCUSSION_REJECTED {}".format(usersConnected[connection][1]).encode())
+            elif pmr in validatePM :
+                validatePM.remove(pmr)
+                connection.sendall("SUCC_PRIVATE_DISCUSSION_REFUSED".encode())
+                c.sendall("SUCC_PRIVATE_DISCUSSION_REJECTED {}".format(usersConnected[connection][1]).encode())
             else :
-                if pmr in validatePM:
-                    validatePM.remove(pmr)
-                    connection.sendall("SUCC_PRIVATE_DISCUSSION_REFUSED".encode())
-                else :
-                    connection.sendall("ERR_USER_HAS_NOT_ASK".encode())
+                connection.sendall("ERR_USER_HAS_NOT_ASK".encode())
         else:
             askPM.remove(pm)
             connection.sendall("SUCC_PRIVATE_DISCUSSION_REFUSED".encode())
+            c.sendall("SUCC_PRIVATE_DISCUSSION_REJECTED {}".format(usersConnected[connection][1]).encode())
 
 
 def privateMsg(connection, pseudo, msg):
@@ -194,13 +213,13 @@ def askFile(connection, pseudo, file):
             connection.sendall("ERR_ALREADY_ONE".encode())
         else:
             askFT.append(f)
-            log.printL("askPm {}".format(askPM), Log.lvl.DEBUG)
-            c.sendall("HAS_ASKED_FILE {} {}".format(pseudo, file))
+            log.printL("askFT {}".format(askFT), Log.lvl.DEBUG)
+            c.sendall("HAS_ASKED_FILE {} {}".format(usersConnected[connection][1], file).encode())
             connection.sendall("SUCC_ASKED_FILE".encode())
 
 
-def acceptFile(connection, pseudo, file, ip, port):
-    log.printL("askFT {}".format(askPM), Log.lvl.DEBUG)
+def acceptFile(connection, pseudo, file, port):
+    log.printL("askFT {}".format(askFT), Log.lvl.DEBUG)
     c = getConnectionByPseudo(pseudo)
     if c is None:
         connection.sendall("ERR_USER_NOT_FOUND".encode())
@@ -210,8 +229,8 @@ def acceptFile(connection, pseudo, file, ip, port):
             connection.sendall("ERR_USER_HAS_NOT_ASK".encode())
         else:
             askFT.remove(f)
-            connection.sendall("SUCC_FILE_ACCEPTED".encode())
-            c.sendall("CAN_SEND_FILE {} {} {} {}".format(file,pseudo,ip,port).encode())
+            connection.sendall("SUCC_FILE_ACCEPTED {}".format(usersConnected[c][0][0]).encode())
+            c.sendall("CAN_SEND_FILE {} {} {} {}".format(file,pseudo,usersConnected[connection][0][0], port).encode())
 
 
 def rejectFile(connection, pseudo, file):
@@ -225,7 +244,6 @@ def rejectFile(connection, pseudo, file):
         else:
             askPM.remove(f)
             connection.sendall("SUCC_FILE_REFUSED".encode())
-
 
 
 def enableUser(connection):
