@@ -1,4 +1,4 @@
-from mainWindow import Ui_Dialog
+from main import Ui_MainWindow
 from PyQt4 import QtGui, QtCore
 from PySide.QtCore import *
 from PySide.QtGui import *
@@ -56,18 +56,35 @@ class privateMessage () :
         self.ui = Ui_Dialog2()
         self.ui.setupUi(self.g)
         self.g.show()
-        old = start()
+        #old = start()
         self.message_buffer2 = ""
+
+        self.g.setWindowState(self.g.windowState() & ~QtCore.Qt.WindowMinimized | QtCore.Qt.WindowActive)
+        self.g.activateWindow()
+        
+        Qt.WindowStaysOnTopHint
 
         self.queueMsg2= []
         self.thread = MyThread()
         self.thread.finished.connect(self.UpdateChatP)
 
         self.ui.pushButton.clicked.connect(self.send)
+        self.ui.pushButton_4.clicked.connect(self.reject)
         self.ui.pushButton_3.clicked.connect(self.accept)
         self.ui.pushButton_2.clicked.connect(self.selectFile)
         self.ui.label_2.setText(pmPerson)
 
+    def reject(self):
+        self.cmRej = "/rejectpm "+self.pmPerson
+        try:
+            self.s.send(self.cmAcc.encode())
+
+        except timeout:
+            self.ShowMessageErreur("Erreur : Timeout. Le serveur ne repond pas")
+            self.ui.txtOutput.setText(self.message_buffer2)
+            sb = self.ui.txtOutput.verticalScrollBar()
+            sb.setValue(sb.maximum())
+            
     def accept(self):
         self.cmAcc = "/acceptpm "+self.pmPerson
         try:
@@ -105,6 +122,7 @@ class privateMessage () :
     def ShowMessageErreur(self, txt):
         self.message_buffer2 += '<br> <span style="color : red; font-weight: bold;"> '+  self.htmlToText(txt) +' </span>'
 
+
     def send(self):
         self.cmdP = self.ui.lineEdit.text()
         if self.cmdP != "":
@@ -141,8 +159,12 @@ class privateMessage () :
 
 
             if txt.split(" ")[0] == "SUCC_PRIVATE_DISCUSSION_ACCEPTED":
-                 self.message_buffer2 += '<br> <span style="color : green"> Chalange Accepted ! </span>'
-  
+                self.message_buffer2 += '<br> <span style="color : green"> Chalange Accepted ! </span>'
+             
+            if txt.split(" ")[0] == "SUCC_PRIVATE_DISCUSSION_OK":
+                self.message_buffer2 += '<br> <span style="color : green"> Private discussion with '+txt.split(" ")[1]+' accepted ! </span>'
+                             
+
             if txt.split(" ")[0] == "NEW_PM" :
                 self.message_buffer2 += '<br><span style="color : grey"> ' + self.getTimeStamp() + '</span> <span style="color : red"> &#60; '+ self.pmPerso +' &#62; </span> ' + self.htmlToText(' '.join(txt.split(" ")[2:])) + ''
 
@@ -151,7 +173,7 @@ class privateMessage () :
             sb = self.ui.txtOutput.verticalScrollBar()
             sb.setValue(sb.maximum())
 
-class start(QtGui.QDialog):
+class start(QtGui.QMainWindow):
     def __init__(self):
         super(start, self).__init__()
         self.queueMsg= []
@@ -223,6 +245,13 @@ class start(QtGui.QDialog):
         
         if txt.split(" ")[0] == "SUCC_PRIVATE_DISCUSSION_ACCEPTED":
              self.message_buffer += '<br> <span style="color : green"> PRIVATE DISCUSSION ? challenge accepted ! '
+             self.private2.ShowMessageAsTextPm("SUCC_PRIVATE_DISCUSSION_ACCEPTED")
+
+        if txt.split(" ")[0] == "SUCC_PRIVATE_DISCUSSION_OK":
+             self.message_buffer += '<br> <span style="color : green"> PRIVATE DISCUSSION WITH '+txt.split(" ")[1]+' ? challenge accepted ! '
+             self.private2.ShowMessageAsTextPm(txt)
+             
+
 
         if txt.split(" ")[0] == "SUCC_INVITED" : 
              self.ShowMessageOK("invitation requested")
@@ -245,7 +274,7 @@ class start(QtGui.QDialog):
             
 
         if txt.split(" ")[0] == "SUCCESSFUL_LOGOUT" : 
-            self.ShowMessageOK("Sucessful logout !")
+            self.ShowMessageOK("You have logged out of the DNC !")
             self.ui.listNames.clear()
             self.ui.listNames_2.clear()
              
@@ -294,7 +323,11 @@ class start(QtGui.QDialog):
             #self.s.send("/userlist".encode())
             #self.s.send("/userlistaway".encode())
             
+
+        if txt.split(" ")[0] == "ERR_NICKNAME_ALREADY_USED" : 
+            self.deco()
             
+                        
         if re.compile('USERLIST').search(txt.split(" ")[0] ) : 
             n = len(txt.split(" ")[1:]) +1
             for i in range(1,n) :
@@ -310,10 +343,10 @@ class start(QtGui.QDialog):
          
              
         if txt.split(" ")[0] == "NEW_MSG" : 
-            self.message_buffer += '<br><span style="color : grey"> ' + self.getTimeStamp() + '</span> <span style="color : red"> &#60; '+txt.split(" ")[1] +' &#62; </span> ' + self.htmlToText(' '.join(txt.split(" ")[2:])) + ''
+            self.message_buffer += '<br><span style="color : grey"> ' + self.getTimeStamp() + '</span> <span style="color : red"> &#60; '+txt.split(" ")[1] +' &#62; </span> <span style="color : black">' + self.htmlToText(' '.join(txt.split(" ")[2:])) + '</span>'
 
         if txt == "SUCC_MESSAGE_SENDED" : 
-            self.message_buffer += '<br><span style="color : grey"> ' + self.getTimeStamp() + '</span> <span style="color : red"> &#60; '+ self.pseudo +' &#62; </span> ' + self.htmlToText(self.cmd) + ''
+            self.message_buffer += '<br><span style="color : grey"> ' + self.getTimeStamp() + '</span> <span style="color : red"> &#60; '+ self.pseudo +' &#62; </span><span style="color : black"> ' + self.htmlToText(self.cmd) + '</span>'
             
         
     def ShowMessageHasJoin (self, txt) : 
@@ -478,7 +511,7 @@ class start(QtGui.QDialog):
 
 
     def createWidgets(self):
-        self.ui = Ui_Dialog()
+        self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         
         ano = "anonymous" + ''.join(str(random.randint(1,9)) for _ in range(2))
