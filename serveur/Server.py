@@ -47,7 +47,7 @@ def handleRequest(connection, data):
                 rejectPrivateMsg(connection, arrayData[1])
                 return
             if arrayData[0] == "/pm":
-                privateMsg(connection, arrayData[1], arrayData[2:])
+                privateMsg(connection, arrayData[1], " ".join(arrayData[2:]))
                 return
             if arrayData[0] == "/enable":
                 enableUser(connection)
@@ -154,8 +154,17 @@ def rejectPrivateMsg(connection, pseudo):
         connection.sendall("ERR_USER_NOT_FOUND".encode())
     else:
         pm = (c, connection)
+        pmr = (connection, c)
         if pm not in askPM:
-            connection.sendall("ERR_USER_HAS_NOT_ASK".encode())
+            if pm in validatePM :
+                validatePM.remove(pm)
+                connection.sendall("SUCC_PRIVATE_DISCUSSION_REFUSED".encode())
+            else :
+                if pmr in validatePM:
+                    validatePM.remove(pmr)
+                    connection.sendall("SUCC_PRIVATE_DISCUSSION_REFUSED".encode())
+                else :
+                    connection.sendall("ERR_USER_HAS_NOT_ASK".encode())
         else:
             askPM.remove(pm)
             connection.sendall("SUCC_PRIVATE_DISCUSSION_REFUSED".encode())
