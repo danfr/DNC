@@ -5,8 +5,8 @@ from PySide.QtGui import *
 import time, threading, datetime, time, random,re
 from socket import *
 from pmWindow import Ui_Dialog2
-Host = "127.0.0.1"
-Port = 2222
+import configparser
+
 
 
 class MySignal(QObject):
@@ -476,7 +476,28 @@ class start(QtGui.QDialog):
         self.ui.setupUi(self)
         
         ano = "anonymous" + ''.join(str(random.randint(1,9)) for _ in range(2))
-        self.ui.lineEdit_2.setText(ano)
+        
+        config = configparser.ConfigParser()
+
+        config.read("dncClient.conf")
+
+        port = config.get("NETWORK", "port")
+        ip =  config.get("NETWORK", "ip")
+        name = config.get("PSEUDO", "name")
+
+        if name is not None :
+            self.ui.lineEdit_2.setText(name)
+        else :
+            self.ui.lineEdit_2.setText(ano)
+
+        if ip is not None :
+            self.ui.lineEdit_4.setText(ip)
+
+            
+        if port is not None :
+            self.ui.lineEdit_3.setText(port)
+
+        
         
         self.ui.lineEdit.setDisabled(True)
         self.ui.pushButton.setDisabled(True)
