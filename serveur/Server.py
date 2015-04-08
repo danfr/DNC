@@ -22,8 +22,10 @@ def handleConnection(connection, client_address):
 def handleRequest(connection, data):
     #try:
     arrayData = data.split(" ")
+
+    ### Command for user with nickname ###
     if usersConnected[connection][1] is not None:
-        if (not arrayData[0][0] == "/"):
+        if not arrayData[0][0] == "/" and usersConnected[connection][2]:
             connection.sendall("SUCC_MESSAGE_SENDED".encode())
             broadcastMsg(connection, "NEW_MSG {} {} ".format(usersConnected[connection][1], data))
             return
@@ -37,27 +39,6 @@ def handleRequest(connection, data):
             if arrayData[0] == "/userlistaway":
                 userListAway(connection)
                 return
-            if arrayData[0] == "/askpm":
-                askPrivateMsg(connection, arrayData[1])
-                return
-            if arrayData[0] == "/acceptpm":
-                acceptPrivateMsg(connection, arrayData[1])
-                return
-            if arrayData[0] == "/rejectpm":
-                rejectPrivateMsg(connection, arrayData[1])
-                return
-            if arrayData[0] == "/pm":
-                privateMsg(connection, arrayData[1], " ".join(arrayData[2:]))
-                return
-            if arrayData[0] == "/pmfile":
-                askFile(connection,arrayData[1],arrayData[2])
-                return
-            if arrayData[0] == "/acceptfile":
-                acceptFile(connection, arrayData[1], arrayData[2],arrayData[3])
-                return
-            if arrayData[0] == "/rejectfile":
-                rejectFile(connection, arrayData[1], " ".join(arrayData[2:]))
-                return
             if arrayData[0] == "/enable":
                 enableUser(connection)
                 return
@@ -67,8 +48,36 @@ def handleRequest(connection, data):
             if arrayData[0] == "/quit":
                 connection.shutdown(socket.SHUT_RD)
                 return
+
+            ### Command available for enable only ###
+            if not usersConnected[connection][2] :
+                connection.sendall("ERR_U_ARE_DISABLE".encode())
+                return
+            else :
+                if arrayData[0] == "/askpm":
+                    askPrivateMsg(connection, arrayData[1])
+                    return
+                if arrayData[0] == "/acceptpm":
+                    acceptPrivateMsg(connection, arrayData[1])
+                    return
+                if arrayData[0] == "/rejectpm":
+                    rejectPrivateMsg(connection, arrayData[1])
+                    return
+                if arrayData[0] == "/pm":
+                    privateMsg(connection, arrayData[1], " ".join(arrayData[2:]))
+                    return
+                if arrayData[0] == "/pmfile":
+                    askFile(connection,arrayData[1],arrayData[2])
+                    return
+                if arrayData[0] == "/acceptfile":
+                    acceptFile(connection, arrayData[1], arrayData[2],arrayData[3])
+                    return
+                if arrayData[0] == "/rejectfile":
+                    rejectFile(connection, arrayData[1], " ".join(arrayData[2:]))
+                    return
         connection.sendall("ERR_COMMAND_NOT_FOUND".encode())
     else:
+        ### Command for user without nickname
         if arrayData[0] == "/newname":
             newName(connection, arrayData[1])
             return
