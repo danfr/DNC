@@ -69,6 +69,8 @@ class privateMessage () :
         self.thread.finished.connect(self.UpdateChatP)
 
         self.ui.pushButton.clicked.connect(self.send)
+        self.ui.lineEdit.returnPressed.connect(self.send)
+        
         self.ui.pushButton_4.clicked.connect(self.reject)
         self.ui.pushButton_3.clicked.connect(self.accept)
         self.ui.pushButton_2.clicked.connect(self.selectFile)
@@ -77,7 +79,7 @@ class privateMessage () :
     def reject(self):
         self.cmRej = "/rejectpm "+self.pmPerson
         try:
-            self.s.send(self.cmAcc.encode())
+            self.s.send(self.cmRej.encode())
 
         except timeout:
             self.ShowMessageErreur("Erreur : Timeout. Le serveur ne repond pas")
@@ -89,6 +91,7 @@ class privateMessage () :
         self.cmAcc = "/acceptpm "+self.pmPerson
         try:
             self.s.send(self.cmAcc.encode())
+
 
         except timeout:
             self.ShowMessageErreur("Erreur : Timeout. Le serveur ne repond pas")
@@ -154,16 +157,29 @@ class privateMessage () :
     def ShowMessageAsTextPm(self, txt) :
 
             self.message_buffer2 += '<br><span style="color : grey">'+txt+'</span>'
+            
+            if txt.split(" ")[0] == "SUCC_PRIVATE_DISCUSSION_REFUSED":
+                self.g.close()
+
+            if txt.split(" ")[0] == "SUCC_PRIVATE_DISCUSSION_REJECTED":
+                self.g.close()
+
+            
             if txt.split(" ")[0] == "SUCC_PM_SENDED":
                 self.message_buffer2 += '<br><span style="color : grey"> ' + self.getTimeStamp() + '</span> <span style="color : red"> &#60; '+self.pmPerso +' &#62; </span> ' + self.htmlToText(self.cmdP) + ''
 
 
             if txt.split(" ")[0] == "SUCC_PRIVATE_DISCUSSION_ACCEPTED":
                 self.message_buffer2 += '<br> <span style="color : green"> Chalange Accepted ! </span>'
+                self.ui.pushButton_4.setDisabled(True)
+                self.ui.pushButton_3.setDisabled(True)
+
              
             if txt.split(" ")[0] == "SUCC_PRIVATE_DISCUSSION_OK":
                 self.message_buffer2 += '<br> <span style="color : green"> Private discussion with '+txt.split(" ")[1]+' accepted ! </span>'
-                             
+                self.ui.pushButton_4.setDisabled(True)
+                self.ui.pushButton_3.setDisabled(True)
+
 
             if txt.split(" ")[0] == "NEW_PM" :
                 self.message_buffer2 += '<br><span style="color : grey"> ' + self.getTimeStamp() + '</span> <span style="color : red"> &#60; '+ self.pmPerso +' &#62; </span> ' + self.htmlToText(' '.join(txt.split(" ")[2:])) + ''
@@ -244,13 +260,13 @@ class start(QtGui.QMainWindow):
         
         
         if txt.split(" ")[0] == "SUCC_PRIVATE_DISCUSSION_ACCEPTED":
-             self.message_buffer += '<br> <span style="color : green"> PRIVATE DISCUSSION ? challenge accepted ! '
-             self.private2.ShowMessageAsTextPm("SUCC_PRIVATE_DISCUSSION_ACCEPTED")
+            self.message_buffer += '<br> <span style="color : green"> PRIVATE DISCUSSION ? challenge accepted ! '
+            self.private2.ShowMessageAsTextPm("SUCC_PRIVATE_DISCUSSION_ACCEPTED")
 
         if txt.split(" ")[0] == "SUCC_PRIVATE_DISCUSSION_OK":
-             self.message_buffer += '<br> <span style="color : green"> PRIVATE DISCUSSION WITH '+txt.split(" ")[1]+' ? challenge accepted ! '
-             self.private2.ShowMessageAsTextPm(txt)
-             
+            self.message_buffer += '<br> <span style="color : green"> PRIVATE DISCUSSION WITH '+txt.split(" ")[1]+' ? challenge accepted ! '
+            self.private2.ShowMessageAsTextPm(txt)
+
 
 
         if txt.split(" ")[0] == "SUCC_INVITED" : 
@@ -269,8 +285,14 @@ class start(QtGui.QMainWindow):
         if txt.split(" ")[0] == "NEW_PM" : 
             self.private2.ShowMessageAsTextPm(txt)
 
-        #if txt.split(" ")[0] == "SUCC_PM_SENDED":
-        #    self.private
+        if txt.split(" ")[0] == "SUCC_PRIVATE_DISCUSSION_REFUSED" : 
+            self.private2.ShowMessageAsTextPm(txt)
+            self.ShowMessageOK("Private discussion refused !!")
+
+        if txt.split(" ")[0] == "SUCC_PRIVATE_DISCUSSION_REJECTED" : 
+            self.private2.ShowMessageAsTextPm(txt)
+            self.ShowMessageOK(txt.split(" ")[1]+" Rejected your Private discussion !!")
+
             
 
         if txt.split(" ")[0] == "SUCCESSFUL_LOGOUT" : 
@@ -376,6 +398,8 @@ class start(QtGui.QMainWindow):
         self.ui.pushButton.clicked.connect(self.client)
         self.ui.pushButton_6.clicked.connect(self.changeN)
         self.ui.pushButton_5.clicked.connect(self.away)
+        
+        self.ui.lineEdit.returnPressed.connect(self.client)
         
         #self.connect(self.ui.listNames,
         #     QtCore.SIGNAL("itemDoubleClicked(QListWidgetItem *)"),
@@ -537,6 +561,7 @@ class start(QtGui.QMainWindow):
             self.ui.lineEdit_3.setText(port)
 
         
+
         
         self.ui.lineEdit.setDisabled(True)
         self.ui.pushButton.setDisabled(True)
