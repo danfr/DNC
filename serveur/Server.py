@@ -86,7 +86,7 @@ def handle_request(connection, data):
                         ask_file(connection, array_data[1], array_data[2])
                         return
                     if array_data[0] == "/acceptfile":
-                        accept_file(connection, array_data[1], array_data[2], array_data[3])
+                        accept_file(connection, array_data[1], " ".join(array_data[3:]), array_data[2])
                         return
                     if array_data[0] == "/rejectfile":
                         reject_file(connection, array_data[1], " ".join(array_data[2:]))
@@ -112,10 +112,11 @@ def handle_request(connection, data):
 ##
 #   Broadcast a message to all the users connected except to the sender of the request
 #   @param connection the socket descriptor of the request sender
-#   @param message message to broadcast in String
+#   @param message message to broadcast (String)
 def broadcast_message(connection, message):
     log.printL("User Connected : {}".format(usersConnected), Log.lvl.DEBUG)
     for con, value in usersConnected.items():
+        # value 1 : pseudo value 2 : status (enable/disable)
         if value[1] is not None and con != connection and value[2]:
             try:
                 con.sendall(message.encode())
@@ -273,7 +274,7 @@ def accept_file(connection, pseudo, file, port):
         else:
             askFT.remove(f)
             connection.sendall("SUCC_FILE_ACCEPTED {}".format(usersConnected[c][0][0]).encode())
-            c.sendall("CAN_SEND_FILE {} {} {} {}".format(file, pseudo, usersConnected[connection][0][0], port).encode())
+            c.sendall("CAN_SEND_FILE {} {} {} {}".format( pseudo, usersConnected[connection][0][0], port, file).encode())
 
 
 def reject_file(connection, pseudo, file):
