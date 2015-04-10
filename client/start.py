@@ -408,13 +408,8 @@ class start(QtGui.QMainWindow):
         self.ui.pushButton.clicked.connect(self.client)
         self.ui.pushButton_6.clicked.connect(self.changeN)
         self.ui.pushButton_5.clicked.connect(self.away)
-
         self.ui.lineEdit.returnPressed.connect(self.client)
-        self.ui.listNames.itemActivated.connect(self.someMethod)
-
-
-        #self.ui.listNames.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-
+        
 
         self.ui.listNames.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.ui.listNames.customContextMenuRequested.connect(self.buttonAMenu)
@@ -426,21 +421,24 @@ class start(QtGui.QMainWindow):
 
     def buttonAMenu(self, pos):
         menu = QtGui.QMenu()
-        menu.addAction('Private discussion', lambda:self.SecondActionButtonA(self.ui.listNames.itemActivated))
-        menu.addAction('Send file', lambda:self.FirstActionButtonA(self.ui.listNames.itemActivated))
+        menu.addAction('Private discussion', lambda:self.FirstActionButtonA())
+        menu.addAction('Send file', lambda:self.SecondActionButtonA())
         menu.exec_(QtGui.QCursor.pos())
 
-    def FirstActionButtonA(self, txt):
-        #txt = self.ui.listNames.itemActivated.emit(self.ui.listNames.currentItem())
-        self.pf = privateFile(self,self.s)
+    def FirstActionButtonA(self):
+        test1 = self.ui.listNames.currentItem().text()
+        print("1e fonction : "+str(test1))
+        self.someMethod(str(test1))
 
-    def SecondActionButtonA(self, txt):
-        txt = self.ui.listNames.itemActivated.emit(self.ui.listNames.currentItem())
-        #print(txt)
+
+    def SecondActionButtonA(self):
+        test1 = self.ui.listNames.currentItem().text()
+        print("2sd fonction : "+str(test1))
+        self.privateFile = privateFile(self,self.s)
         
         
     def someMethod(self,item):
-        nom = item.text().replace("SUCC_INVITED","")
+        nom = item.replace("SUCC_INVITED","")
         cmdPM = "/askpm "+nom
         try:
             self.s.send(cmdPM.encode())
