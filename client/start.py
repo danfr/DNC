@@ -5,6 +5,7 @@ from PySide.QtGui import *
 import time, threading, datetime, time, random,re
 from socket import *
 from pmWindow import Ui_Dialog2
+from pmFile import Ui_Dialog3
 import configparser
 
 
@@ -44,7 +45,16 @@ class MyThread(QThread):
         def setConfig(self,s,gui):
             self.s = s
             self.gui = gui
+class privateFile () : 
+    def __init__(self,main,s):
 
+        self.main = main
+        self.s = s
+        self.g = QtGui.QWidget()
+        self.ui = Ui_Dialog3()
+        self.ui.setupUi(self.g)
+        self.g.show()
+    
 class privateMessage () :
     def __init__(self,main,s, pmPerson, pmPerso):
 
@@ -417,11 +427,12 @@ class start(QtGui.QMainWindow):
     def buttonAMenu(self, pos):
         menu = QtGui.QMenu()
         menu.addAction('Private discussion', lambda:self.SecondActionButtonA(self.ui.listNames.itemActivated))
-        menu.addAction('Send file', lambda:self.FirstActionButtonA("au revoir"))
+        menu.addAction('Send file', lambda:self.FirstActionButtonA(self.ui.listNames.itemActivated))
         menu.exec_(QtGui.QCursor.pos())
 
     def FirstActionButtonA(self, txt):
-        print(txt)
+        #txt = self.ui.listNames.itemActivated.emit(self.ui.listNames.currentItem())
+        self.pf = privateFile(self,self.s)
 
     def SecondActionButtonA(self, txt):
         txt = self.ui.listNames.itemActivated.emit(self.ui.listNames.currentItem())
