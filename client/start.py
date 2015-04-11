@@ -7,6 +7,77 @@ from socket import *
 from pmWindow import Ui_Dialog2
 from pmFile import Ui_Dialog3
 import configparser
+import string, sys, urllib.parse
+from threading import *
+
+
+
+
+#------------------------------------------------------------------------
+
+class StreamHandler ( Thread ):
+
+    def __init__( this , port, filename):
+        Thread.__init__( this  )
+        this.port = port
+        this.filename = filename
+
+    def run(this):
+        this.process()
+
+    def bindmsock( this ):
+        this.msock = socket(AF_INET, SOCK_STREAM)
+        this.msock.bind(('', int(this.port)))
+        this.msock.listen(1)
+        print ('[Media] Listening on port'+this.port)
+
+    def acceptmsock( this ):
+        this.mconn, this.maddr = this.msock.accept()
+        print ('[Media] Got connection from', this.maddr)
+    
+
+
+    def acceptcsock( this ):
+        this.cconn, this.maddr = this.csock.accept()
+        print ('[Control] Got connection from'+ this.maddr)
+        
+        while 1:
+            data = this.cconn.recv(1024)
+            if not data: break
+            if data[0:4] == "SEND": this.filename = data[5:]
+            print ('[Control] Getting ready to receive ' + this.filename)
+            break
+
+    def transfer( this ):
+        print ('[Media] Starting media transfer for ' + this.filename)
+
+        f = open(this.filename,"wb")
+        while 1:
+            data = this.mconn.recv(1024)
+            if not data: break
+            f.write(data)
+        f.close()
+
+        print ('[Media] Got ' + this.filename)
+        print ('[Media] Closing media transfer for ' + this.filename)
+    
+    def close( this ):
+        #this.cconn.close()
+        #this.csock.close()
+        this.mconn.close()
+        this.msock.close()
+
+    def process( this ):
+            #this.bindcsock()
+            #this.acceptcsock()
+            this.bindmsock()
+            this.acceptmsock()
+            this.transfer()
+            this.close()
+
+#------------------------------------------------------------------------
+
+
 
 
 
@@ -45,6 +116,8 @@ class MyThread(QThread):
         def setConfig(self,s,gui):
             self.s = s
             self.gui = gui
+            
+            
 class privateFile () : 
     def __init__(self,main,s, pseudoFile):
 
@@ -69,8 +142,8 @@ class privateFile () :
             try:
                 print(self.cmd1.encode())
                 self.s.send(self.cmd1.encode())
+                self.g.close()
                 
-
             except timeout:
                 self.ShowMessageErreur("Erreur : Timeout. Le serveur ne repond pas")
         
@@ -80,7 +153,7 @@ class privateFile () :
         self.ui.lineEdit.setText('/pmfile '+self.pseudoFile+ " "+nomFile )
         self.cmd1 = self.ui.lineEdit.text()
         self.bob = ' '.join(nomFile.split("/")[-1:])
-        print(self.bob)
+
         
 class privateMessage () :
     def __init__(self,main,s, pmPerson, pmPerso):
@@ -295,26 +368,29 @@ class start(QtGui.QMainWindow):
         if txt.split(" ")[0] == "HAS_ASKED_FILE":
             self.ShowMessageOK(txt.split(" ")[1]+" share a file with you, do you want download "+' '.join(txt.split(" ")[2].split("/")[-1:])+" ?")
             self.questionMessage(txt.split(" ")[1],txt.split(" ")[2])
+            self.fileNom = ' '.join(txt.split(" ")[2].split("/")[-1:])
 
         if txt.split(" ")[0] == "SUCC_ASKED_FILE":
             self.ShowMessageOK("Succes asked file")
 
         if txt.split(" ")[0] == "SUCC_FILE_ACCEPTED":
             self.ShowMessageOK("accepted file on ip "+txt.split(" ")[1])
+            s = StreamHandler(self.portFile, self.fileNom)
+            s.start()
             
             
         if txt.split(" ")[0] == "CAN_SEND_FILE":
             self.ShowMessageOK("file can be send  ")
             
-            """ms = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            ms.connect((txt.split(" ")[2], txt.split(" ")[3]))
+            ms = socket(AF_INET, SOCK_STREAM)
+            ms.connect((str(txt.split(" ")[2]), int(txt.split(" ")[3])))
 
             f = open(txt.split(" ")[4], "rb")
             data = f.read()
             f.close()
 
             ms.send(data)
-            ms.close() """
+            ms.close() 
             
 
 
@@ -382,7 +458,7 @@ class start(QtGui.QMainWindow):
         if txt.split(" ")[0] == "ERR_INVALID_NICKNAME" :
             self.pseudo = "INVALID_NICKNAME"
 
-             #HAS_LEFT anonymous52
+
         if txt.split(" ")[0] == "NAME_CHANGED" :
             self.ShowMessageNameChange(txt.split(" ")[1], txt.split(" ")[2])
             self.ui.listNames.clear()
@@ -463,9 +539,7 @@ class start(QtGui.QMainWindow):
 
 
     def openInputDialog(self, name, fileN):
-        """
-        Opens the text version of the input dialog
-        """
+
         text, result = QtGui.QInputDialog.getText(self, "Port",
                                             "What is the port of the transfert ?")
         if result and text != "":
@@ -475,6 +549,7 @@ class start(QtGui.QMainWindow):
             try:
                 self.s.send(cmdAccF.encode())
                 print(cmdAccF)
+                self.portFile = text
 
             except timeout:
                 self.ShowMessageErreur("Erreur : Timeout. Le serveur ne repond pas")
