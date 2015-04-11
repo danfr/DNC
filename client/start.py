@@ -46,15 +46,42 @@ class MyThread(QThread):
             self.s = s
             self.gui = gui
 class privateFile () : 
-    def __init__(self,main,s):
+    def __init__(self,main,s, pseudoFile):
 
         self.main = main
         self.s = s
+        self.pseudoFile = pseudoFile
         self.g = QtGui.QWidget()
         self.ui = Ui_Dialog3()
         self.ui.setupUi(self.g)
         self.g.show()
-    
+        self.ui.label_2.setText(self.pseudoFile)
+        self.ui.pushButton_2.clicked.connect(self.selectFile)
+        self.ui.pushButton.clicked.connect(self.sendFile)
+        
+
+
+
+
+    def sendFile(self):
+        if self.ui.lineEdit.text() != "" : 
+            self.ui.lineEdit.setText("")
+            try:
+                print(self.cmd1.encode())
+                self.s.send(self.cmd1.encode())
+                
+
+            except timeout:
+                self.ShowMessageErreur("Erreur : Timeout. Le serveur ne repond pas")
+        
+
+    def selectFile(self):
+        nomFile = ' '.join(QFileDialog.getOpenFileName())
+        self.ui.lineEdit.setText('/pmfile '+self.pseudoFile+ " "+nomFile )
+        self.cmd1 = self.ui.lineEdit.text()
+        self.bob = ' '.join(nomFile.split("/")[-1:])
+        print(self.bob)
+        
 class privateMessage () :
     def __init__(self,main,s, pmPerson, pmPerso):
 
@@ -83,7 +110,7 @@ class privateMessage () :
 
         self.ui.pushButton_4.clicked.connect(self.reject)
         self.ui.pushButton_3.clicked.connect(self.accept)
-        self.ui.pushButton_2.clicked.connect(self.selectFile)
+
         self.ui.label_2.setText(pmPerson)
 
     def reject(self):
@@ -109,8 +136,7 @@ class privateMessage () :
             sb = self.ui.txtOutput.verticalScrollBar()
             sb.setValue(sb.maximum())
 
-    def selectFile(self):
-        self.ui.lineEdit.setText('/pmfile '+self.pmPerson+ ' '.join(QFileDialog.getOpenFileName()))
+
 
     def htmlToText( self, html ):
 
@@ -157,9 +183,7 @@ class privateMessage () :
             if  m :
                 self.thread.start()
                 self.ShowMessageAsTextPm(m)
-                #self.ui.txtOutput.setText(self.message_buffer2)
-                #sb = self.ui.txtOutput.verticalScrollBar()
-                #sb.setValue(sb.maximum())
+
 
     def getTimeStamp(self):
         return ('[%s] ' % str(datetime.datetime.fromtimestamp(int(time.time())).strftime('%H:%M')))
@@ -266,6 +290,32 @@ class start(QtGui.QMainWindow):
             self.ui.listNames_2.clear()
             self.s.send("/userlist".encode())
             self.s.send("/userlistaway".encode())
+
+
+        if txt.split(" ")[0] == "HAS_ASKED_FILE":
+            self.ShowMessageOK(txt.split(" ")[1]+" share a file with you, do you want download "+' '.join(txt.split(" ")[2].split("/")[-1:])+" ?")
+            self.questionMessage(txt.split(" ")[1],txt.split(" ")[2])
+
+        if txt.split(" ")[0] == "SUCC_ASKED_FILE":
+            self.ShowMessageOK("Succes asked file")
+
+        if txt.split(" ")[0] == "SUCC_FILE_ACCEPTED":
+            self.ShowMessageOK("accepted file on ip "+txt.split(" ")[1])
+            
+            
+        if txt.split(" ")[0] == "CAN_SEND_FILE":
+            self.ShowMessageOK("file can be send  ")
+            
+            """ms = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            ms.connect((txt.split(" ")[2], txt.split(" ")[3]))
+
+            f = open(txt.split(" ")[4], "rb")
+            data = f.read()
+            f.close()
+
+            ms.send(data)
+            ms.close() """
+            
 
 
 
@@ -401,6 +451,41 @@ class start(QtGui.QMainWindow):
                 sb.setValue(sb.maximum())
 
 
+    def questionMessage(self,name,fileN):    
+        reply = QtGui.QMessageBox.question(self, "send file", "do you want to download the file : "+ ' '.join(fileN.split("/")[-1:])+" from "+name+" ?", QtGui.QMessageBox.Yes | QtGui.QMessageBox.No )
+        
+        if reply == QtGui.QMessageBox.Yes:
+            self.openInputDialog(name, fileN)
+            
+    
+        elif reply == QtGui.QMessageBox.No:
+            print("hello")
+
+
+    def openInputDialog(self, name, fileN):
+        """
+        Opens the text version of the input dialog
+        """
+        text, result = QtGui.QInputDialog.getText(self, "Port",
+                                            "What is the port of the transfert ?")
+        if result and text != "":
+            print ("le port d'envoi est : " + text)
+
+            cmdAccF = "/acceptfile "+name+" "+text+" "+fileN
+            try:
+                self.s.send(cmdAccF.encode())
+                print(cmdAccF)
+
+            except timeout:
+                self.ShowMessageErreur("Erreur : Timeout. Le serveur ne repond pas")
+                self.ui.txtOutput.setText(self.message_buffer)
+                sb = self.ui.txtOutput.verticalScrollBar()
+                sb.setValue(sb.maximum())
+
+
+            #	Command: /acceptfile 
+            #Parameters: <nickname> <file> <ip> <port>
+
 
     def connectActions(self):
         self.ui.pushButton_2.clicked.connect(self.connecter)
@@ -434,7 +519,7 @@ class start(QtGui.QMainWindow):
     def SecondActionButtonA(self):
         test1 = self.ui.listNames.currentItem().text()
         print("2sd fonction : "+str(test1))
-        self.privateFile = privateFile(self,self.s)
+        self.privateFile = privateFile(self,self.s,str(test1))
         
         
     def someMethod(self,item):
