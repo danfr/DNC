@@ -11,8 +11,6 @@ import string, sys, urllib.parse
 from threading import *
 
 
-
-
 #------------------------------------------------------------------------
 
 class StreamHandler ( Thread ):
@@ -34,7 +32,6 @@ class StreamHandler ( Thread ):
     def acceptmsock( this ):
         this.mconn, this.maddr = this.msock.accept()
         print ('[Media] Got connection from', this.maddr)
-    
 
 
     def acceptcsock( this ):
@@ -77,10 +74,6 @@ class StreamHandler ( Thread ):
 
 #------------------------------------------------------------------------
 
-
-
-
-
 class MySignal(QObject):
         sig = Signal(str)
 
@@ -117,6 +110,9 @@ class MyThread(QThread):
             self.s = s
             self.gui = gui
             
+       
+#----------------------------------------------------------------------
+
             
 class privateFile () : 
     def __init__(self,main,s, pseudoFile):
@@ -133,9 +129,6 @@ class privateFile () :
         self.ui.pushButton.clicked.connect(self.sendFile)
         
 
-
-
-
     def sendFile(self):
         if self.ui.lineEdit.text() != "" : 
             self.ui.lineEdit.setText("")
@@ -147,13 +140,13 @@ class privateFile () :
             except timeout:
                 self.ShowMessageErreur("Erreur : Timeout. Le serveur ne repond pas")
         
-
     def selectFile(self):
         nomFile = ' '.join(QFileDialog.getOpenFileName())
         self.ui.lineEdit.setText('/pmfile '+self.pseudoFile+ " "+nomFile )
         self.cmd1 = self.ui.lineEdit.text()
         self.bob = ' '.join(nomFile.split("/")[-1:])
 
+#----------------------------------------------------------------------
         
 class privateMessage () :
     def __init__(self,main,s, pmPerson, pmPerso):
@@ -166,7 +159,6 @@ class privateMessage () :
         self.ui = Ui_Dialog2()
         self.ui.setupUi(self.g)
         self.g.show()
-        #old = start()
         self.message_buffer2 = ""
 
         self.g.setWindowState(self.g.windowState() & ~QtCore.Qt.WindowMinimized | QtCore.Qt.WindowActive)
@@ -296,6 +288,9 @@ class privateMessage () :
             sb = self.ui.txtOutput.verticalScrollBar()
             sb.setValue(sb.maximum())
 
+#----------------------------------------------------------------------
+
+
 class start(QtGui.QMainWindow):
     def __init__(self):
         super(start, self).__init__()
@@ -396,8 +391,6 @@ class start(QtGui.QMainWindow):
             ms.close() 
             
 
-
-
         if txt.split(" ")[0] == "SUCC_PRIVATE_DISCUSSION_ACCEPTED":
             self.message_buffer += '<br> <span style="color : green"> PRIVATE DISCUSSION ? challenge accepted ! '
             self.private2.ShowMessageAsTextPm("SUCC_PRIVATE_DISCUSSION_ACCEPTED")
@@ -431,7 +424,6 @@ class start(QtGui.QMainWindow):
         if txt.split(" ")[0] == "SUCC_PRIVATE_DISCUSSION_REJECTED" :
             self.private2.ShowMessageAsTextPm(txt)
             self.ShowMessageOK(txt.split(" ")[1]+" Rejected your Private discussion !!")
-
 
 
         if txt.split(" ")[0] == "SUCCESSFUL_LOGOUT" :
@@ -534,11 +526,32 @@ class start(QtGui.QMainWindow):
         reply = QtGui.QMessageBox.question(self, "send file", "do you want to download the file : "+ ' '.join(fileN.split("/")[-1:])+" from "+name+" ?", QtGui.QMessageBox.Yes | QtGui.QMessageBox.No )
         
         if reply == QtGui.QMessageBox.Yes:
-            self.openInputDialog(name, fileN)
+            text = ''.join(str(random.randint(1,9)) for _ in range(4))
+            cmdAccF = "/acceptfile "+name+" "+text+" "+fileN
+            try:
+                self.s.send(cmdAccF.encode())
+                print(cmdAccF)
+                self.portFile = text
+
+            except timeout:
+                self.ShowMessageErreur("Erreur : Timeout. Le serveur ne repond pas")
+                self.ui.txtOutput.setText(self.message_buffer)
+                sb = self.ui.txtOutput.verticalScrollBar()
+                sb.setValue(sb.maximum())
             
-    
+ 
         elif reply == QtGui.QMessageBox.No:
-            print("hello")
+            try:
+                cmdRej="/rejectfile "+name+" "+fileN
+                print(cmdRej)
+                self.s.send(cmdRej.encode())
+
+
+            except timeout:
+                self.ShowMessageErreur("Erreur : Timeout. Le serveur ne repond pas")
+                self.ui.txtOutput.setText(self.message_buffer)
+                sb = self.ui.txtOutput.verticalScrollBar()
+                sb.setValue(sb.maximum())
 
 
     def openInputDialog(self, name, fileN):
@@ -560,9 +573,6 @@ class start(QtGui.QMainWindow):
                 sb = self.ui.txtOutput.verticalScrollBar()
                 sb.setValue(sb.maximum())
 
-
-            #	Command: /acceptfile 
-            #Parameters: <nickname> <file> <ip> <port>
 
 
     def connectActions(self):
@@ -752,8 +762,6 @@ class start(QtGui.QMainWindow):
             self.ui.lineEdit_3.setText(port)
 
 
-
-
         self.ui.lineEdit.setDisabled(True)
         self.ui.pushButton.setDisabled(True)
         self.ui.pushButton_3.setDisabled(True)
@@ -762,8 +770,6 @@ class start(QtGui.QMainWindow):
         self.bouton = "disable"
 
         self.connectActions()
-
-
 
     def client(self):
 
