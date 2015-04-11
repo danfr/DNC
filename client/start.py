@@ -383,6 +383,9 @@ class start(QtGui.QMainWindow):
             self.ShowMessageOK("file can be send  ")
             
             ms = socket(AF_INET, SOCK_STREAM)
+            
+            print(txt.split(" ")[2]+" "+txt.split(" ")[3])
+            
             ms.connect((str(txt.split(" ")[2]), int(txt.split(" ")[3])))
 
             f = open(txt.split(" ")[4], "rb")
