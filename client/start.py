@@ -527,6 +527,10 @@ class start(QtGui.QMainWindow):
         
         if reply == QtGui.QMessageBox.Yes:
             text = ''.join(str(random.randint(1,9)) for _ in range(4))
+            
+            while text == self.portCo : 
+                text = ''.join(str(random.randint(1,9)) for _ in range(4))
+                
             cmdAccF = "/acceptfile "+name+" "+text+" "+fileN
             try:
                 self.s.send(cmdAccF.encode())
@@ -675,6 +679,7 @@ class start(QtGui.QMainWindow):
 
         ip= self.ui.lineEdit_4.text()
         port = int(self.ui.lineEdit_3.text())
+        self.portCo = port
         Addr = (ip,port)
 
 

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'pmWindow.ui'
 #
-# Created: Mon Apr  6 17:05:26 2015
+# Created: Sun Apr 12 16:19:04 2015
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -51,9 +51,6 @@ class Ui_Dialog2(object):
         self.pushButton = QtGui.QPushButton(self.horizontalLayoutWidget)
         self.pushButton.setObjectName(_fromUtf8("pushButton"))
         self.horizontalLayout.addWidget(self.pushButton)
-        self.pushButton_2 = QtGui.QPushButton(self.horizontalLayoutWidget)
-        self.pushButton_2.setObjectName(_fromUtf8("pushButton_2"))
-        self.horizontalLayout.addWidget(self.pushButton_2)
         self.txtOutput = QtGui.QTextEdit(Dialog2)
         self.txtOutput.setGeometry(QtCore.QRect(50, 80, 531, 231))
         self.txtOutput.setMinimumSize(QtCore.QSize(200, 0))
@@ -94,7 +91,6 @@ class Ui_Dialog2(object):
         self.pushButton_3.setText(_translate("Dialog2", "Accept", None))
         self.pushButton_4.setText(_translate("Dialog2", "Refuse", None))
         self.pushButton.setText(_translate("Dialog2", "Send message", None))
-        self.pushButton_2.setText(_translate("Dialog2", "send file", None))
         self.txtOutput.setHtml(_translate("Dialog2", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
