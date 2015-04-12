@@ -339,10 +339,11 @@ class start(QtGui.QMainWindow):
 
     def ShowMessageAsText(self, txt):
 
-        if re.match("^ERR_", txt):
-            self.ShowMessageErreur("Erreur ! : " + txt)
 
         self.message_buffer += '<br> <span style="color : #E6E6E6"> '+  txt +' </span>'
+        
+        if re.match("^4", txt):
+            self.ShowMessageErreur("Erreur ! : " + self.errNb(txt))
 
         if txt.split(" ")[0] == "IS_NOW_DISABLE":
             self.ShowMessageInfo(txt.split(" ")[1]+" is Away From Keyboard")
@@ -501,6 +502,76 @@ class start(QtGui.QMainWindow):
         if txt == "SUCC_MESSAGE_SENDED" :
             self.message_buffer += '<br><span style="color : grey"> ' + self.getTimeStamp() + '</span> <span style="color : red"> &#60; '+ self.pseudo +' &#62; </span><span style="color : black"> ' + self.htmlToText(self.cmd) + '</span>'
 
+
+
+    def errNb (self, txt):
+        if txt == "400" :
+            info = "ERR_NICKNAME_ALREADY_USED"
+            
+        elif txt == "401" :
+            info = "ERR_NO_NICKNAME"
+        
+        elif txt == "402" :
+            info = "ERR_CONV_NOT_ALLOWED"
+
+        elif txt == "403" :
+            info = "DEST_NOT_FOUND"
+            
+        elif txt == "404" :
+            info = "ERR_ALREADY_ASKED_FOR_PM"
+            
+        elif txt == "405" :
+            info = "ERR_NO_INVIT_TO_CONV_FOUND"
+ 
+        elif txt == "406" :
+            info = "ERR_UNKNOWN_ACCEPTED_FILE"
+            
+        elif txt == "407" :
+            info = "COMMAND_NOT_FOUND"
+            
+        elif txt == "408" :
+            info = "ERR_INVALID_NICKNAME"
+        else :
+            info ="ERREUR"
+            
+        return info
+
+
+    def codeNb (self, txt):
+    
+        if txt == 300: info = "USERLIST_ENABLE"
+        elif txt == 301: info = "USERLIST_DISABLE"
+        elif txt == 302: info = "HAS_JOIN"
+        elif txt == 303: info = "HAS_LEFT"
+        elif txt == 304: info = "NEW_MSG"
+        elif txt == 305: info = "NAME_CHANGED"
+        elif txt == 306: info = "NEW_PM"
+        elif txt == 307: info = "ASKING_FOR_PM"
+        elif txt == 308:  info = "PRIVATE_DISCU_ACCEPTED_FROM"
+        elif txt == 309:  info = "PRIVATE_DISCU_REFUSED_FROM"
+        elif txt == 310: info = "IS_NOW_ENABLE"
+        elif txt == 311: info = "IS_NOW_DISABLE"
+        elif txt == 312: info = "HAS_ASKED_FILE"
+        elif txt == 313: info = "CAN_SEND_FILE"
+        elif txt == 314: info = "HAS_REJECT_FILE"
+
+
+        elif txt == 200: info = "SUCC_CHANNEL_JOINED"
+        elif txt == 201: info = "SUCC_CHANNEL_QUIT"
+        elif txt == 202: info = "SUCC_MESSAGE_SENDED"
+        elif txt == 203: info = "SUCC_NICKNAME_CHANGED"
+        elif txt == 204: info = "SUCC_VALID_NICKNAME"
+        elif txt == 205: info = "SUCC_PM_SENDED"
+        elif txt == 206: info = "SUCCESSFUL_ASKED_CONV"
+        elif txt == 207: info = "SUCCESSFUL_ACCEPTED_CONV"
+        elif txt == 208: info = "SUCCESSFUL_REFUSED_CONV"
+        elif txt == 209: info = "SUCC_ENABLED"
+        elif txt == 210: info = "SUCC_DISABLED"
+        elif txt == 211: info = "SUCC_PMFILE"
+        elif txt == 212: info = "SUCC_ACCEPTED_FILE"
+        elif txt == 213: info = "SUCC_REFUSED_FILE"
+        
+        return info
 
     def ShowMessageHasJoin (self, txt) :
         self.message_buffer += '<br> <span style="color : #FF00FF; font-weight: bold;"> '+  self.htmlToText(txt) +' has joined DNC </span>'
