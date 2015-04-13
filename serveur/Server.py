@@ -8,7 +8,7 @@ from serveur import Log
 
 
 ### Code retour ###
-### INFO
+## INFO
 USERLIST_ENABLE = 300
 USERLIST_DISABLE = 301
 HAS_JOIN = 302
