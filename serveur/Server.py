@@ -321,7 +321,7 @@ def accept_file(connection, pseudo, file, port):
             connection.sendall("{}".format(ERR_UNKNOWN_ACCEPTED_FILE).encode())
         else:
             askFT.remove(f)
-            connection.sendall("{} {}".format(SUCC_PMFILE, usersConnected[c][0][0]).encode())
+            connection.sendall("{} {}".format(SUCC_ACCEPTED_FILE, usersConnected[c][0][0]).encode())
             c.sendall("{} {} {} {} {}".format(CAN_SEND_FILE, pseudo, usersConnected[connection][0][0],
                                               port, file).encode())
 
