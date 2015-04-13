@@ -7,7 +7,6 @@ import re
 from serveur import Log
 
 
-
 ### Code retour ###
 ###
 USERLIST_ENABLE = 300
