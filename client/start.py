@@ -11,8 +11,6 @@ import string, sys, urllib.parse
 from threading import *
 
 
-
-
 #------------------------------------------------------------------------
 
 class StreamHandler ( Thread ):
@@ -34,7 +32,6 @@ class StreamHandler ( Thread ):
     def acceptmsock( this ):
         this.mconn, this.maddr = this.msock.accept()
         print ('[Media] Got connection from', this.maddr)
-    
 
 
     def acceptcsock( this ):
@@ -77,10 +74,6 @@ class StreamHandler ( Thread ):
 
 #------------------------------------------------------------------------
 
-
-
-
-
 class MySignal(QObject):
         sig = Signal(str)
 
@@ -117,6 +110,9 @@ class MyThread(QThread):
             self.s = s
             self.gui = gui
             
+       
+#----------------------------------------------------------------------
+
             
 class privateFile () : 
     def __init__(self,main,s, pseudoFile):
@@ -133,9 +129,6 @@ class privateFile () :
         self.ui.pushButton.clicked.connect(self.sendFile)
         
 
-
-
-
     def sendFile(self):
         if self.ui.lineEdit.text() != "" : 
             self.ui.lineEdit.setText("")
@@ -147,13 +140,13 @@ class privateFile () :
             except timeout:
                 self.ShowMessageErreur("Erreur : Timeout. Le serveur ne repond pas")
         
-
     def selectFile(self):
         nomFile = ' '.join(QFileDialog.getOpenFileName())
         self.ui.lineEdit.setText('/pmfile '+self.pseudoFile+ " "+nomFile )
         self.cmd1 = self.ui.lineEdit.text()
         self.bob = ' '.join(nomFile.split("/")[-1:])
 
+#----------------------------------------------------------------------
         
 class privateMessage () :
     def __init__(self,main,s, pmPerson, pmPerso):
@@ -166,7 +159,6 @@ class privateMessage () :
         self.ui = Ui_Dialog2()
         self.ui.setupUi(self.g)
         self.g.show()
-        #old = start()
         self.message_buffer2 = ""
 
         self.g.setWindowState(self.g.windowState() & ~QtCore.Qt.WindowMinimized | QtCore.Qt.WindowActive)
@@ -289,12 +281,15 @@ class privateMessage () :
 
 
             if txt.split(" ")[0] == "NEW_PM" :
-                self.message_buffer2 += '<br><span style="color : grey"> ' + self.getTimeStamp() + '</span> <span style="color : red"> &#60; '+ self.pmPerso +' &#62; </span> ' + self.htmlToText(' '.join(txt.split(" ")[2:])) + ''
+                self.message_buffer2 += '<br><span style="color : grey"> ' + self.getTimeStamp() + '</span> <span style="color : red"> &#60; '+ self.pmPerson +' &#62; </span> ' + self.htmlToText(' '.join(txt.split(" ")[2:])) + ''
 
 
             self.ui.txtOutput.setText(self.message_buffer2)
             sb = self.ui.txtOutput.verticalScrollBar()
             sb.setValue(sb.maximum())
+
+#----------------------------------------------------------------------
+
 
 class start(QtGui.QMainWindow):
     def __init__(self):
@@ -344,10 +339,11 @@ class start(QtGui.QMainWindow):
 
     def ShowMessageAsText(self, txt):
 
-        if re.match("^ERR_", txt):
-            self.ShowMessageErreur("Erreur ! : " + txt)
 
         self.message_buffer += '<br> <span style="color : #E6E6E6"> '+  txt +' </span>'
+        
+        if re.match("^4", txt):
+            self.ShowMessageErreur("Erreur ! : " + self.errNb(txt))
 
         if txt.split(" ")[0] == "IS_NOW_DISABLE":
             self.ShowMessageInfo(txt.split(" ")[1]+" is Away From Keyboard")
@@ -396,8 +392,6 @@ class start(QtGui.QMainWindow):
             ms.close() 
             
 
-
-
         if txt.split(" ")[0] == "SUCC_PRIVATE_DISCUSSION_ACCEPTED":
             self.message_buffer += '<br> <span style="color : green"> PRIVATE DISCUSSION ? challenge accepted ! '
             self.private2.ShowMessageAsTextPm("SUCC_PRIVATE_DISCUSSION_ACCEPTED")
@@ -431,7 +425,6 @@ class start(QtGui.QMainWindow):
         if txt.split(" ")[0] == "SUCC_PRIVATE_DISCUSSION_REJECTED" :
             self.private2.ShowMessageAsTextPm(txt)
             self.ShowMessageOK(txt.split(" ")[1]+" Rejected your Private discussion !!")
-
 
 
         if txt.split(" ")[0] == "SUCCESSFUL_LOGOUT" :
@@ -510,6 +503,76 @@ class start(QtGui.QMainWindow):
             self.message_buffer += '<br><span style="color : grey"> ' + self.getTimeStamp() + '</span> <span style="color : red"> &#60; '+ self.pseudo +' &#62; </span><span style="color : black"> ' + self.htmlToText(self.cmd) + '</span>'
 
 
+
+    def errNb (self, txt):
+        if txt == "400" :
+            info = "ERR_NICKNAME_ALREADY_USED"
+            
+        elif txt == "401" :
+            info = "ERR_NO_NICKNAME"
+        
+        elif txt == "402" :
+            info = "ERR_CONV_NOT_ALLOWED"
+
+        elif txt == "403" :
+            info = "DEST_NOT_FOUND"
+            
+        elif txt == "404" :
+            info = "ERR_ALREADY_ASKED_FOR_PM"
+            
+        elif txt == "405" :
+            info = "ERR_NO_INVIT_TO_CONV_FOUND"
+ 
+        elif txt == "406" :
+            info = "ERR_UNKNOWN_ACCEPTED_FILE"
+            
+        elif txt == "407" :
+            info = "COMMAND_NOT_FOUND"
+            
+        elif txt == "408" :
+            info = "ERR_INVALID_NICKNAME"
+        else :
+            info ="ERREUR"
+            
+        return info
+
+
+    def codeNb (self, txt):
+    
+        if txt == 300: info = "USERLIST_ENABLE"
+        elif txt == 301: info = "USERLIST_DISABLE"
+        elif txt == 302: info = "HAS_JOIN"
+        elif txt == 303: info = "HAS_LEFT"
+        elif txt == 304: info = "NEW_MSG"
+        elif txt == 305: info = "NAME_CHANGED"
+        elif txt == 306: info = "NEW_PM"
+        elif txt == 307: info = "ASKING_FOR_PM"
+        elif txt == 308:  info = "PRIVATE_DISCU_ACCEPTED_FROM"
+        elif txt == 309:  info = "PRIVATE_DISCU_REFUSED_FROM"
+        elif txt == 310: info = "IS_NOW_ENABLE"
+        elif txt == 311: info = "IS_NOW_DISABLE"
+        elif txt == 312: info = "HAS_ASKED_FILE"
+        elif txt == 313: info = "CAN_SEND_FILE"
+        elif txt == 314: info = "HAS_REJECT_FILE"
+
+
+        elif txt == 200: info = "SUCC_CHANNEL_JOINED"
+        elif txt == 201: info = "SUCC_CHANNEL_QUIT"
+        elif txt == 202: info = "SUCC_MESSAGE_SENDED"
+        elif txt == 203: info = "SUCC_NICKNAME_CHANGED"
+        elif txt == 204: info = "SUCC_VALID_NICKNAME"
+        elif txt == 205: info = "SUCC_PM_SENDED"
+        elif txt == 206: info = "SUCCESSFUL_ASKED_CONV"
+        elif txt == 207: info = "SUCCESSFUL_ACCEPTED_CONV"
+        elif txt == 208: info = "SUCCESSFUL_REFUSED_CONV"
+        elif txt == 209: info = "SUCC_ENABLED"
+        elif txt == 210: info = "SUCC_DISABLED"
+        elif txt == 211: info = "SUCC_PMFILE"
+        elif txt == 212: info = "SUCC_ACCEPTED_FILE"
+        elif txt == 213: info = "SUCC_REFUSED_FILE"
+        
+        return info
+
     def ShowMessageHasJoin (self, txt) :
         self.message_buffer += '<br> <span style="color : #FF00FF; font-weight: bold;"> '+  self.htmlToText(txt) +' has joined DNC </span>'
 
@@ -534,11 +597,36 @@ class start(QtGui.QMainWindow):
         reply = QtGui.QMessageBox.question(self, "send file", "do you want to download the file : "+ ' '.join(fileN.split("/")[-1:])+" from "+name+" ?", QtGui.QMessageBox.Yes | QtGui.QMessageBox.No )
         
         if reply == QtGui.QMessageBox.Yes:
-            self.openInputDialog(name, fileN)
+            text = ''.join(str(random.randint(1,9)) for _ in range(4))
             
-    
+            while text == self.portCo : 
+                text = ''.join(str(random.randint(1,9)) for _ in range(4))
+                
+            cmdAccF = "/acceptfile "+name+" "+text+" "+fileN
+            try:
+                self.s.send(cmdAccF.encode())
+                print(cmdAccF)
+                self.portFile = text
+
+            except timeout:
+                self.ShowMessageErreur("Erreur : Timeout. Le serveur ne repond pas")
+                self.ui.txtOutput.setText(self.message_buffer)
+                sb = self.ui.txtOutput.verticalScrollBar()
+                sb.setValue(sb.maximum())
+            
+ 
         elif reply == QtGui.QMessageBox.No:
-            print("hello")
+            try:
+                cmdRej="/rejectfile "+name+" "+fileN
+                print(cmdRej)
+                self.s.send(cmdRej.encode())
+
+
+            except timeout:
+                self.ShowMessageErreur("Erreur : Timeout. Le serveur ne repond pas")
+                self.ui.txtOutput.setText(self.message_buffer)
+                sb = self.ui.txtOutput.verticalScrollBar()
+                sb.setValue(sb.maximum())
 
 
     def openInputDialog(self, name, fileN):
@@ -560,9 +648,6 @@ class start(QtGui.QMainWindow):
                 sb = self.ui.txtOutput.verticalScrollBar()
                 sb.setValue(sb.maximum())
 
-
-            #	Command: /acceptfile 
-            #Parameters: <nickname> <file> <ip> <port>
 
 
     def connectActions(self):
@@ -665,6 +750,7 @@ class start(QtGui.QMainWindow):
 
         ip= self.ui.lineEdit_4.text()
         port = int(self.ui.lineEdit_3.text())
+        self.portCo = port
         Addr = (ip,port)
 
 
@@ -752,8 +838,6 @@ class start(QtGui.QMainWindow):
             self.ui.lineEdit_3.setText(port)
 
 
-
-
         self.ui.lineEdit.setDisabled(True)
         self.ui.pushButton.setDisabled(True)
         self.ui.pushButton_3.setDisabled(True)
@@ -762,8 +846,6 @@ class start(QtGui.QMainWindow):
         self.bouton = "disable"
 
         self.connectActions()
-
-
 
     def client(self):
 
