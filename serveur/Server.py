@@ -7,6 +7,54 @@ import re
 from serveur import Log
 
 
+### Code retour ###
+###
+USERLIST_ENABLE = 300
+USERLIST_DISABLE = 301
+HAS_JOIN = 302
+HAS_LEFT = 303
+NEW_MSG = 304
+NAME_CHANGED = 305
+NEW_PM = 306
+ASKING_FOR_PM = 307
+PRIVATE_DISCU_ACCEPTED_FROM = 308
+PRIVATE_DISCU_REFUSED_FROM = 309
+IS_NOW_ENABLE = 310
+IS_NOW_DISABLE = 311
+HAS_ASKED_FILE = 312
+CAN_SEND_FILE = 313
+HAS_REJECT_FILE = 314
+
+### SUCCESS
+SUCC_CHANNEL_JOINED = 200
+SUCC_CHANNEL_QUIT = 201
+SUCC_MESSAGE_SENDED = 202
+SUCC_NICKNAME_CHANGED = 203
+SUCC_PM_SENDED = 205
+SUCCESSFUL_ASKED_CONV = 206
+SUCCESSFUL_ACCEPTED_CONV = 207
+SUCCESSFUL_REFUSED_CONV = 208
+SUCC_ENABLED = 209
+SUCC_DISABLED = 210
+SUCC_PMFILE = 211
+SUCC_ACCEPTED_FILE = 212
+SUCC_REFUSED_FILE = 213
+
+### ERROR
+ERR_NICKNAME_ALREADY_USED = 400
+ERR_NO_NICKNAME = 401
+ERR_CONV_NOT_ALLOWED = 402
+DEST_NOT_FOUND = 403
+ERR_ALREADY_ASKED_FOR_PM = 404
+ERR_NO_INVIT_TO_CONV_FOUND = 405
+ERR_UNKNOWN_ACCEPTED_FILE = 406
+COMMAND_NOT_FOUND = 407
+ERR_INVALID_NICKNAME = 408
+ERR_INTERNAL_SERVER_ERROR = 409
+ERR_NOT_DISABLED = 410
+ERR_NOT_ENABLED = 411
+
+
 ##
 #   Handle a connection from a client.
 #   Wait for request from the client
@@ -41,8 +89,8 @@ def handle_request(connection, data):
         if usersConnected[connection][1] is not None:
             ### No command -> new message ###
             if not array_data[0][0] == "/" and usersConnected[connection][2]:
-                connection.sendall("SUCC_MESSAGE_SENDED".encode())
-                broadcast_message(connection, "NEW_MSG {} {} ".format(usersConnected[connection][1], data))
+                connection.sendall("{}".format(SUCC_MESSAGE_SENDED).encode())
+                broadcast_message(connection, "{} {} {} ".format(NEW_MSG, usersConnected[connection][1], data))
                 return
             else:
                 ### Command for user enable & disable ###
@@ -67,7 +115,7 @@ def handle_request(connection, data):
 
                 ### Command available for enable only ###
                 if not usersConnected[connection][2]:
-                    connection.sendall("ERR_U_ARE_DISABLE".encode())
+                    connection.sendall("{}".format(ERR_CONV_NOT_ALLOWED).encode())
                     return
                 else:
                     if array_data[0] == "/askpm":
@@ -91,7 +139,7 @@ def handle_request(connection, data):
                     if array_data[0] == "/rejectfile":
                         reject_file(connection, array_data[1], " ".join(array_data[2:]))
                         return
-            connection.sendall("ERR_COMMAND_NOT_FOUND".encode())
+            connection.sendall("{}".format(COMMAND_NOT_FOUND).encode())
         else:
             ### Command for user without nickname ###
             if array_data[0] == "/newname":
@@ -100,13 +148,13 @@ def handle_request(connection, data):
             if array_data[0] == "/quit":
                 connection.shutdown(socket.SHUT_RD)
                 return
-            connection.sendall("ERR_NO_NICKNAME".encode())
+            connection.sendall("{}".format(ERR_NO_NICKNAME).encode())
     except IndexError:
         log.printL("Parameter missing in the request", Log.lvl.WARNING)
-        connection.sendall("ERR_PARAMETER_MISSING".encode())
+        connection.sendall("{}".format(COMMAND_NOT_FOUND).encode())
     except Exception as e:
         log.printL("Handle request fail : {}".format(str(e)), Log.lvl.FAIL)
-        connection.sendall("ERR_INTERNAL_SERVER_ERROR".encode())
+        connection.sendall("{}".format(ERR_INTERNAL_SERVER_ERROR).encode())
 
 
 ##
@@ -128,7 +176,7 @@ def broadcast_message(connection, message):
 #   Send the list of enable user
 #   @param connection the socket descriptor of the target
 def user_list_active(connection):
-    l = "USERLIST "
+    l = "{} ".format(USERLIST_ENABLE)
     for con, value in usersConnected.items():
         if value[1] is not None and value[2]:
             l += value[1] + " "
@@ -139,7 +187,7 @@ def user_list_active(connection):
 #   Send the list of disable user
 #   @param connection the socket descriptor of the target
 def user_list_away(connection):
-    l = "USERAWAY "
+    l = "{} ".format(USERLIST_DISABLE)
     for con, value in usersConnected.items():
         if value[1] is not None and not value[2]:
             l += value[1] + " "
@@ -152,12 +200,12 @@ def user_list_away(connection):
 #   @param pseudo new nickname for the user (String)
 def change_name(connection, pseudo):
     if not re.match("^\w{3,15}$", pseudo):
-        connection.sendall("ERR_INVALID_NICKNAME".encode())
+        connection.sendall("{}".format(ERR_INVALID_NICKNAME).encode())
     elif get_connection_by_pseudo(pseudo) is not None:
-        connection.sendall("ERR_NICKNAME_ALREADY_USED")
+        connection.sendall("{}".format(ERR_NICKNAME_ALREADY_USED).encode())
     else:
-        broadcast_message(connection, "NAME_CHANGED {} {}".format(usersConnected[connection][1], pseudo))
-        connection.sendall("SUCC_VALID_NICKNAME".encode())
+        broadcast_message(connection, "{} {} {}".format(NAME_CHANGED, usersConnected[connection][1], pseudo))
+        connection.sendall("{}".format(SUCC_NICKNAME_CHANGED).encode())
         usersConnected[connection][1] = pseudo
 
 
@@ -167,12 +215,12 @@ def change_name(connection, pseudo):
 #   @param pseudo nickname for the user (String)
 def new_name(connection, pseudo):
     if not re.match("^\w{3,15}$", pseudo):
-        connection.sendall("ERR_INVALID_NICKNAME".encode())
+        connection.sendall("{}".format(ERR_INVALID_NICKNAME).encode())
     elif get_connection_by_pseudo(pseudo) is not None:
-        connection.sendall("ERR_NICKNAME_ALREADY_USED".encode())
+        connection.sendall("{}".format(ERR_NICKNAME_ALREADY_USED).encode())
     else:
-        broadcast_message(connection, "HAS_JOIN {} ".format(pseudo))
-        connection.sendall("SUCC_CHANNEL_JOINED".encode())
+        broadcast_message(connection, "{} {} ".format(HAS_JOIN, pseudo))
+        connection.sendall("{}".format(SUCC_CHANNEL_JOINED).encode())
         usersConnected[connection][1] = pseudo
         user_list_active(connection)
         user_list_away(connection)
@@ -181,136 +229,138 @@ def new_name(connection, pseudo):
 def ask_private_message(connection, pseudo):
     c = get_connection_by_pseudo(pseudo)
     if c is None:
-        connection.sendall("ERR_USER_NOT_FOUND".encode())
+        connection.sendall("{}".format(DEST_NOT_FOUND).encode())
     else:
         pm = (connection, c)
         if pm in askPM:
-            connection.sendall("ALREADY_ASKED".encode())
+            connection.sendall("{}".format(ERR_ALREADY_ASKED_FOR_PM).encode())
         else:
             askPM.append(pm)
             log.printL("askPm {}".format(askPM), Log.lvl.DEBUG)
-            c.sendall("ASKING_FOR_PM {}".format(usersConnected[connection][1]).encode())
-            connection.sendall("SUCC_INVITED".encode())
+            c.sendall("{} {}".format(ASKING_FOR_PM, usersConnected[connection][1]).encode())
+            connection.sendall("{}".format(SUCCESSFUL_ASKED_CONV).encode())
 
 
 def accept_private_message(connection, pseudo):
     log.printL("askPm {}".format(askPM), Log.lvl.DEBUG)
     c = get_connection_by_pseudo(pseudo)
     if c is None:
-        connection.sendall("ERR_USER_NOT_FOUND".encode())
+        connection.sendall("{}".format(DEST_NOT_FOUND).encode())
     else:
         pm = (c, connection)
         if pm not in askPM:
-            connection.sendall("ERR_USER_HAS_NOT_ASK".encode())
+            connection.sendall("{}".format(ERR_NO_INVIT_TO_CONV_FOUND).encode())
         else:
             askPM.remove(pm)
             validatePM.append(pm)
-            connection.sendall("SUCC_PRIVATE_DISCUSSION_ACCEPTED".encode())
-            c.sendall("SUCC_PRIVATE_DISCUSSION_OK {}".format(usersConnected[connection][1]).encode())
+            connection.sendall("{}".format(SUCCESSFUL_ACCEPTED_CONV).encode())
+            c.sendall("{} {}".format(PRIVATE_DISCU_ACCEPTED_FROM, usersConnected[connection][1]).encode())
 
 
 def reject_private_message(connection, pseudo):
     c = get_connection_by_pseudo(pseudo)
     if c is None:
-        connection.sendall("ERR_USER_NOT_FOUND".encode())
+        connection.sendall("{}".format(DEST_NOT_FOUND).encode())
     else:
         pm = (c, connection)
         pmr = (connection, c)
         if pm not in askPM:
             if pm in validatePM:
                 validatePM.remove(pm)
-                connection.sendall("SUCC_PRIVATE_DISCUSSION_REFUSED".encode())
-                c.sendall("SUCC_PRIVATE_DISCUSSION_REJECTED {}".format(usersConnected[connection][1]).encode())
+                connection.sendall("{}".format(SUCCESSFUL_REFUSED_CONV).encode())
+                c.sendall("{} {}".format(PRIVATE_DISCU_REFUSED_FROM, usersConnected[connection][1]).encode())
             elif pmr in validatePM:
                 validatePM.remove(pmr)
-                connection.sendall("SUCC_PRIVATE_DISCUSSION_REFUSED".encode())
-                c.sendall("SUCC_PRIVATE_DISCUSSION_REJECTED {}".format(usersConnected[connection][1]).encode())
+                connection.sendall("{}".format(SUCCESSFUL_REFUSED_CONV).encode())
+                c.sendall("{} {}".format(PRIVATE_DISCU_REFUSED_FROM, usersConnected[connection][1]).encode())
             else:
-                connection.sendall("ERR_USER_HAS_NOT_ASK".encode())
+                connection.sendall("{}".format(ERR_NO_INVIT_TO_CONV_FOUND).encode())
         else:
             askPM.remove(pm)
-            connection.sendall("SUCC_PRIVATE_DISCUSSION_REFUSED".encode())
-            c.sendall("SUCC_PRIVATE_DISCUSSION_REJECTED {}".format(usersConnected[connection][1]).encode())
+            connection.sendall("{}".format(SUCCESSFUL_REFUSED_CONV).encode())
+            c.sendall("{} {}".format(PRIVATE_DISCU_REFUSED_FROM, usersConnected[connection][1]).encode())
 
 
 def private_message(connection, pseudo, msg):
     c = get_connection_by_pseudo(pseudo)
     if c is None:
-        connection.sendall("ERR_DEST_NOT_FOUND".encode())
+        connection.sendall("{}".format(DEST_NOT_FOUND).encode())
     else:
         pm = (connection, c)
         pmr = (c, connection)
         if pm not in validatePM and pmr not in validatePM:
-            connection.sendall("ERR_NOT_ACCEPTED".encode())
+            connection.sendall("{}".format(ERR_CONV_NOT_ALLOWED).encode())
         else:
-            c.sendall("NEW_PM {} {}".format(pseudo, msg).encode())
-            connection.sendall("SUCC_PM_SENDED".encode())
+            c.sendall("{} {} {}".format(NEW_MSG, pseudo, msg).encode())
+            connection.sendall("{}".format(SUCC_PM_SENDED).encode())
 
 
 def ask_file(connection, pseudo, file):
     c = get_connection_by_pseudo(pseudo)
     if c is None:
-        connection.sendall("ERR_USER_NOT_FOUND".encode())
+        connection.sendall("{}".format(DEST_NOT_FOUND).encode())
     else:
         f = (connection, c, file)
         if f in askFT:
-            connection.sendall("ERR_ALREADY_ONE".encode())
+            connection.sendall("{}".format(ERR_ALREADY_ASKED_FOR_PM).encode())
         else:
             askFT.append(f)
             log.printL("askFT {}".format(askFT), Log.lvl.DEBUG)
-            c.sendall("HAS_ASKED_FILE {} {}".format(usersConnected[connection][1], file).encode())
-            connection.sendall("SUCC_ASKED_FILE".encode())
+            c.sendall("{} {} {}".format(HAS_ASKED_FILE, usersConnected[connection][1], file).encode())
+            connection.sendall("{}".format(SUCC_PMFILE).encode())
 
 
 def accept_file(connection, pseudo, file, port):
     log.printL("askFT {}".format(askFT), Log.lvl.DEBUG)
     c = get_connection_by_pseudo(pseudo)
     if c is None:
-        connection.sendall("ERR_USER_NOT_FOUND".encode())
+        connection.sendall("{}".format(DEST_NOT_FOUND).encode())
     else:
         f = (c, connection, file)
         if f not in askFT:
-            connection.sendall("ERR_USER_HAS_NOT_ASK".encode())
+            connection.sendall("{}".format(ERR_UNKNOWN_ACCEPTED_FILE).encode())
         else:
             askFT.remove(f)
-            connection.sendall("SUCC_FILE_ACCEPTED {}".format(usersConnected[c][0][0]).encode())
-            c.sendall("CAN_SEND_FILE {} {} {} {}".format( pseudo, usersConnected[connection][0][0], port, file).encode())
+            connection.sendall("{} {}".format(SUCC_PMFILE, usersConnected[c][0][0]).encode())
+            c.sendall("{} {} {} {} {}".format(CAN_SEND_FILE, pseudo, usersConnected[connection][0][0],
+                                              port, file).encode())
 
 
 def reject_file(connection, pseudo, file):
     c = get_connection_by_pseudo(pseudo)
     if c is None:
-        connection.sendall("ERR_USER_NOT_FOUND".encode())
+        connection.sendall("{}".format(DEST_NOT_FOUND).encode())
     else:
         f = (c, connection, file)
         if f not in askFT:
-            connection.sendall("ERR_USER_HAS_NOT_ASK".encode())
+            connection.sendall("{}".format(ERR_UNKNOWN_ACCEPTED_FILE).encode())
         else:
             askPM.remove(f)
-            connection.sendall("SUCC_FILE_REFUSED".encode())
+            connection.sendall("{}".format(SUCC_REFUSED_FILE).encode())
+            connection.sendall("{} {} {}".format(HAS_REJECT_FILE, pseudo, file).encode())
 
 
 def enable_user(connection):
     if not usersConnected[connection][2]:
         usersConnected[connection][2] = True
-        connection.sendall("SUCC_ENABLED".encode())
-        broadcast_message(connection, "IS_NOW_ENABLE {}".format(usersConnected[connection][1]))
+        connection.sendall("{}".format(SUCC_ENABLED).encode())
+        broadcast_message(connection, "{} {}".format(IS_NOW_ENABLE, usersConnected[connection][1]))
     else:
-        connection.sendall("ERR_NOT_DISABLED".encode())
+        connection.sendall("{}".format(ERR_NOT_DISABLED).encode())
 
 
 def disable_user(connection):
     if usersConnected[connection][2]:
         usersConnected[connection][2] = False
-        connection.sendall("SUCC_DISABLED".encode())
-        broadcast_message(connection, "IS_NOW_DISABLE {}".format(usersConnected[connection][1]))
+        connection.sendall("{}".format(SUCC_DISABLED).encode())
+        broadcast_message(connection, "{} {}".format(IS_NOW_DISABLE, usersConnected[connection][1]))
     else:
-        connection.sendall("ERR_NOT_ENABLED".encode())
+        connection.sendall("{}".format(ERR_NOT_ENABLED).encode())
 
 
 def quit_user(connection):
     try:
-        connection.sendall("SUCCESSFUL_LOGOUT".encode())
+        connection.sendall("{}".format(SUCC_CHANNEL_QUIT).encode())
     except OSError:  # Client close the socket in this side not properly
         log.printL("Client IP -> {} close connection not properly"
                    "".format(usersConnected[connection][0]), Log.lvl.WARNING)
@@ -318,7 +368,7 @@ def quit_user(connection):
     log.printL("Disconnection from IP -> {}".format(usersConnected[connection][0]), Log.lvl.INFO)
     pseudo = usersConnected[connection][1]
     usersConnected.pop(connection)
-    broadcast_message(connection, "HAS_LEFT {}".format(pseudo))
+    broadcast_message(connection, "{} {}".format(HAS_LEFT, pseudo))
 
 
 def get_connection_by_pseudo(pseudo):
