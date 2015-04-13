@@ -178,6 +178,52 @@ class privateMessage () :
 
         self.ui.label_2.setText(pmPerson)
 
+    def codeNb (self, txt):
+        #if re.compile(' ').search(str(txt)) : txt = txt.split(" ")[0]
+
+        if txt == "300": info = "USERLIST"
+        elif txt == "301": info = "USERAWAY"
+        elif txt == "302": info = "HAS_JOIN"
+        elif txt == "303": info = "HAS_LEFT"
+        elif txt == "304": info = "NEW_MSG"
+        elif txt == "305": info = "NAME_CHANGED"
+        elif txt == "306": info = "NEW_PM"
+        elif txt == "307": info = "ASKING_FOR_PM"
+        
+        elif txt == "308":  info = "PRIVATE_DISCU_ACCEPTED_FROM" #SUCC_PRIVATE_DISCUSSION_OK       SUCC_PRIVATE_DISCUSSION_ACCEPTED
+        elif txt == "309":  info = "PRIVATE_DISCU_REFUSED_FROM"
+        
+        elif txt == "310": info = "IS_NOW_ENABLE"
+        elif txt == "311": info = "IS_NOW_DISABLE"
+        elif txt == "312": info = "HAS_ASKED_FILE"
+        elif txt == "313": info = "CAN_SEND_FILE"
+        elif txt == "314": info = "HAS_REJECT_FILE"
+
+
+        elif txt == "200" or txt == "200300": info = "SUCC_CHANNEL_JOINED"
+        elif txt == "201": info = "SUCC_CHANNEL_QUIT"
+        elif txt == "202": info = "SUCC_MESSAGE_SENDED"
+        
+        elif txt == "203": info = "SUCC_NICKNAME_CHANGED"
+        elif txt == "204": info = "SUCC_VALID_NICKNAME"
+        elif txt == "205": info = "SUCC_PM_SENDED"
+        
+        elif txt == "206": info = "SUCCESSFUL_ASKED_CONV"
+        elif txt == "207": info = "SUCCESSFUL_ACCEPTED_CONV"
+        elif txt == "208": info = "SUCCESSFUL_REFUSED_CONV"
+        
+        elif txt == "209": info = "SUCC_ENABLED"
+        elif txt == "210": info = "SUCC_DISABLED"
+        
+        elif txt == "211": info = "SUCC_PMFILE" #SUCC_ASKED_FILE
+        
+        elif txt == "212": info = "SUCC_FILE_ACCEPTED" 
+             
+        elif txt == "213": info = "SUCC_REFUSED_FILE"
+        else :  info = txt
+        
+        return info
+        
     def reject(self):
         self.cmRej = "/rejectpm "+self.pmPerson
         try:
@@ -257,30 +303,30 @@ class privateMessage () :
 
             self.message_buffer2 += '<br><span style="color : grey">'+txt+'</span>'
 
-            if txt.split(" ")[0] == "SUCC_PRIVATE_DISCUSSION_REFUSED":
+            if self.codeNb(txt.split(" ")[0]) == "SUCC_PRIVATE_DISCUSSION_REFUSED":
                 self.g.close()
 
-            if txt.split(" ")[0] == "SUCC_PRIVATE_DISCUSSION_REJECTED":
+            if self.codeNb(txt.split(" ")[0]) == "SUCC_PRIVATE_DISCUSSION_REJECTED":
                 self.g.close()
 
 
-            if txt.split(" ")[0] == "SUCC_PM_SENDED":
+            if self.codeNb(txt.split(" ")[0]) == "SUCC_PM_SENDED":
                 self.message_buffer2 += '<br><span style="color : grey"> ' + self.getTimeStamp() + '</span> <span style="color : red"> &#60; '+self.pmPerso +' &#62; </span> ' + self.htmlToText(self.cmdP) + ''
 
 
-            if txt.split(" ")[0] == "SUCC_PRIVATE_DISCUSSION_ACCEPTED":
+            if self.codeNb(txt.split(" ")[0]) == "SUCC_PRIVATE_DISCUSSION_ACCEPTED":
                 self.message_buffer2 += '<br> <span style="color : green"> Chalange Accepted ! </span>'
                 self.ui.pushButton_4.setDisabled(True)
                 self.ui.pushButton_3.setDisabled(True)
 
 
-            if txt.split(" ")[0] == "SUCC_PRIVATE_DISCUSSION_OK":
+            if self.codeNb(txt.split(" ")[0]) == "SUCC_PRIVATE_DISCUSSION_OK":
                 self.message_buffer2 += '<br> <span style="color : green"> Private discussion with '+txt.split(" ")[1]+' accepted ! </span>'
                 self.ui.pushButton_4.setDisabled(True)
                 self.ui.pushButton_3.setDisabled(True)
 
 
-            if txt.split(" ")[0] == "NEW_PM" :
+            if self.codeNb(txt.split(" ")[0]) == "NEW_PM" :
                 self.message_buffer2 += '<br><span style="color : grey"> ' + self.getTimeStamp() + '</span> <span style="color : red"> &#60; '+ self.pmPerson +' &#62; </span> ' + self.htmlToText(' '.join(txt.split(" ")[2:])) + ''
 
 
@@ -340,12 +386,13 @@ class start(QtGui.QMainWindow):
     def ShowMessageAsText(self, txt):
 
 
-        self.message_buffer += '<br> <span style="color : #E6E6E6"> '+  txt +' </span>'
+        #self.message_buffer += '<br> <span style="color : #E6E6E6"> '+  txt +' </span>'
+        self.message_buffer += '<br> <span style="color : #E6E6E6"> '+  self.codeNb(str(txt)) +' </span>'
         
         if re.match("^4", txt):
             self.ShowMessageErreur("Erreur ! : " + self.errNb(txt))
 
-        if txt.split(" ")[0] == "IS_NOW_DISABLE":
+        if self.codeNb(txt.split(" ")[0]) == "IS_NOW_DISABLE":
             self.ShowMessageInfo(txt.split(" ")[1]+" is Away From Keyboard")
             self.ui.listNames.clear()
             self.ui.listNames_2.clear()
@@ -353,7 +400,7 @@ class start(QtGui.QMainWindow):
             self.s.send("/userlistaway".encode())
 
 
-        if txt.split(" ")[0] == "IS_NOW_ENABLE":
+        if self.codeNb(txt.split(" ")[0]) == "IS_NOW_ENABLE":
             self.ShowMessageInfo(txt.split(" ")[1]+" is Back !!")
             self.ui.listNames.clear()
             self.ui.listNames_2.clear()
@@ -361,21 +408,21 @@ class start(QtGui.QMainWindow):
             self.s.send("/userlistaway".encode())
 
 
-        if txt.split(" ")[0] == "HAS_ASKED_FILE":
+        if self.codeNb(txt.split(" ")[0]) == "HAS_ASKED_FILE":
             self.ShowMessageOK(txt.split(" ")[1]+" share a file with you, do you want download "+' '.join(txt.split(" ")[2].split("/")[-1:])+" ?")
             self.questionMessage(txt.split(" ")[1],txt.split(" ")[2])
             self.fileNom = ' '.join(txt.split(" ")[2].split("/")[-1:])
 
-        if txt.split(" ")[0] == "SUCC_ASKED_FILE":
+        if self.codeNb(txt.split(" ")[0]) == "SUCC_ASKED_FILE":
             self.ShowMessageOK("Succes asked file")
 
-        if txt.split(" ")[0] == "SUCC_FILE_ACCEPTED":
+        if self.codeNb(txt.split(" ")[0]) == "SUCC_FILE_ACCEPTED":
             self.ShowMessageOK("accepted file on ip "+txt.split(" ")[1])
             s = StreamHandler(self.portFile, self.fileNom)
             s.start()
             
             
-        if txt.split(" ")[0] == "CAN_SEND_FILE":
+        if self.codeNb(txt.split(" ")[0]) == "CAN_SEND_FILE":
             self.ShowMessageOK("file can be send  ")
             
             ms = socket(AF_INET, SOCK_STREAM)
@@ -392,47 +439,47 @@ class start(QtGui.QMainWindow):
             ms.close() 
             
 
-        if txt.split(" ")[0] == "SUCC_PRIVATE_DISCUSSION_ACCEPTED":
+        if self.codeNb(txt.split(" ")[0]) == "SUCCESSFUL_ACCEPTED_CONV":
             self.message_buffer += '<br> <span style="color : green"> PRIVATE DISCUSSION ? challenge accepted ! '
             self.private2.ShowMessageAsTextPm("SUCC_PRIVATE_DISCUSSION_ACCEPTED")
 
-        if txt.split(" ")[0] == "SUCC_PRIVATE_DISCUSSION_OK":
+        if self.codeNb(txt.split(" ")[0]) == "SUCC_PRIVATE_DISCUSSION_OK":
             self.message_buffer += '<br> <span style="color : green"> PRIVATE DISCUSSION WITH '+txt.split(" ")[1]+' ? challenge accepted ! '
             self.private2.ShowMessageAsTextPm(txt)
 
 
 
-        if txt.split(" ")[0] == "SUCC_INVITED" :
+        if self.codeNb(txt.split(" ")[0]) == "SUCCESSFUL_ASKED_CONV" :
              self.ShowMessageOK("invitation requested")
              self.private2 = privateMessage(self,self.s,self.demande,self.pseudo)
 
-        if txt.split(" ")[0] == "ASKING_FOR_PM" :
+        if self.codeNb(txt.split(" ")[0]) == "ASKING_FOR_PM" :
              self.ShowMessageOK("private discution from "+ txt.split(" ")[1] )
              self.private2 = privateMessage(self,self.s,txt.split(" ")[1],self.pseudo)
 
 
 
-        if txt.split(" ")[0] == "SUCC_PM_SENDED" :
+        if self.codeNb(txt.split(" ")[0]) == "SUCC_PM_SENDED" : 
             self.private2.ShowMessageAsTextPm(txt.split(" ")[0])
 
-        if txt.split(" ")[0] == "NEW_PM" :
+        if self.codeNb(txt.split(" ")[0]) == "NEW_PM" :
             self.private2.ShowMessageAsTextPm(txt)
 
-        if txt.split(" ")[0] == "SUCC_PRIVATE_DISCUSSION_REFUSED" :
+        if self.codeNb(txt.split(" ")[0]) == "SUCC_PRIVATE_DISCUSSION_REFUSED" :
             self.private2.ShowMessageAsTextPm(txt)
             self.ShowMessageOK("Private discussion refused !!")
 
-        if txt.split(" ")[0] == "SUCC_PRIVATE_DISCUSSION_REJECTED" :
+        if self.codeNb(txt.split(" ")[0]) == "SUCC_PRIVATE_DISCUSSION_REJECTED" :
             self.private2.ShowMessageAsTextPm(txt)
             self.ShowMessageOK(txt.split(" ")[1]+" Rejected your Private discussion !!")
 
 
-        if txt.split(" ")[0] == "SUCCESSFUL_LOGOUT" :
+        if self.codeNb(txt.split(" ")[0]) == "SUCCESSFUL_LOGOUT" :
             self.ShowMessageOK("You have logged out of the DNC !")
             self.ui.listNames.clear()
             self.ui.listNames_2.clear()
 
-        if txt.split(" ")[0] == "SUCC_DISABLED" :
+        if self.codeNb(txt.split(" ")[0]) == "SUCC_DISABLED" :
             self.ShowMessageOK("You are AFK !")
             self.ui.listNames.clear()
             self.ui.listNames_2.clear()
@@ -440,7 +487,7 @@ class start(QtGui.QMainWindow):
             self.s.send("/userlistaway".encode())
 
 
-        if txt.split(" ")[0] == "SUCC_ENABLED" :
+        if self.codeNb(txt.split(" ")[0]) == "SUCC_ENABLED" :
             self.ShowMessageOK("You are back !")
             self.ui.listNames.clear()
             self.ui.listNames_2.clear()
@@ -448,47 +495,48 @@ class start(QtGui.QMainWindow):
             self.s.send("/userlistaway".encode())
 
 
-        if txt.split(" ")[0] == "SUCC_VALID_NICKNAME" :
+        if self.codeNb(txt.split(" ")[0]) == "SUCC_NICKNAME_CHANGED" :
              self.ShowMessageOK("Sucessful nickname change !")
 
-        if txt.split(" ")[0] == "ERR_INVALID_NICKNAME" :
+        if self.errNb(txt.split(" ")[0]) == "ERR_INVALID_NICKNAME" :
             self.pseudo = "INVALID_NICKNAME"
 
 
-        if txt.split(" ")[0] == "NAME_CHANGED" :
+        if self.codeNb(txt.split(" ")[0]) == "NAME_CHANGED" :
             self.ShowMessageNameChange(txt.split(" ")[1], txt.split(" ")[2])
             self.ui.listNames.clear()
             self.s.send("/userlist".encode())
 
-        if txt.split(" ")[0] == "HAS_JOIN" :
+        if self.codeNb(txt.split(" ")[0]) == "HAS_JOIN" :
              self.ShowMessageHasJoin(txt.split(" ")[1])
              self.ui.listNames.addItem(txt.split(" ")[1])
 
-        if txt.split(" ")[0] == "HAS_LEFT" :
+        if self.codeNb(txt.split(" ")[0]) == "HAS_LEFT" :
             self.ShowMessageHasLeft(txt.split(" ")[1])
             self.ui.listNames.clear()
             self.s.send("/userlist".encode())
 
 
-        if txt.split(" ")[0] == "SUCC_CHANNEL_JOINED" or txt.split(" ")[0] == "SUCC_CHANNEL_JOINEDUSERLIST" :
+        if self.codeNb(txt.split(" ")[0]) == "SUCC_CHANNEL_JOINED" or txt.split(" ")[0] == "200":
             self.ShowMessageHasJoin(self.pseudo)
+            #self.s.send("/userlist".encode())
             self.ui.listNames.clear()
             self.ui.listNames_2.clear()
             #self.s.send("/userlist".encode())
             #self.s.send("/userlistaway".encode())
 
 
-        if txt.split(" ")[0] == "ERR_NICKNAME_ALREADY_USED" :
+        if self.errNb(txt.split(" ")[0]) == "ERR_NICKNAME_ALREADY_USED" :
             self.deco()
 
 
-        if re.compile('USERLIST').search(txt.split(" ")[0] ) :
+        if re.compile('USERLIST').search(self.codeNb(txt.split(" ")[0]) ) :
             n = len(txt.split(" ")[1:]) +1
             for i in range(1,n) :
-                self.ui.listNames.addItem(str(txt.split(" ")[i]).replace("USERAWAY",""))
+                self.ui.listNames.addItem(str(txt.split(" ")[i]).replace("301",""))
             print(str(txt.split(" ")[1:]))
 
-        if re.compile('USERAWAY').search(txt.split(" ")[0] ) :
+        if re.compile('USERAWAY').search(self.codeNb(txt.split(" ")[0]) ) :
             n = len(txt.split(" ")[1:]) +1
             for i in range(1,n) :
                 self.ui.listNames_2.addItem(str(txt.split(" ")[i]))
@@ -496,10 +544,10 @@ class start(QtGui.QMainWindow):
 
 
 
-        if txt.split(" ")[0] == "NEW_MSG" :
+        if self.codeNb(txt.split(" ")[0]) == "NEW_MSG" :
             self.message_buffer += '<br><span style="color : grey"> ' + self.getTimeStamp() + '</span> <span style="color : red"> &#60; '+txt.split(" ")[1] +' &#62; </span> <span style="color : black">' + self.htmlToText(' '.join(txt.split(" ")[2:])) + '</span>'
 
-        if txt == "SUCC_MESSAGE_SENDED" :
+        if self.codeNb(txt) == "SUCC_MESSAGE_SENDED" :
             self.message_buffer += '<br><span style="color : grey"> ' + self.getTimeStamp() + '</span> <span style="color : red"> &#60; '+ self.pseudo +' &#62; </span><span style="color : black"> ' + self.htmlToText(self.cmd) + '</span>'
 
 
@@ -532,44 +580,56 @@ class start(QtGui.QMainWindow):
         elif txt == "408" :
             info = "ERR_INVALID_NICKNAME"
         else :
-            info ="ERREUR"
+            info ="ERREUR "+txt
             
         return info
 
 
     def codeNb (self, txt):
-    
-        if txt == 300: info = "USERLIST_ENABLE"
-        elif txt == 301: info = "USERLIST_DISABLE"
-        elif txt == 302: info = "HAS_JOIN"
-        elif txt == 303: info = "HAS_LEFT"
-        elif txt == 304: info = "NEW_MSG"
-        elif txt == 305: info = "NAME_CHANGED"
-        elif txt == 306: info = "NEW_PM"
-        elif txt == 307: info = "ASKING_FOR_PM"
-        elif txt == 308:  info = "PRIVATE_DISCU_ACCEPTED_FROM"
-        elif txt == 309:  info = "PRIVATE_DISCU_REFUSED_FROM"
-        elif txt == 310: info = "IS_NOW_ENABLE"
-        elif txt == 311: info = "IS_NOW_DISABLE"
-        elif txt == 312: info = "HAS_ASKED_FILE"
-        elif txt == 313: info = "CAN_SEND_FILE"
-        elif txt == 314: info = "HAS_REJECT_FILE"
+        #if re.compile(' ').search(str(txt)) : txt = txt.split(" ")[0]
+
+        if txt == "300": info = "USERLIST"
+        elif txt == "301": info = "USERAWAY"
+        elif txt == "302": info = "HAS_JOIN"
+        elif txt == "303": info = "HAS_LEFT"
+        elif txt == "304": info = "NEW_MSG"
+        elif txt == "305": info = "NAME_CHANGED"
+        elif txt == "306": info = "NEW_PM"
+        elif txt == "307": info = "ASKING_FOR_PM"
+        
+        elif txt == "308":  info = "PRIVATE_DISCU_ACCEPTED_FROM" #SUCC_PRIVATE_DISCUSSION_OK       SUCC_PRIVATE_DISCUSSION_ACCEPTED
+        elif txt == "309":  info = "PRIVATE_DISCU_REFUSED_FROM"
+        
+        elif txt == "310": info = "IS_NOW_ENABLE"
+        elif txt == "311": info = "IS_NOW_DISABLE"
+        elif txt == "312": info = "HAS_ASKED_FILE"
+        elif txt == "313": info = "CAN_SEND_FILE"
+        elif txt == "314": info = "HAS_REJECT_FILE"
 
 
-        elif txt == 200: info = "SUCC_CHANNEL_JOINED"
-        elif txt == 201: info = "SUCC_CHANNEL_QUIT"
-        elif txt == 202: info = "SUCC_MESSAGE_SENDED"
-        elif txt == 203: info = "SUCC_NICKNAME_CHANGED"
-        elif txt == 204: info = "SUCC_VALID_NICKNAME"
-        elif txt == 205: info = "SUCC_PM_SENDED"
-        elif txt == 206: info = "SUCCESSFUL_ASKED_CONV"
-        elif txt == 207: info = "SUCCESSFUL_ACCEPTED_CONV"
-        elif txt == 208: info = "SUCCESSFUL_REFUSED_CONV"
-        elif txt == 209: info = "SUCC_ENABLED"
-        elif txt == 210: info = "SUCC_DISABLED"
-        elif txt == 211: info = "SUCC_PMFILE"
-        elif txt == 212: info = "SUCC_ACCEPTED_FILE"
-        elif txt == 213: info = "SUCC_REFUSED_FILE"
+        elif txt == "200" or txt=="200300": info = "SUCC_CHANNEL_JOINED"
+        elif txt=="200300" : info = "SUCC_CHANNEL_JOINED USERLIST"
+
+        elif txt == "201": info = "SUCC_CHANNEL_QUIT"
+        elif txt == "202": info = "SUCC_MESSAGE_SENDED"
+        
+        elif txt == "203": info = "SUCC_NICKNAME_CHANGED"
+        elif txt == "204": info = "SUCC_VALID_NICKNAME"
+        elif txt == "205": info = "SUCC_PM_SENDED"
+        
+        elif txt == "206": info = "SUCCESSFUL_ASKED_CONV"
+        elif txt == "207": info = "SUCCESSFUL_ACCEPTED_CONV"
+        elif txt == "208": info = "SUCCESSFUL_REFUSED_CONV"
+        
+        elif txt == "209": info = "SUCC_ENABLED"
+        elif txt == "210": info = "SUCC_DISABLED"
+        
+        elif txt == "211": info = "SUCC_PMFILE" #SUCC_ASKED_FILE
+        
+        elif txt == "212": info = "SUCC_FILE_ACCEPTED" 
+             
+        elif txt == "213": info = "SUCC_REFUSED_FILE"
+        else :  info = txt
         
         return info
 
@@ -686,7 +746,7 @@ class start(QtGui.QMainWindow):
         
         
     def someMethod(self,item):
-        nom = item.replace("SUCC_INVITED","")
+        nom = item.replace("SUCCESSFUL_ASKED_CONV","")
         cmdPM = "/askpm "+nom
         try:
             self.s.send(cmdPM.encode())
