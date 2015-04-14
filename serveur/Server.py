@@ -221,7 +221,7 @@ def new_name(connection, pseudo):
     else:
         broadcast_message(connection, "{} {} ".format(HAS_JOIN, pseudo))
         connection.sendall("{}".format(SUCC_CHANNEL_JOINED).encode())
-        usersConnected[connection][1] = pseud
+        usersConnected[connection][1] = pseudo
 
 
 def ask_private_message(connection, pseudo):
