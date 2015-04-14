@@ -200,7 +200,9 @@ class privateMessage () :
         elif txt == "314": info = "HAS_REJECT_FILE"
 
 
-        elif txt == "200" or txt == "200300": info = "SUCC_CHANNEL_JOINED"
+        elif txt == "200" or txt=="200300": info = "SUCC_CHANNEL_JOINED"
+        elif txt=="200300" : info = "SUCC_CHANNEL_JOINED USERLIST"
+
         elif txt == "201": info = "SUCC_CHANNEL_QUIT"
         elif txt == "202": info = "SUCC_MESSAGE_SENDED"
         
@@ -217,7 +219,7 @@ class privateMessage () :
         
         elif txt == "211": info = "SUCC_PMFILE" #SUCC_ASKED_FILE
         
-        elif txt == "212": info = "SUCC_FILE_ACCEPTED" 
+        elif txt == "212": info = "SUCC_ACCEPTED_FILE" 
              
         elif txt == "213": info = "SUCC_REFUSED_FILE"
         else :  info = txt
@@ -301,7 +303,7 @@ class privateMessage () :
 
     def ShowMessageAsTextPm(self, txt) :
 
-            self.message_buffer2 += '<br><span style="color : grey">'+txt+'</span>'
+            self.message_buffer2 += '<br><span style="color : grey">'+self.codeNb(txt)+'</span>'
 
             if self.codeNb(txt.split(" ")[0]) == "SUCC_PRIVATE_DISCUSSION_REFUSED":
                 self.g.close()
@@ -320,7 +322,7 @@ class privateMessage () :
                 self.ui.pushButton_3.setDisabled(True)
 
 
-            if self.codeNb(txt.split(" ")[0]) == "SUCC_PRIVATE_DISCUSSION_OK":
+            if self.codeNb(txt.split(" ")[0]) == "PRIVATE_DISCU_ACCEPTED_FROM":
                 self.message_buffer2 += '<br> <span style="color : green"> Private discussion with '+txt.split(" ")[1]+' accepted ! </span>'
                 self.ui.pushButton_4.setDisabled(True)
                 self.ui.pushButton_3.setDisabled(True)
@@ -416,7 +418,7 @@ class start(QtGui.QMainWindow):
         if self.codeNb(txt.split(" ")[0]) == "SUCC_ASKED_FILE":
             self.ShowMessageOK("Succes asked file")
 
-        if self.codeNb(txt.split(" ")[0]) == "SUCC_FILE_ACCEPTED":
+        if self.codeNb(txt.split(" ")[0]) == "SUCC_ACCEPTED_FILE":
             self.ShowMessageOK("accepted file on ip "+txt.split(" ")[1])
             s = StreamHandler(self.portFile, self.fileNom)
             s.start()
@@ -443,7 +445,7 @@ class start(QtGui.QMainWindow):
             self.message_buffer += '<br> <span style="color : green"> PRIVATE DISCUSSION ? challenge accepted ! '
             self.private2.ShowMessageAsTextPm("SUCC_PRIVATE_DISCUSSION_ACCEPTED")
 
-        if self.codeNb(txt.split(" ")[0]) == "SUCC_PRIVATE_DISCUSSION_OK":
+        if self.codeNb(txt.split(" ")[0]) == "PRIVATE_DISCU_ACCEPTED_FROM":
             self.message_buffer += '<br> <span style="color : green"> PRIVATE DISCUSSION WITH '+txt.split(" ")[1]+' ? challenge accepted ! '
             self.private2.ShowMessageAsTextPm(txt)
 
@@ -522,8 +524,8 @@ class start(QtGui.QMainWindow):
             #self.s.send("/userlist".encode())
             self.ui.listNames.clear()
             self.ui.listNames_2.clear()
-            #self.s.send("/userlist".encode())
-            #self.s.send("/userlistaway".encode())
+            self.s.send("/userlist".encode())
+            self.s.send("/userlistaway".encode())
 
 
         if self.errNb(txt.split(" ")[0]) == "ERR_NICKNAME_ALREADY_USED" :
@@ -531,12 +533,14 @@ class start(QtGui.QMainWindow):
 
 
         if re.compile('USERLIST').search(self.codeNb(txt.split(" ")[0]) ) :
+            self.ui.listNames.clear()
             n = len(txt.split(" ")[1:]) +1
             for i in range(1,n) :
                 self.ui.listNames.addItem(str(txt.split(" ")[i]).replace("301",""))
             print(str(txt.split(" ")[1:]))
 
         if re.compile('USERAWAY').search(self.codeNb(txt.split(" ")[0]) ) :
+            self.ui.listNames_2.clear()
             n = len(txt.split(" ")[1:]) +1
             for i in range(1,n) :
                 self.ui.listNames_2.addItem(str(txt.split(" ")[i]))
@@ -626,7 +630,7 @@ class start(QtGui.QMainWindow):
         
         elif txt == "211": info = "SUCC_PMFILE" #SUCC_ASKED_FILE
         
-        elif txt == "212": info = "SUCC_FILE_ACCEPTED" 
+        elif txt == "212": info = "SUCC_ACCEPTED_FILE" 
              
         elif txt == "213": info = "SUCC_REFUSED_FILE"
         else :  info = txt
