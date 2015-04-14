@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'pmFile.ui'
 #
-# Created: Fri Apr 10 16:31:47 2015
+# Created: Mon Apr 13 21:42:22 2015
 #      by: PyQt4 UI code generator 4.11.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -71,8 +71,8 @@ class Ui_Dialog3(object):
 
     def retranslateUi(self, Dialog3):
         Dialog3.setWindowTitle(_translate("Dialog3", "Dialog", None))
-        self.pushButton.setText(_translate("Dialog3", "Send message", None))
-        self.pushButton_2.setText(_translate("Dialog3", "send file", None))
+        self.pushButton.setText(_translate("Dialog3", "Send it", None))
+        self.pushButton_2.setText(_translate("Dialog3", "import file ...", None))
         self.label.setText(_translate("Dialog3", "Sending a file to : ", None))
         self.label_2.setText(_translate("Dialog3", "BobZorro", None))
 

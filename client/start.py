@@ -179,7 +179,6 @@ class privateMessage () :
         self.ui.label_2.setText(pmPerson)
 
     def codeNb (self, txt):
-        #if re.compile(' ').search(str(txt)) : txt = txt.split(" ")[0]
 
         if txt == "300": info = "USERLIST"
         elif txt == "301": info = "USERAWAY"
@@ -190,7 +189,7 @@ class privateMessage () :
         elif txt == "306": info = "NEW_PM"
         elif txt == "307": info = "ASKING_FOR_PM"
         
-        elif txt == "308":  info = "PRIVATE_DISCU_ACCEPTED_FROM" #SUCC_PRIVATE_DISCUSSION_OK       SUCC_PRIVATE_DISCUSSION_ACCEPTED
+        elif txt == "308":  info = "PRIVATE_DISCU_ACCEPTED_FROM"
         elif txt == "309":  info = "PRIVATE_DISCU_REFUSED_FROM"
         
         elif txt == "310": info = "IS_NOW_ENABLE"
@@ -217,7 +216,7 @@ class privateMessage () :
         elif txt == "209": info = "SUCC_ENABLED"
         elif txt == "210": info = "SUCC_DISABLED"
         
-        elif txt == "211": info = "SUCC_PMFILE" #SUCC_ASKED_FILE
+        elif txt == "211": info = "SUCC_PMFILE"
         
         elif txt == "212": info = "SUCC_ACCEPTED_FILE" 
              
@@ -313,7 +312,7 @@ class privateMessage () :
 
 
             if self.codeNb(txt.split(" ")[0]) == "SUCC_PM_SENDED":
-                self.message_buffer2 += '<br><span style="color : grey"> ' + self.getTimeStamp() + '</span> <span style="color : red"> &#60; '+self.pmPerso +' &#62; </span> ' + self.htmlToText(self.cmdP) + ''
+                self.message_buffer2 += '<br><span style="color : grey"> ' + self.getTimeStamp() + '</span> <span style="color : red"> &#60; '+self.pmPerso +' &#62; </span> <span style="color : black">' + self.htmlToText(self.cmdP) + '</span>'
 
 
             if self.codeNb(txt.split(" ")[0]) == "SUCC_PRIVATE_DISCUSSION_ACCEPTED":
@@ -476,7 +475,7 @@ class start(QtGui.QMainWindow):
             self.ShowMessageOK(txt.split(" ")[1]+" Rejected your Private discussion !!")
 
 
-        if self.codeNb(txt.split(" ")[0]) == "SUCCESSFUL_LOGOUT" :
+        if self.codeNb(txt.split(" ")[0]) == "SUCC_CHANNEL_QUIT" :
             self.ShowMessageOK("You have logged out of the DNC !")
             self.ui.listNames.clear()
             self.ui.listNames_2.clear()
