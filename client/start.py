@@ -7,6 +7,7 @@ from socket import *
 from view.pmWindow import Ui_Dialog2
 from view.pmFile import Ui_Dialog3
 import configparser
+import pydoc
 from threading import *
 
 
