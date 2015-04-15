@@ -1,4 +1,7 @@
 .idea/
 __pycache__/
 log
-dncserver.conf
+*.aux
+*.log
+*.toc
+*.synctex.gz

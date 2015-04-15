@@ -91,7 +91,7 @@ def main():
         while True:
             #Connection client
             connection, client_address = sock.accept()
-            usersConnected[connection] = [client_address, None, True]  # ip pseudo status
+            usersConnected[connection] = [client_address, None, True]  # (ip,port) pseudo status
             threading.Thread(target=handle_connection, args=(connection, client_address)).start()
     except KeyboardInterrupt:
         # Disable to received more requests on socket
@@ -222,6 +222,7 @@ def broadcast_message(connection, message):
                 con.sendall(message.encode())
             except Exception as e:
                 log.printL(str(e), Log.lvl.FAIL)
+        log.printL("Broadcast : {}".format(message), Log.lvl.INFO)
 
 
 ##
@@ -233,6 +234,7 @@ def user_list_active(connection):
         if value[1] is not None and value[2]:
             l += value[1] + " "
     connection.sendall(l[:-1].encode())
+    log.printL("Send to {} : {}".format(usersConnected[connection][0][0], l[:-1]), Log.lvl.INFO)
 
 
 ##
