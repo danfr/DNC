@@ -7,7 +7,7 @@ import re
 from serveur import Log
 
 
-### Code retour ####
+### Code retour ###
 ### INFO
 USERLIST_ENABLE = 300
 USERLIST_DISABLE = 301
@@ -289,7 +289,7 @@ def private_message(connection, pseudo, msg):
         if pm not in validatePM and pmr not in validatePM:
             connection.sendall("{}".format(ERR_CONV_NOT_ALLOWED).encode())
         else:
-            c.sendall("{} {} {}".format(NEW_PM, pseudo, msg).encode())
+            c.sendall("{} {} {}".format(NEW_PM,usersConnected[connection][1], msg).encode())
             connection.sendall("{}".format(SUCC_PM_SENDED).encode())
 
 
