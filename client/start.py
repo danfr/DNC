@@ -322,8 +322,9 @@ class privateMessage() :
         :param html: message written by an user
         :return: html, message converted
         """
-        html = html.replace('<', '&#60;')
+        html = html.replace('&', '&amp;')
         html = html.replace('>', '&#62;')
+        html = html.replace('<', '&quot;')
         html = html.replace(':-)', '<img src="img/happy.png" alt="Smiley face">')
         html = html.replace(':-(', '<img src="img/sad.png" alt="sad face">')
         html = html.replace(':-p', '<img src="img/langue.png" alt="langue face">')
@@ -336,6 +337,8 @@ class privateMessage() :
         html = html.replace('3:)', '<img src="img/hell.png" alt="hell face">')
         html = html.replace(':pedobear', '<img src="img/pedo.gif"  alt="hell face">')
         html = html.replace(':homer', '<img src="img/homer.gif"  alt="homer face">')
+        html = html.replace(':dalek', '<img src="img/Dalek.gif"  alt="homer face">')
+        html = html.replace(':tardis', '<img src="img/tardis.png"  alt="homer face">')
 
         return html
 
@@ -390,7 +393,7 @@ class privateMessage() :
         :param txt: message from sever
         :return:
         """
-        self.message_buffer2 += '<br><span style="color : grey">'+self.codeNb(txt)+'</span>'
+        #self.message_buffer2 += '<br><span style="color : grey">'+self.codeNb(txt)+'</span>'
 
         if self.codeNb(txt.split(" ")[0]) == "SUCC_PRIVATE_DISCUSSION_REFUSED":
             self.g.close()
@@ -587,6 +590,14 @@ class start(QtGui.QMainWindow):
             self.ShowMessageOK("You have logged out of the DNC !")
             self.ui.listNames.clear()
             self.ui.listNames_2.clear()
+            self.ui.lineEdit.setDisabled(True)
+            self.ui.pushButton.setDisabled(True)
+            self.ui.pushButton_2.setDisabled(False)
+            self.ui.pushButton_3.setDisabled(True)
+            self.ui.pushButton_6.setDisabled(True)
+
+            self.ui.lineEdit_4.setDisabled(False)
+            self.ui.lineEdit_3.setDisabled(False)
 
         if self.codeNb(txt.split(" ")[0]) == "SUCC_DISABLED":
             self.ShowMessageOK("You are AFK !")
@@ -603,7 +614,9 @@ class start(QtGui.QMainWindow):
             self.s.send("/userlistaway".encode())
 
         if self.codeNb(txt.split(" ")[0]) == "SUCC_NICKNAME_CHANGED":
-             self.ShowMessageOK("Sucessful nickname change !")
+            self.ShowMessageOK("Sucessful nickname change !")
+            self.ui.listNames.clear()
+            self.s.send("/userlist".encode())
 
         if self.errNb(txt.split(" ")[0]) == "ERR_INVALID_NICKNAME":
             self.pseudo = "INVALID_NICKNAME"
@@ -972,14 +985,7 @@ class start(QtGui.QMainWindow):
         quitter = "/quit"
         self.s.send(quitter.encode())
         #self.s.close()
-        self.ui.lineEdit.setDisabled(True)
-        self.ui.pushButton.setDisabled(True)
-        self.ui.pushButton_2.setDisabled(False)
-        self.ui.pushButton_3.setDisabled(True)
-        self.ui.pushButton_6.setDisabled(True)
 
-        self.ui.lineEdit_4.setDisabled(False)
-        self.ui.lineEdit_3.setDisabled(False)
 
     def createWidgets(self):
         """
