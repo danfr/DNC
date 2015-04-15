@@ -35,14 +35,14 @@
     <item>
      <widget class="QPushButton" name="pushButton">
       <property name="text">
-       <string>Send message</string>
+       <string>Send it</string>
       </property>
      </widget>
     </item>
     <item>
      <widget class="QPushButton" name="pushButton_2">
       <property name="text">
-       <string>send file</string>
+       <string>import file ...</string>
       </property>
      </widget>
     </item>

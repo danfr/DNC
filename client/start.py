@@ -7,90 +7,137 @@ from socket import *
 from pmWindow import Ui_Dialog2
 from pmFile import Ui_Dialog3
 import configparser
-import string, sys, urllib.parse
 from threading import *
 
 
-#------------------------------------------------------------------------
-
-class StreamHandler ( Thread ):
-
-    def __init__( this , port, filename):
-        Thread.__init__( this  )
-        this.port = port
-        this.filename = filename
-
-    def run(this):
-        this.process()
-
-    def bindmsock( this ):
-        this.msock = socket(AF_INET, SOCK_STREAM)
-        this.msock.bind(('', int(this.port)))
-        this.msock.listen(1)
-        print ('[Media] Listening on port'+this.port)
-
-    def acceptmsock( this ):
-        this.mconn, this.maddr = this.msock.accept()
-        print ('[Media] Got connection from', this.maddr)
+#########################################################
 
 
-    def acceptcsock( this ):
-        this.cconn, this.maddr = this.csock.accept()
-        print ('[Control] Got connection from'+ this.maddr)
+##
+# this class can receive files sent by p2p
+# to run this class, we need to do :
+#             s = StreamHandler(portFile, fileName)
+#               s.start()
+#
+
+
+class StreamHandler (Thread):
+    """
+    this class can receive files sent by p2p
+    to run this class, we need to do :
+              s = StreamHandler(portFile, fileName)
+              s.start()
+    """
+    def __init__(self, port, filename):
+        """
+
+        :param port: the port of the new connection
+        :param filename: the name of the file you wish to receive
+        :return:
+        """
+
+        Thread.__init__(self)
+        self.port = port
+        self.filename = filename
+
+    def run(self):
+        """
+         Execute the process function
+        :return:
+        """
+        self.process()
+
+    def bindmsock(self):
+        """
+        creation of a new socket for the p2p transfert file
+        :return:
+        """
+        self.msock = socket(AF_INET, SOCK_STREAM)
+        self.msock.bind(('', int(self.port)))
+        self.msock.listen(1)
+        print('[Media] Listening on port'+self.port)
+
+    def acceptmsock(self):
+        """
+        Get the address of the connection
+        :return:
+        """
+        self.mconn, self.maddr = self.msock.accept()
+        print('[Media] Got connection from', self.maddr)
+
+
+    def acceptcsock(self):
+        """
+        accept to receive the file
+        :return:
+        """
+        self.cconn, self.maddr = self.csock.accept()
+        print('[Control] Got connection from'+ self.maddr)
         
         while 1:
-            data = this.cconn.recv(1024)
+            data = self.cconn.recv(1024)
             if not data: break
-            if data[0:4] == "SEND": this.filename = data[5:]
-            print ('[Control] Getting ready to receive ' + this.filename)
+            if data[0:4] == "SEND": self.filename = data[5:]
+            print ('[Control] Getting ready to receive ' + self.filename)
             break
 
-    def transfer( this ):
-        print ('[Media] Starting media transfer for ' + this.filename)
+    def transfer( self ):
+        """
+        Starting the transfert of the file
+        :return:
+        """
+        print('[Media] Starting media transfer for ' + self.filename)
 
-        f = open(this.filename,"wb")
+        f = open(self.filename,"wb")
         while 1:
-            data = this.mconn.recv(1024)
+            data = self.mconn.recv(1024)
             if not data: break
             f.write(data)
         f.close()
 
-        print ('[Media] Got ' + this.filename)
-        print ('[Media] Closing media transfer for ' + this.filename)
+        print('[Media] Got ' + self.filename)
+        print('[Media] Closing media transfer for ' + self.filename)
     
-    def close( this ):
-        #this.cconn.close()
-        #this.csock.close()
-        this.mconn.close()
-        this.msock.close()
+    def close(self):
+        """
+        We close the connection
+        :return:
+        """
 
-    def process( this ):
-            #this.bindcsock()
-            #this.acceptcsock()
-            this.bindmsock()
-            this.acceptmsock()
-            this.transfer()
-            this.close()
+        self.mconn.close()
+        self.msock.close()
 
-#------------------------------------------------------------------------
+    def process(self):
+        """
+        function who start all the function
+        :return:
+        """
+
+        self.bindmsock()
+        self.acceptmsock()
+        self.transfer()
+        self.close()
+
+#########################################################
 
 class MySignal(QObject):
         sig = Signal(str)
 
 class MyLongThread(QThread):
         def __init__(self, parent = None):
+
                 QThread.__init__(self, parent)
                 self.exiting = False
                 self.signal = MySignal()
 
         def run(self):
                 end = time.time()+10
-                while self.exiting==False:
+                while not self.exiting:
                         sys.stdout.write('*')
                         sys.stdout.flush()
                         time.sleep(1)
                         now = time.time()
-                        if now>=end:
+                        if now >= end:
                                 self.exiting=True
                 self.signal.sig.emit('OK')
 
@@ -111,12 +158,18 @@ class MyThread(QThread):
             self.gui = gui
             
        
-#----------------------------------------------------------------------
+#########################################################
 
             
-class privateFile () : 
-    def __init__(self,main,s, pseudoFile):
-
+class privateFile():
+    def __init__(self, main, s, pseudoFile):
+        """
+        new windows for the p2p
+        :param main:
+        :param s:
+        :param pseudoFile: pseudo of the people who need to send the file
+        :return:
+        """
         self.main = main
         self.s = s
         self.pseudoFile = pseudoFile
@@ -130,7 +183,11 @@ class privateFile () :
         
 
     def sendFile(self):
-        if self.ui.lineEdit.text() != "" : 
+        """
+        Send to the sever the command : /pmfile + pseudo to send + name of the file
+        :return:
+        """
+        if self.ui.lineEdit.text() != "":
             self.ui.lineEdit.setText("")
             try:
                 print(self.cmd1.encode())
@@ -141,16 +198,27 @@ class privateFile () :
                 self.ShowMessageErreur("Erreur : Timeout. Le serveur ne repond pas")
         
     def selectFile(self):
+        """
+        buttton to open and chose the file to send and create the name of the command
+        :return:
+        """
         nomFile = ' '.join(QFileDialog.getOpenFileName())
         self.ui.lineEdit.setText('/pmfile '+self.pseudoFile+ " "+nomFile )
         self.cmd1 = self.ui.lineEdit.text()
         self.bob = ' '.join(nomFile.split("/")[-1:])
 
-#----------------------------------------------------------------------
-        
-class privateMessage () :
-    def __init__(self,main,s, pmPerson, pmPerso):
+#########################################################
 
+class privateMessage() :
+    def __init__(self,main,s, pmPerson, pmPerso):
+        """
+        new windows for a private conversation
+        :param main:
+        :param s:
+        :param pmPerson:
+        :param pmPerso:
+        :return:
+        """
         self.main = main
         self.s = s
         self.pmPerso = pmPerso
@@ -166,7 +234,7 @@ class privateMessage () :
 
         Qt.WindowStaysOnTopHint
 
-        self.queueMsg2= []
+        self.queueMsg2=[]
         self.thread = MyThread()
         self.thread.finished.connect(self.UpdateChatP)
 
@@ -178,9 +246,12 @@ class privateMessage () :
 
         self.ui.label_2.setText(pmPerson)
 
-    def codeNb (self, txt):
-        #if re.compile(' ').search(str(txt)) : txt = txt.split(" ")[0]
-
+    def codeNb(self, txt):
+        """
+        converted a return code (info and succes) in the message
+        :param txt: code from the server
+        :return: info, String return from server
+        """
         if txt == "300": info = "USERLIST"
         elif txt == "301": info = "USERAWAY"
         elif txt == "302": info = "HAS_JOIN"
@@ -189,44 +260,37 @@ class privateMessage () :
         elif txt == "305": info = "NAME_CHANGED"
         elif txt == "306": info = "NEW_PM"
         elif txt == "307": info = "ASKING_FOR_PM"
-        
-        elif txt == "308":  info = "PRIVATE_DISCU_ACCEPTED_FROM" #SUCC_PRIVATE_DISCUSSION_OK       SUCC_PRIVATE_DISCUSSION_ACCEPTED
-        elif txt == "309":  info = "PRIVATE_DISCU_REFUSED_FROM"
-        
+        elif txt == "308": info = "PRIVATE_DISCU_ACCEPTED_FROM"
+        elif txt == "309": info = "PRIVATE_DISCU_REFUSED_FROM"
         elif txt == "310": info = "IS_NOW_ENABLE"
         elif txt == "311": info = "IS_NOW_DISABLE"
         elif txt == "312": info = "HAS_ASKED_FILE"
         elif txt == "313": info = "CAN_SEND_FILE"
         elif txt == "314": info = "HAS_REJECT_FILE"
-
-
-        elif txt == "200" or txt=="200300": info = "SUCC_CHANNEL_JOINED"
-        elif txt=="200300" : info = "SUCC_CHANNEL_JOINED USERLIST"
-
+        elif txt == "200" or txt == "200300": info = "SUCC_CHANNEL_JOINED"
+        elif txt == "200300": info = "SUCC_CHANNEL_JOINED USERLIST"
         elif txt == "201": info = "SUCC_CHANNEL_QUIT"
         elif txt == "202": info = "SUCC_MESSAGE_SENDED"
-        
         elif txt == "203": info = "SUCC_NICKNAME_CHANGED"
         elif txt == "204": info = "SUCC_VALID_NICKNAME"
         elif txt == "205": info = "SUCC_PM_SENDED"
-        
         elif txt == "206": info = "SUCCESSFUL_ASKED_CONV"
         elif txt == "207": info = "SUCCESSFUL_ACCEPTED_CONV"
         elif txt == "208": info = "SUCCESSFUL_REFUSED_CONV"
-        
         elif txt == "209": info = "SUCC_ENABLED"
         elif txt == "210": info = "SUCC_DISABLED"
-        
-        elif txt == "211": info = "SUCC_PMFILE" #SUCC_ASKED_FILE
-        
-        elif txt == "212": info = "SUCC_ACCEPTED_FILE" 
-             
+        elif txt == "211": info = "SUCC_PMFILE"
+        elif txt == "212": info = "SUCC_ACCEPTED_FILE"
         elif txt == "213": info = "SUCC_REFUSED_FILE"
-        else :  info = txt
+        else: info = txt
         
         return info
         
     def reject(self):
+        """
+        if a user reject a pm conversation
+        :return:
+        """
         self.cmRej = "/rejectpm "+self.pmPerson
         try:
             self.s.send(self.cmRej.encode())
@@ -238,10 +302,13 @@ class privateMessage () :
             sb.setValue(sb.maximum())
 
     def accept(self):
+        """
+        if a user accept a pm with another user
+        :return:
+        """
         self.cmAcc = "/acceptpm "+self.pmPerson
         try:
             self.s.send(self.cmAcc.encode())
-
 
         except timeout:
             self.ShowMessageErreur("Erreur : Timeout. Le serveur ne repond pas")
@@ -249,10 +316,12 @@ class privateMessage () :
             sb = self.ui.txtOutput.verticalScrollBar()
             sb.setValue(sb.maximum())
 
-
-
     def htmlToText( self, html ):
-
+        """
+        converted some characters written by the user (html tag, smiley)
+        :param html: message written by an user
+        :return: html, message converted
+        """
         html = html.replace('<', '&#60;')
         html = html.replace('>', '&#62;')
         html = html.replace(':-)', '<img src="img/happy.png" alt="Smiley face">')
@@ -268,14 +337,21 @@ class privateMessage () :
         html = html.replace(':pedobear', '<img src="img/pedo.gif"  alt="hell face">')
         html = html.replace(':homer', '<img src="img/homer.gif"  alt="homer face">')
 
-
         return html
 
     def ShowMessageErreur(self, txt):
-        self.message_buffer2 += '<br> <span style="color : red; font-weight: bold;"> '+  self.htmlToText(txt) +' </span>'
-
+        """
+        Show with color message from the server with error
+        :param txt:message from server
+        :return: message with color
+        """
+        self.message_buffer2 += '<br> <span style="color : red; font-weight: bold;"> ' + self.htmlToText(txt) + ' </span>'
 
     def send(self):
+        """
+        send the message written in the pm conversation
+        :return:
+        """
         self.cmdP = self.ui.lineEdit.text()
         if self.cmdP != "":
             self.ui.lineEdit.setText('')
@@ -290,75 +366,103 @@ class privateMessage () :
                 sb = self.ui.txtOutput.verticalScrollBar()
                 sb.setValue(sb.maximum())
 
-    def UpdateChatP(self) :
+    def UpdateChatP(self):
+        """
+        update the chat box
+        :return:
+        """
         if self.queueMsg2  :
             m = self.queueMsg2.pop(0)
             if  m :
                 self.thread.start()
                 self.ShowMessageAsTextPm(m)
 
-
     def getTimeStamp(self):
+        """
+        the time format: H:M
+        :return: time
+        """
         return ('[%s] ' % str(datetime.datetime.fromtimestamp(int(time.time())).strftime('%H:%M')))
 
-    def ShowMessageAsTextPm(self, txt) :
+    def ShowMessageAsTextPm(self, txt):
+        """
+        add txt to the buffer with the time and color
+        :param txt: message from sever
+        :return:
+        """
+        self.message_buffer2 += '<br><span style="color : grey">'+self.codeNb(txt)+'</span>'
 
-            self.message_buffer2 += '<br><span style="color : grey">'+self.codeNb(txt)+'</span>'
+        if self.codeNb(txt.split(" ")[0]) == "SUCC_PRIVATE_DISCUSSION_REFUSED":
+            self.g.close()
 
-            if self.codeNb(txt.split(" ")[0]) == "SUCC_PRIVATE_DISCUSSION_REFUSED":
-                self.g.close()
-
-            if self.codeNb(txt.split(" ")[0]) == "SUCC_PRIVATE_DISCUSSION_REJECTED":
-                self.g.close()
-
-
-            if self.codeNb(txt.split(" ")[0]) == "SUCC_PM_SENDED":
-                self.message_buffer2 += '<br><span style="color : grey"> ' + self.getTimeStamp() + '</span> <span style="color : red"> &#60; '+self.pmPerso +' &#62; </span> ' + self.htmlToText(self.cmdP) + ''
-
-
-            if self.codeNb(txt.split(" ")[0]) == "SUCC_PRIVATE_DISCUSSION_ACCEPTED":
-                self.message_buffer2 += '<br> <span style="color : green"> Chalange Accepted ! </span>'
-                self.ui.pushButton_4.setDisabled(True)
-                self.ui.pushButton_3.setDisabled(True)
+        if self.codeNb(txt.split(" ")[0]) == "SUCC_PRIVATE_DISCUSSION_REJECTED":
+            self.g.close()
 
 
-            if self.codeNb(txt.split(" ")[0]) == "PRIVATE_DISCU_ACCEPTED_FROM":
-                self.message_buffer2 += '<br> <span style="color : green"> Private discussion with '+txt.split(" ")[1]+' accepted ! </span>'
-                self.ui.pushButton_4.setDisabled(True)
-                self.ui.pushButton_3.setDisabled(True)
+        if self.codeNb(txt.split(" ")[0]) == "SUCC_PM_SENDED":
+            self.message_buffer2 += '<br><span style="color : grey"> ' + self.getTimeStamp() + '</span> <span style="color : red"> &#60; '+self.pmPerso +' &#62; </span> <span style="color : black">' + self.htmlToText(self.cmdP) + '</span>'
 
 
-            if self.codeNb(txt.split(" ")[0]) == "NEW_PM" :
-                self.message_buffer2 += '<br><span style="color : grey"> ' + self.getTimeStamp() + '</span> <span style="color : red"> &#60; '+ self.pmPerson +' &#62; </span> ' + self.htmlToText(' '.join(txt.split(" ")[2:])) + ''
+        if self.codeNb(txt.split(" ")[0]) == "SUCC_PRIVATE_DISCUSSION_ACCEPTED":
+            self.message_buffer2 += '<br> <span style="color : green"> Chalange Accepted ! </span>'
+            self.ui.pushButton_4.setDisabled(True)
+            self.ui.pushButton_3.setDisabled(True)
 
 
-            self.ui.txtOutput.setText(self.message_buffer2)
-            sb = self.ui.txtOutput.verticalScrollBar()
-            sb.setValue(sb.maximum())
+        if self.codeNb(txt.split(" ")[0]) == "PRIVATE_DISCU_ACCEPTED_FROM":
+            self.message_buffer2 += '<br> <span style="color : green"> Private discussion with '+txt.split(" ")[1]+' accepted ! </span>'
+            self.ui.pushButton_4.setDisabled(True)
+            self.ui.pushButton_3.setDisabled(True)
 
-#----------------------------------------------------------------------
 
+        if self.codeNb(txt.split(" ")[0]) == "NEW_PM" :
+            self.message_buffer2 += '<br><span style="color : grey"> ' + self.getTimeStamp() + '</span> <span style="color : red"> &#60; '+ self.pmPerson +' &#62; </span> ' + self.htmlToText(' '.join(txt.split(" ")[2:])) + ''
+
+
+        self.ui.txtOutput.setText(self.message_buffer2)
+        sb = self.ui.txtOutput.verticalScrollBar()
+        sb.setValue(sb.maximum())
+
+######################################################################################################################
 
 class start(QtGui.QMainWindow):
     def __init__(self):
+        """
+        Main Windows with the main conversation
+        :return:
+        """
         super(start, self).__init__()
         self.queueMsg= []
         self.thread = MyThread()
         self.thread.finished.connect(self.UpdateChat)
-
-
         self.createWidgets()
 
     def setNewMsg (self,msg) :
+        """
+        add msg to the queueMsg
+        :param msg:
+        :return:
+        """
         self.queueMsg.append(msg)
 
     def getTimeStamp(self):
-        return ('[%s] ' % str(datetime.datetime.fromtimestamp(int(time.time())).strftime('%H:%M')))
+        """
+        the time format: H:M
+        :return: time
+        """
+        return('[%s] ' % str(datetime.datetime.fromtimestamp(int(time.time())).strftime('%H:%M')))
 
-    def htmlToText( self, html ):
+    def htmlToText( self, html):
+        """
+        converted some characters written by the user (html tag, smiley)
+        :param html: message written by an user
+        :return: html, message converted
+        """
 
-        html = html.replace('<', '&#60;')
+
+        html = html.replace('&', '&amp;')
         html = html.replace('>', '&#62;')
+        html = html.replace('<', '&quot;')
         html = html.replace(':-)', '<img src="img/happy.png" alt="Smiley face">')
         html = html.replace(':-(', '<img src="img/sad.png" alt="sad face">')
         html = html.replace(':-p', '<img src="img/langue.png" alt="langue face">')
@@ -371,25 +475,42 @@ class start(QtGui.QMainWindow):
         html = html.replace('3:)', '<img src="img/hell.png" alt="hell face">')
         html = html.replace(':pedobear', '<img src="img/pedo.gif"  alt="hell face">')
         html = html.replace(':homer', '<img src="img/homer.gif"  alt="homer face">')
-
+        html = html.replace(':dalek', '<img src="img/Dalek.gif"  alt="homer face">')
+        html = html.replace(':tardis', '<img src="img/tardis.png"  alt="homer face">')
 
         return html
 
     def ShowMessageErreur(self, txt):
+        """
+        add to the buffer an erreur message with color
+        :param txt:message from the server
+        :return:
+        """
         self.message_buffer += '<br> <span style="color : red; font-weight: bold;"> '+  self.htmlToText(txt) +' </span>'
 
     def ShowMessageOK(self, txt):
+        """
+        add to the buffer a good message with style
+        :param txt:message from the server
+        :return:
+        """
         self.message_buffer += '<br> <span style="color : green; font-weight: bold;"> '+  self.htmlToText(txt) +' </span>'
 
-    def ShowMessageInfo (self, txt) :
+    def ShowMessageInfo (self, txt):
+        """
+        add to the buffer an info message with style
+        :param txt:message from the server
+        :return:
+        """
         self.message_buffer += '<br> <span style="color : #FF00FF; font-weight: bold;"> '+  self.htmlToText(txt) +' </span>'
 
-
     def ShowMessageAsText(self, txt):
-
-
-        #self.message_buffer += '<br> <span style="color : #E6E6E6"> '+  txt +' </span>'
-        self.message_buffer += '<br> <span style="color : #E6E6E6"> '+  self.codeNb(str(txt)) +' </span>'
+        """
+        add to the buffer message from the server with style and run some function
+        :param txt:message from the server
+        :return:
+        """
+        #self.message_buffer += '<br> <span style="color : #E6E6E6"> '+  self.codeNb(str(txt)) +' </span>'
         
         if re.match("^4", txt):
             self.ShowMessageErreur("Erreur ! : " + self.errNb(txt))
@@ -401,14 +522,12 @@ class start(QtGui.QMainWindow):
             self.s.send("/userlist".encode())
             self.s.send("/userlistaway".encode())
 
-
         if self.codeNb(txt.split(" ")[0]) == "IS_NOW_ENABLE":
             self.ShowMessageInfo(txt.split(" ")[1]+" is Back !!")
             self.ui.listNames.clear()
             self.ui.listNames_2.clear()
             self.s.send("/userlist".encode())
             self.s.send("/userlistaway".encode())
-
 
         if self.codeNb(txt.split(" ")[0]) == "HAS_ASKED_FILE":
             self.ShowMessageOK(txt.split(" ")[1]+" share a file with you, do you want download "+' '.join(txt.split(" ")[2].split("/")[-1:])+" ?")
@@ -422,89 +541,74 @@ class start(QtGui.QMainWindow):
             self.ShowMessageOK("accepted file on ip "+txt.split(" ")[1])
             s = StreamHandler(self.portFile, self.fileNom)
             s.start()
-            
-            
+
         if self.codeNb(txt.split(" ")[0]) == "CAN_SEND_FILE":
             self.ShowMessageOK("file can be send  ")
-            
             ms = socket(AF_INET, SOCK_STREAM)
-            
             print(txt.split(" ")[2]+" "+txt.split(" ")[3])
-            
             ms.connect((str(txt.split(" ")[2]), int(txt.split(" ")[3])))
-
             f = open(txt.split(" ")[4], "rb")
             data = f.read()
             f.close()
-
             ms.send(data)
             ms.close() 
-            
 
         if self.codeNb(txt.split(" ")[0]) == "SUCCESSFUL_ACCEPTED_CONV":
             self.message_buffer += '<br> <span style="color : green"> PRIVATE DISCUSSION ? challenge accepted ! '
             self.private2.ShowMessageAsTextPm("SUCC_PRIVATE_DISCUSSION_ACCEPTED")
 
         if self.codeNb(txt.split(" ")[0]) == "PRIVATE_DISCU_ACCEPTED_FROM":
-            self.message_buffer += '<br> <span style="color : green"> PRIVATE DISCUSSION WITH '+txt.split(" ")[1]+' ? challenge accepted ! '
+            self.message_buffer += '<br> <span style="color : green"> PRIVATE DISCUSSION WITH '+txt.split(" ")[1] + ' ? challenge accepted ! '
             self.private2.ShowMessageAsTextPm(txt)
 
-
-
-        if self.codeNb(txt.split(" ")[0]) == "SUCCESSFUL_ASKED_CONV" :
+        if self.codeNb(txt.split(" ")[0]) == "SUCCESSFUL_ASKED_CONV":
              self.ShowMessageOK("invitation requested")
-             self.private2 = privateMessage(self,self.s,self.demande,self.pseudo)
+             self.private2 = privateMessage(self, self.s, self.demande, self.pseudo)
 
-        if self.codeNb(txt.split(" ")[0]) == "ASKING_FOR_PM" :
-             self.ShowMessageOK("private discution from "+ txt.split(" ")[1] )
-             self.private2 = privateMessage(self,self.s,txt.split(" ")[1],self.pseudo)
+        if self.codeNb(txt.split(" ")[0]) == "ASKING_FOR_PM":
+             self.ShowMessageOK("private discution from "+ txt.split(" ")[1])
+             self.private2 = privateMessage(self,self.s,txt.split(" ")[1], self.pseudo)
 
-
-
-        if self.codeNb(txt.split(" ")[0]) == "SUCC_PM_SENDED" : 
+        if self.codeNb(txt.split(" ")[0]) == "SUCC_PM_SENDED":
             self.private2.ShowMessageAsTextPm(txt.split(" ")[0])
 
-        if self.codeNb(txt.split(" ")[0]) == "NEW_PM" :
+        if self.codeNb(txt.split(" ")[0]) == "NEW_PM":
             self.private2.ShowMessageAsTextPm(txt)
 
-        if self.codeNb(txt.split(" ")[0]) == "SUCC_PRIVATE_DISCUSSION_REFUSED" :
+        if self.codeNb(txt.split(" ")[0]) == "SUCC_PRIVATE_DISCUSSION_REFUSED":
             self.private2.ShowMessageAsTextPm(txt)
             self.ShowMessageOK("Private discussion refused !!")
 
-        if self.codeNb(txt.split(" ")[0]) == "SUCC_PRIVATE_DISCUSSION_REJECTED" :
+        if self.codeNb(txt.split(" ")[0]) == "SUCC_PRIVATE_DISCUSSION_REJECTED":
             self.private2.ShowMessageAsTextPm(txt)
             self.ShowMessageOK(txt.split(" ")[1]+" Rejected your Private discussion !!")
 
-
-        if self.codeNb(txt.split(" ")[0]) == "SUCCESSFUL_LOGOUT" :
+        if self.codeNb(txt.split(" ")[0]) == "SUCC_CHANNEL_QUIT":
             self.ShowMessageOK("You have logged out of the DNC !")
             self.ui.listNames.clear()
             self.ui.listNames_2.clear()
 
-        if self.codeNb(txt.split(" ")[0]) == "SUCC_DISABLED" :
+        if self.codeNb(txt.split(" ")[0]) == "SUCC_DISABLED":
             self.ShowMessageOK("You are AFK !")
             self.ui.listNames.clear()
             self.ui.listNames_2.clear()
             self.s.send("/userlist".encode())
             self.s.send("/userlistaway".encode())
 
-
-        if self.codeNb(txt.split(" ")[0]) == "SUCC_ENABLED" :
+        if self.codeNb(txt.split(" ")[0]) == "SUCC_ENABLED":
             self.ShowMessageOK("You are back !")
             self.ui.listNames.clear()
             self.ui.listNames_2.clear()
             self.s.send("/userlist".encode())
             self.s.send("/userlistaway".encode())
 
-
-        if self.codeNb(txt.split(" ")[0]) == "SUCC_NICKNAME_CHANGED" :
+        if self.codeNb(txt.split(" ")[0]) == "SUCC_NICKNAME_CHANGED":
              self.ShowMessageOK("Sucessful nickname change !")
 
-        if self.errNb(txt.split(" ")[0]) == "ERR_INVALID_NICKNAME" :
+        if self.errNb(txt.split(" ")[0]) == "ERR_INVALID_NICKNAME":
             self.pseudo = "INVALID_NICKNAME"
 
-
-        if self.codeNb(txt.split(" ")[0]) == "NAME_CHANGED" :
+        if self.codeNb(txt.split(" ")[0]) == "NAME_CHANGED":
             self.ShowMessageNameChange(txt.split(" ")[1], txt.split(" ")[2])
             self.ui.listNames.clear()
             self.s.send("/userlist".encode())
@@ -518,35 +622,29 @@ class start(QtGui.QMainWindow):
             self.ui.listNames.clear()
             self.s.send("/userlist".encode())
 
-
         if self.codeNb(txt.split(" ")[0]) == "SUCC_CHANNEL_JOINED" or txt.split(" ")[0] == "200":
             self.ShowMessageHasJoin(self.pseudo)
-            #self.s.send("/userlist".encode())
             self.ui.listNames.clear()
             self.ui.listNames_2.clear()
             self.s.send("/userlist".encode())
             self.s.send("/userlistaway".encode())
 
-
-        if self.errNb(txt.split(" ")[0]) == "ERR_NICKNAME_ALREADY_USED" :
+        if self.errNb(txt.split(" ")[0]) == "ERR_NICKNAME_ALREADY_USED":
             self.deco()
 
-
-        if re.compile('USERLIST').search(self.codeNb(txt.split(" ")[0]) ) :
+        if re.compile('USERLIST').search(self.codeNb(txt.split(" ")[0])):
             self.ui.listNames.clear()
-            n = len(txt.split(" ")[1:]) +1
-            for i in range(1,n) :
-                self.ui.listNames.addItem(str(txt.split(" ")[i]).replace("301",""))
-            print(str(txt.split(" ")[1:]))
+            n = len(txt.split(" ")[1:]) + 1
+            for i in range(1, n):
+                self.ui.listNames.addItem(str(txt.split(" ")[i]).replace("301", ""))
+            #print(str(txt.split(" ")[1:]))
 
-        if re.compile('USERAWAY').search(self.codeNb(txt.split(" ")[0]) ) :
+        if re.compile('USERAWAY').search(self.codeNb(txt.split(" ")[0])):
             self.ui.listNames_2.clear()
-            n = len(txt.split(" ")[1:]) +1
-            for i in range(1,n) :
+            n = len(txt.split(" ")[1:]) + 1
+            for i in range(1, n):
                 self.ui.listNames_2.addItem(str(txt.split(" ")[i]))
-            print(str(txt.split(" ")[1:]))
-
-
+            #print(str(txt.split(" ")[1:]))
 
         if self.codeNb(txt.split(" ")[0]) == "NEW_MSG" :
             self.message_buffer += '<br><span style="color : grey"> ' + self.getTimeStamp() + '</span> <span style="color : red"> &#60; '+txt.split(" ")[1] +' &#62; </span> <span style="color : black">' + self.htmlToText(' '.join(txt.split(" ")[2:])) + '</span>'
@@ -554,44 +652,50 @@ class start(QtGui.QMainWindow):
         if self.codeNb(txt) == "SUCC_MESSAGE_SENDED" :
             self.message_buffer += '<br><span style="color : grey"> ' + self.getTimeStamp() + '</span> <span style="color : red"> &#60; '+ self.pseudo +' &#62; </span><span style="color : black"> ' + self.htmlToText(self.cmd) + '</span>'
 
-
-
     def errNb (self, txt):
-        if txt == "400" :
+        """
+        converted a return error code in the message
+        :param txt: code from the server
+        :return: String message
+        """
+        if txt == "400":
             info = "ERR_NICKNAME_ALREADY_USED"
             
-        elif txt == "401" :
+        elif txt == "401":
             info = "ERR_NO_NICKNAME"
         
-        elif txt == "402" :
+        elif txt == "402":
             info = "ERR_CONV_NOT_ALLOWED"
 
-        elif txt == "403" :
+        elif txt == "403":
             info = "DEST_NOT_FOUND"
             
-        elif txt == "404" :
+        elif txt == "404":
             info = "ERR_ALREADY_ASKED_FOR_PM"
             
-        elif txt == "405" :
+        elif txt == "405":
             info = "ERR_NO_INVIT_TO_CONV_FOUND"
  
-        elif txt == "406" :
+        elif txt == "406":
             info = "ERR_UNKNOWN_ACCEPTED_FILE"
             
-        elif txt == "407" :
+        elif txt == "407":
             info = "COMMAND_NOT_FOUND"
             
-        elif txt == "408" :
+        elif txt == "408":
             info = "ERR_INVALID_NICKNAME"
-        else :
-            info ="ERREUR "+txt
+        else:
+            info ="ERREUR " + txt
             
         return info
 
 
     def codeNb (self, txt):
-        #if re.compile(' ').search(str(txt)) : txt = txt.split(" ")[0]
-
+        """
+        converted a return code in the message
+        :param txt: code from the server
+        :return: info, String return from server
+        """
         if txt == "300": info = "USERLIST"
         elif txt == "301": info = "USERAWAY"
         elif txt == "302": info = "HAS_JOIN"
@@ -600,65 +704,79 @@ class start(QtGui.QMainWindow):
         elif txt == "305": info = "NAME_CHANGED"
         elif txt == "306": info = "NEW_PM"
         elif txt == "307": info = "ASKING_FOR_PM"
-        
-        elif txt == "308":  info = "PRIVATE_DISCU_ACCEPTED_FROM" #SUCC_PRIVATE_DISCUSSION_OK       SUCC_PRIVATE_DISCUSSION_ACCEPTED
-        elif txt == "309":  info = "PRIVATE_DISCU_REFUSED_FROM"
-        
+        elif txt == "308": info = "PRIVATE_DISCU_ACCEPTED_FROM"
+        elif txt == "309": info = "PRIVATE_DISCU_REFUSED_FROM"
         elif txt == "310": info = "IS_NOW_ENABLE"
         elif txt == "311": info = "IS_NOW_DISABLE"
         elif txt == "312": info = "HAS_ASKED_FILE"
         elif txt == "313": info = "CAN_SEND_FILE"
         elif txt == "314": info = "HAS_REJECT_FILE"
-
-
         elif txt == "200" or txt=="200300": info = "SUCC_CHANNEL_JOINED"
-        elif txt=="200300" : info = "SUCC_CHANNEL_JOINED USERLIST"
-
+        elif txt == "200300" : info = "SUCC_CHANNEL_JOINED USERLIST"
         elif txt == "201": info = "SUCC_CHANNEL_QUIT"
         elif txt == "202": info = "SUCC_MESSAGE_SENDED"
-        
         elif txt == "203": info = "SUCC_NICKNAME_CHANGED"
         elif txt == "204": info = "SUCC_VALID_NICKNAME"
         elif txt == "205": info = "SUCC_PM_SENDED"
-        
         elif txt == "206": info = "SUCCESSFUL_ASKED_CONV"
         elif txt == "207": info = "SUCCESSFUL_ACCEPTED_CONV"
         elif txt == "208": info = "SUCCESSFUL_REFUSED_CONV"
-        
         elif txt == "209": info = "SUCC_ENABLED"
         elif txt == "210": info = "SUCC_DISABLED"
-        
-        elif txt == "211": info = "SUCC_PMFILE" #SUCC_ASKED_FILE
-        
-        elif txt == "212": info = "SUCC_ACCEPTED_FILE" 
-             
+        elif txt == "211": info = "SUCC_PMFILE"
+        elif txt == "212": info = "SUCC_ACCEPTED_FILE"
         elif txt == "213": info = "SUCC_REFUSED_FILE"
-        else :  info = txt
+        else: info = txt
         
         return info
 
-    def ShowMessageHasJoin (self, txt) :
+    def ShowMessageHasJoin(self, txt):
+        """
+        adds a message to the buffer to alert users that a person has joined the dnc
+        :param txt: user name
+        :return:
+        """
         self.message_buffer += '<br> <span style="color : #FF00FF; font-weight: bold;"> '+  self.htmlToText(txt) +' has joined DNC </span>'
 
-    def ShowMessageHasLeft (self, txt) :
+    def ShowMessageHasLeft(self, txt):
+        """
+        adds a message to the buffer to alert users that a person has left the dnc
+        :param txt: user name
+        :return:
+        """
         self.message_buffer += '<br> <span style="color : #FF00FF; font-weight: bold;"> '+  self.htmlToText(txt) +' has left DNC </span>'
 
-    def ShowMessageNameChange (self, txt, txt2) :
+    def ShowMessageNameChange(self, txt, txt2):
+        """
+        adds a message to the buffer to alert users that a person change his name
+        :param txt: old name
+        :param txt2:new name
+        :return:
+        """
         self.message_buffer += '<br> <span style="color : #FF00FF; font-weight: bold;"> '+  self.htmlToText(txt) +' is now : '+self.htmlToText(txt2)+' </span>'
 
-    def UpdateChat(self) :
-        if self.queueMsg  :
+    def UpdateChat(self):
+        """
+        update the chat with the buffer
+        :return:
+        """
+        if self.queueMsg :
             m = self.queueMsg.pop(0)
-            if  m :
+            if m:
                 self.thread.start()
                 self.ShowMessageAsText(m)
                 self.ui.txtOutput.setText(self.message_buffer)
                 sb = self.ui.txtOutput.verticalScrollBar()
                 sb.setValue(sb.maximum())
 
-
-    def questionMessage(self,name,fileN):    
-        reply = QtGui.QMessageBox.question(self, "send file", "do you want to download the file : "+ ' '.join(fileN.split("/")[-1:])+" from "+name+" ?", QtGui.QMessageBox.Yes | QtGui.QMessageBox.No )
+    def questionMessage(self, name,fileN):
+        """
+        open un QMessageBox to  ask the user whether to download a file from another user
+        :param name: user name who send file
+        :param fileN: file name
+        :return:
+        """
+        reply = QtGui.QMessageBox.question(self, "send file", "do you want to download the file : " + ' '.join(fileN.split("/")[-1:])+" from "+name+" ?", QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
         
         if reply == QtGui.QMessageBox.Yes:
             text = ''.join(str(random.randint(1,9)) for _ in range(4))
@@ -677,51 +795,30 @@ class start(QtGui.QMainWindow):
                 self.ui.txtOutput.setText(self.message_buffer)
                 sb = self.ui.txtOutput.verticalScrollBar()
                 sb.setValue(sb.maximum())
-            
- 
+
         elif reply == QtGui.QMessageBox.No:
             try:
-                cmdRej="/rejectfile "+name+" "+fileN
+                cmdRej = "/rejectfile "+name+" "+fileN
                 print(cmdRej)
                 self.s.send(cmdRej.encode())
 
-
             except timeout:
                 self.ShowMessageErreur("Erreur : Timeout. Le serveur ne repond pas")
                 self.ui.txtOutput.setText(self.message_buffer)
                 sb = self.ui.txtOutput.verticalScrollBar()
                 sb.setValue(sb.maximum())
-
-
-    def openInputDialog(self, name, fileN):
-
-        text, result = QtGui.QInputDialog.getText(self, "Port",
-                                            "What is the port of the transfert ?")
-        if result and text != "":
-            print ("le port d'envoi est : " + text)
-
-            cmdAccF = "/acceptfile "+name+" "+text+" "+fileN
-            try:
-                self.s.send(cmdAccF.encode())
-                print(cmdAccF)
-                self.portFile = text
-
-            except timeout:
-                self.ShowMessageErreur("Erreur : Timeout. Le serveur ne repond pas")
-                self.ui.txtOutput.setText(self.message_buffer)
-                sb = self.ui.txtOutput.verticalScrollBar()
-                sb.setValue(sb.maximum())
-
-
 
     def connectActions(self):
+        """
+        add an action to buttons
+        :return:
+        """
         self.ui.pushButton_2.clicked.connect(self.connecter)
         self.ui.pushButton_3.clicked.connect(self.deco)
         self.ui.pushButton.clicked.connect(self.client)
         self.ui.pushButton_6.clicked.connect(self.changeN)
         self.ui.pushButton_5.clicked.connect(self.away)
         self.ui.lineEdit.returnPressed.connect(self.client)
-        
 
         self.ui.listNames.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.ui.listNames.customContextMenuRequested.connect(self.buttonAMenu)
@@ -732,24 +829,42 @@ class start(QtGui.QMainWindow):
         print ('Doing Stuff when clicking on Button A')
 
     def buttonAMenu(self, pos):
+        """
+        menu with the right click on the user list
+        :param pos:
+        :return:
+        """
         menu = QtGui.QMenu()
         menu.addAction('Private discussion', lambda:self.FirstActionButtonA())
         menu.addAction('Send file', lambda:self.SecondActionButtonA())
         menu.exec_(QtGui.QCursor.pos())
 
     def FirstActionButtonA(self):
+        """
+        first action (ask a pm) on the menu of the right click
+        :return:
+        """
         test1 = self.ui.listNames.currentItem().text()
         print("1e fonction : "+str(test1))
         self.someMethod(str(test1))
 
 
     def SecondActionButtonA(self):
+        """
+        second action (send file) on the menu of the right click
+        :return:
+        """
         test1 = self.ui.listNames.currentItem().text()
         print("2sd fonction : "+str(test1))
-        self.privateFile = privateFile(self,self.s,str(test1))
+        self.privateFile = privateFile(self, self.s, str(test1))
         
         
     def someMethod(self,item):
+        """
+        ask a pm to another user of the list
+        :param item: user name from the list
+        :return:
+        """
         nom = item.replace("SUCCESSFUL_ASKED_CONV","")
         cmdPM = "/askpm "+nom
         try:
@@ -762,9 +877,11 @@ class start(QtGui.QMainWindow):
             sb = self.ui.txtOutput.verticalScrollBar()
             sb.setValue(sb.maximum())
 
-
     def away(self):
-
+        """
+        action on the button afk and back
+        :return:
+        """
         if self.bouton == "disable" :
             cmdAway = "/disable "
             try:
@@ -791,8 +908,11 @@ class start(QtGui.QMainWindow):
                 sb = self.ui.txtOutput.verticalScrollBar()
                 sb.setValue(sb.maximum())
 
-
     def changeN(self):
+        """
+        action to change name
+        :return:
+        """
         changePseudo = self.ui.lineEdit_2.text()
         cmdChange = "/name "+changePseudo
         try:
@@ -808,19 +928,18 @@ class start(QtGui.QMainWindow):
             sb = self.ui.txtOutput.verticalScrollBar()
             sb.setValue(sb.maximum())
 
-
-
     def connecter(self):
-
-        ip= self.ui.lineEdit_4.text()
+        """
+        create a connection, chose name and start thread to update the chat
+        :return:
+        """
+        ip = self.ui.lineEdit_4.text()
         port = int(self.ui.lineEdit_3.text())
         self.portCo = port
         Addr = (ip,port)
-
-
         self.s = socket(AF_INET, SOCK_STREAM)
         self.s.connect(Addr)
-        self.thread.setConfig(self.s,self)
+        self.thread.setConfig(self.s, self)
         self.ui.lineEdit.setDisabled(False)
         self.ui.pushButton.setDisabled(False)
         self.ui.pushButton_2.setDisabled(True)
@@ -828,7 +947,6 @@ class start(QtGui.QMainWindow):
         self.ui.lineEdit_4.setDisabled(True)
         self.ui.lineEdit_3.setDisabled(True)
         self.thread.start()
-
 
         cmd2 = self.ui.lineEdit_2.text()
         if cmd2 != "":
@@ -846,8 +964,11 @@ class start(QtGui.QMainWindow):
             sb = self.ui.txtOutput.verticalScrollBar()
             sb.setValue(sb.maximum())
 
-
     def deco(self):
+        """
+        action on the button to disconnect from dnc
+        :return:
+        """
         quitter = "/quit"
         self.s.send(quitter.encode())
         #self.s.close()
@@ -860,47 +981,33 @@ class start(QtGui.QMainWindow):
         self.ui.lineEdit_4.setDisabled(False)
         self.ui.lineEdit_3.setDisabled(False)
 
-    def ecoute(self):
-        while 1 :
-            data = self.s.recv(4096)
-            if not data :
-                break
-            messgServeur = (data.decode())
-
-
-            if messgServeur == "ERR_INVALID_NICKNAME" :
-                self.pseudo = "INVALID_NICKNAME"
-
-
-            self.UpdateChat(messgServeur)
-
-
     def createWidgets(self):
+        """
+        run the main windows, with config
+        :return:
+        """
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
         ano = "anonymous" + ''.join(str(random.randint(1,9)) for _ in range(2))
 
         config = configparser.ConfigParser()
-
         config.read("dncClient.conf")
 
         port = config.get("NETWORK", "port")
-        ip =  config.get("NETWORK", "ip")
+        ip = config.get("NETWORK", "ip")
         name = config.get("PSEUDO", "name")
 
-        if name is not None :
+        if name is not None:
             self.ui.lineEdit_2.setText(name)
-        else :
+        else:
             self.ui.lineEdit_2.setText(ano)
 
-        if ip is not None :
+        if ip is not None:
             self.ui.lineEdit_4.setText(ip)
 
-
-        if port is not None :
+        if port is not None:
             self.ui.lineEdit_3.setText(port)
-
 
         self.ui.lineEdit.setDisabled(True)
         self.ui.pushButton.setDisabled(True)
@@ -908,11 +1015,13 @@ class start(QtGui.QMainWindow):
         self.ui.pushButton_6.setDisabled(True)
         self.message_buffer = ""
         self.bouton = "disable"
-
         self.connectActions()
 
     def client(self):
-
+        """
+        send a message to the sever
+        :return:
+        """
         self.cmd = self.ui.lineEdit.text()
         if self.cmd != "":
             self.ui.lineEdit.setText('')
@@ -926,7 +1035,7 @@ class start(QtGui.QMainWindow):
                 if self.cmd.split(" ")[0] == "/name":
                     self.pseudo = self.cmd.split(" ")[1]
 
-                if self.cmd.split(" ")[0]=="/askpm":
+                if self.cmd.split(" ")[0] == "/askpm":
                     self.demande = self.cmd.split(" ")[1]
 
             except timeout:
@@ -942,6 +1051,6 @@ if __name__ == "__main__":
     myapp = start()
     myapp.show()
     myapp.focusWidget()
-    sys.exit(app.exec_())
     for t in threading.enumerate():
         if t != threading.main_thread(): t.join()
+    sys.exit(app.exec_())
