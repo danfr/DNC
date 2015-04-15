@@ -1,0 +1,337 @@
+Dog is Not a Chat Protocol - DNC/1.0
+
+Status of this Memo
+This document specifies an Internet communication protocol. Please refer to 
+this document for the standardization state and status if you want to use DNC. 
+Distribution of this memo is unlimited.
+
+
+Abstract
+The DNC protocol was developed over 2015. It was first implemented as a 
+learning purpose for learn how the network work. 
+The DNC protocol is a text-based protocol allowing the simplest TCP client 
+being capable of connecting to the server.
+
+
+Table of Contents
+1. INTRODUCTION
+    1.1 Server
+    1.2 Clients
+2. THE DNC SPECIFICATIONS
+    2.1 Connection
+    2.2 Nickname format
+    2.3 File transfert
+    2.4 Client commands
+    2.5 Server commands
+3. Return Code
+    3.1 Info
+    3.2 Success
+    3.3 Error
+    
+    
+1. INTRODUCTION
+
+1.1 Server
+The server forms the backbone of the DNC protocol, providing a way to connect 
+the clients together to talk or to send files.
+
+1.2 Clients
+A client is connected to a server. Each client is distinguishable by his unique 
+pseudonym having between three (3) and fifteen (15) characters.
+
+2. THE DNC SPECIFICATIONS
+
+2.1 Connection
+DNC uses the TCP protocol. The server and the client must implements a TCP 
+socket to communicate together.
+When a client open the connection with the server, he must send /newname 
+<nickname> for choose this pseudo. If he tries another command, he will receive 
+a ERR_NO_NICKNAME.
+
+He receives one message:
+    (Response from the nickname request)
+(Paragraph 2.5 for more details on theses commands)
+
+
+2.2 Nickname format
+Everytime you see the tag <nickname> in this document means you have to respect 
+the following rules for this pattern:
+The string must contains between three (3) and fifteen (15) characters.
+Characters allowed are all the letters in uppercase or lowercase, the numbers, 
+and the underscore:
+<letter> = 'a' .. 'z' | 'A' .. 'Z' 
+<number> = '0' .. '9' 
+<underscore> = '_'
+
+2.3 File transfert    
+Peer-to-peer (P2P) is a computer network model close to client-server model but 
+where each client is also a server.
+It’s just necessary to specify the receiver, and the port where the transfert 
+will happens. The communication is done in TCP.
+There is three steps to send a file.
+1 - the client has to send a message to the server asking to send a file to 
+another client and precise the port.
+2 - Then, the server send a message to the receiver of the file to know if he 
+wants the file.
+3 - If the receiver accepts the file, the server sends him the ip and the port 
+where the tcp is configured. The server also send a confirmation message to the 
+emitter to tell him he can open the socket. Otherwise, the server sends a 
+message to the sender saying the receiver doesn’t want to download the file.
+
+
+2.4 Client commands
+
+2.4.1 Ask for a private discussion
+    Command: /askpm
+    Parameters: <nickname>
+    This command ask the client given in parameter for a private chat.
+    Server replies:
+            SUCC_INVITED
+           ERR_USER_NOT_FOUND
+    ALREADY_ASKED
+
+2.4.2 Accept a private discussion
+    Command: /acceptpm
+    Parameters: <nickname>
+    This command allows the user to start a new conversation with the client 
+given in parameter.
+    He must receive the /askpm command before.
+    Server replies:
+to sender
+        SUCC_PRIVATE_DISCUSSION_ACCEPTED
+        ERR_USER_HAS_NOT_ASK
+to “nickname” :
+    SUCC_PRIVATE_DISCUSSION_OK <nickname>
+
+
+2.4.3 Reject a private discussion
+    Command: /rejectpm
+    Parameters: <nickname>
+    This command finishes or refuses the conversation with the client given in 
+parameter.
+    He must send the /askpm command before.
+    Server replies:
+to sender :
+        SUCC_PRIVATE_DISCUSSION_REFUSED
+        ERR_USER_HAS_NOT_ASK
+to “nickname” :
+    SUCC_SUCC_PRIVATE_DISCUSSION_REJECTED <nickname>
+
+
+2.4.4 Quit
+    Command: /quit
+    Parameters: None
+    The client ends the connection. It’s used for a clean exit on the server, 
+but it’s also possible to detect when the socket ends.
+    Server replies:
+        SUCCESSFUL_LOGOUT
+    ERR_LOGOUT
+
+2.4.5 Private messages
+    Command: /pm
+    Parameters: <nickname> <message>
+    PRIVMSG is used to send private messages between users. The user must 
+accept the conversation before with /acceptpm.
+    <nickname> is the nickname of the receiver of the message. <message> is the 
+text to be send to the receiver. <nickname> and <message> cannot be empty.
+    Server replies:
+        If the message is successfully sended,
+            the server replies by : “SUCC_PM_SENDED”
+        If the receiver is not found,
+            the server replies by : “ERR_DEST_NOT_FOUND”
+        If the conversation is not accepted yet,
+            the server replies by : “ERR_NOT_ACCEPTED”
+
+
+2.4.6 Disable messages
+    Command: /disable
+    Parameters: None
+    The user stays connected, but don’t receive channel messages and private 
+messages anymore.
+    Server replies:
+        success :: SUCC_DISABLED
+ERR_NOT_ENABLED
+    
+2.4.7 Enable messages
+    Command: /enable
+    Parameters: None
+    This command can only be used after the /disable command. It has the 
+reverse effect.
+    Server replies:
+        SUCC_ENABLED
+            ERR_NOT_DISABLED
+    
+2.4.8 Change nickname
+    Command: /name
+    Parameters: <nickname>
+    Allows the user to change his nickname to another. The user must specifies 
+the new nickname in parameter. It must respects the correct format for 
+<nickname>. 
+    Server replies:
+        SUCC_VALID_NICKNAME
+        ERR_INVALID_NICKNAME
+        ERR_NICKNAME_ALREADY_USED
+
+
+2.4.9 Send a file to an user
+    Command: /pmfile
+    Parameters: <nickname> <file>
+    The client who wants to send the file sends a request to the file receiver. 
+The request contains the file name and the ip adress of the sender. 
+    
+    Server replies:
+        SUCC_ASKED_FILE 
+
+2.4.10 Accept file transfert
+    Command: /acceptfile 
+    Parameters: <nickname> <file> <ip> <port>
+    This command is used in parallel with the rejectfile command to reply to 
+the pmfile command. By using this command, the client will accept receiving a 
+file sended by the client using the pmfile command by the specific port
+    Server replies:
+        SUCC_ACCEPTED_FILE
+        ERR_NO_FILE_ASKED
+
+2.4.11 Reject file transfert
+    Command: /rejectfile
+    Parameters: <nickname> <filename>
+    This command is used in parallel with the acceptfile command to reply to 
+the pmfile command. By using this command, the client will reject the file 
+sended by the client using the pmfile command.
+    Server replies:
+        SUCC_REJECTED_FILE
+        ERR_NO_FILE_ASKED
+
+2.4.12 New nickname
+    Command: /newname
+    Parameters: <nickname>
+    Allows the user to choose this <nickname> for at connection. 
+    Server replies:
+        SUCC_VALID_NICKNAME
+        ERR_INVALID_NICKNAME
+        ERR_NICKNAME_ALREADY_USED
+
+2.4.13 Get Users Online Connected
+    Commande : /userlist
+    Parameters : None
+    Request the server to get the userlist connected.
+    Server replies :
+        USERLIST <nickname> <nickname>...
+
+2.4.14 Get Users Away  Connected
+    Commande : /userlistaway
+    Parameters : None
+    Request the server to get the userlist away.
+    Server replies :
+        USERLISTAWAY <nickname> <nickname>...
+    
+
+2.5 Server commands
+
+If the user don’t have a nickname the server return CMD_NOT_ALLOWED 
+
+USERLIST <nickname>< nickname>
+triggered on : User connection
+target: the user who connect
+
+USERLISTAWAY <nickname>< nickname>
+
+HAS_JOIN <nickname>
+
+HAS_LEFT <nickname>
+triggered on : User disconnection
+target: everyone connected to the server
+
+
+NAME_CHANGED <old nickname> <new nickname>
+
+ASKING_FOR_PM <nickname>
+
+NEW_PM <nickname> <message> 
+
+NEW_MSG <nickname> <message> 
+
+ERR_COMMAND_NOT_FOUND (no param)
+
+CAN_SEND_FILE <file> <nickname> <ip> <port>
+
+CANNOT_SEND_FILE <file> <nickname>
+
+2.5.2 Transfer private file
+/pmfile jean C:/read.txt
+Retour: SUCC_ASKED_FILE | ERR_ALREADY_ONE_FILE_ASKED | ERR_USER_NOT_FOUND....
+Récepteur : HAS_ASKED_FILE michel C:/read.txt
+
+/acceptfile michel 2568 C:/read.txt 
+Retour: SUCC_ACCEPTED_FILE 21.25.256.13  //ip sender for the client can check 
+the origin of transfert 
+Récepteur : CAN_SEND_FILE jean 31.52.313.123 2568 C:/read.txt 
+
+
+
+2.5.3 enable / disable
+When a user becomes disable or enable, a message warns everyone
+
+IS_NOW_DISABLE <nickname>
+IS_NOW_ENABLE <nickname>
+
+triggered on: /disable user
+sended to: everybody except the user who did it
+
+3. Return Code
+3.1 Info
+300: USERLIST_ENABLE <nicknames> Ex: 300 Jean Dupont Alex Martin
+301: USERLIST_DISABLE <nicknames>
+302: HAS_JOIN <nckname>
+303: HAS_LEFT <nickname>
+304: NEW_MSG <nickname> <message>
+305: NAME_CHANGED <old> <new>305
+306: NEW_PM <from> <msg>
+307:ASKING_FOR_PM <nickname>
+308:  PRIVATE_DISCU_ACCEPTED_FROM <NICKNAME>
+309:  PRIVATE_DISCU_REFUSED_FROM <NICKNAME>
+310: IS_NOW_ENABLE <nickname>
+311:IS_NOW_DISABLE <nickname>
+312: HAS_ASKED_FILE <from> <filepath>
+313: CAN_SEND_FILE <nick> <ip> <port>  <path>
+314: HAS_REJECT_FILE <nick> <path>
+
+
+3.2 Success 
+200: SUCC_CHANNEL_JOINED
+201: SUCC_CHANNEL_QUIT
+202: SUCC_MESSAGE_SENDED
+203: SUCC_NICKNAME_CHANGED
+204:SUCC_VALID_NICKNAME
+205: SUCC_PM_SENDED
+206: SUCCESSFUL_ASKED_CONV
+207: SUCCESSFUL_ACCEPTED_CONV
+208: SUCCESSFUL_REFUSED_CONV
+209: SUCC_ENABLED
+210: SUCC_DISABLED
+211: SUCC_PMFILE
+212: SUCC_ACCEPTED_FILE <ip>
+213: SUCC_REFUSED_FILE
+
+
+
+
+
+3.3 Error
+400 : ERR_NICKNAME_ALREADY_USED
+401 : ERR_NO_NICKNAME
+402: ERR_CONV_NOT_ALLOWED
+403: DEST_NOT_FOUND
+404: ERR_ALREADY_ASKED_FOR_PM
+405: ERR_NO_INVIT_TO_CONV_FOUND
+406: ERR_UNKNOWN_ACCEPTED_FILE
+407: COMMAND_NOT_FOUND
+408: ERR_INVALID_NICKNAME
+409 : ERR_INTERNAL_SERVER_ERROR
+410 : ERR_NOT_DISABLED
+411 : ERR_NOT_ENABLED
+
+
+
+
+
