@@ -190,6 +190,7 @@ class privateFile():
         """
         if self.ui.lineEdit.text() != "":
             self.ui.lineEdit.setText("")
+            self.s.settimeout(5.0)
             try:
                 print(self.cmd1.encode())
                 self.s.send(self.cmd1.encode())
@@ -293,6 +294,7 @@ class privateMessage() :
         :return:
         """
         self.cmRej = "/rejectpm "+self.pmPerson
+        self.s.settimeout(5.0)
         try:
             self.s.send(self.cmRej.encode())
 
@@ -308,6 +310,7 @@ class privateMessage() :
         :return:
         """
         self.cmAcc = "/acceptpm "+self.pmPerson
+        self.s.settimeout(5.0)
         try:
             self.s.send(self.cmAcc.encode())
 
@@ -361,6 +364,7 @@ class privateMessage() :
             self.ui.lineEdit.setText('')
             self.s.settimeout(5.0)
             self.cmd = "/pm " +self.pmPerson+ " " + self.cmdP
+            self.s.settimeout(5.0)
             try:
                 self.s.send(self.cmd.encode())
 
@@ -799,6 +803,7 @@ class start(QtGui.QMainWindow):
                 text = ''.join(str(random.randint(1,9)) for _ in range(4))
                 
             cmdAccF = "/acceptfile "+name+" "+text+" "+fileN
+            self.s.settimeout(5.0)
             try:
                 self.s.send(cmdAccF.encode())
                 print(cmdAccF)
@@ -811,6 +816,7 @@ class start(QtGui.QMainWindow):
                 sb.setValue(sb.maximum())
 
         elif reply == QtGui.QMessageBox.No:
+            self.s.settimeout(5.0)
             try:
                 cmdRej = "/rejectfile "+name+" "+fileN
                 print(cmdRej)
@@ -881,6 +887,7 @@ class start(QtGui.QMainWindow):
         """
         nom = item.replace("SUCCESSFUL_ASKED_CONV","")
         cmdPM = "/askpm "+nom
+        self.s.settimeout(5.0)
         try:
             self.s.send(cmdPM.encode())
             self.demande = nom
@@ -898,6 +905,7 @@ class start(QtGui.QMainWindow):
         """
         if self.bouton == "disable" :
             cmdAway = "/disable "
+            self.s.settimeout(5.0)
             try:
                 self.s.send(cmdAway.encode())
                 self.ui.pushButton_5.setText("Back")
@@ -912,6 +920,7 @@ class start(QtGui.QMainWindow):
         elif self.bouton == "enable" :
             self.bouton = "disable"
             cmdAway = "/enable "
+            self.s.settimeout(5.0)
             try:
                 self.s.send(cmdAway.encode())
                 self.ui.pushButton_5.setText("Away From Keyboard")
@@ -928,19 +937,21 @@ class start(QtGui.QMainWindow):
         :return:
         """
         changePseudo = self.ui.lineEdit_2.text()
-        cmdChange = "/name "+changePseudo
-        try:
-            self.s.send(cmdChange.encode())
-            self.pseudo = changePseudo
-            self.ui.listNames.clear()
-            self.s.send("/userlist".encode())
+        if changePseudo != "":
+            cmdChange = "/name "+changePseudo
+            self.s.settimeout(5.0)
+            try:
+                self.s.send(cmdChange.encode())
+                self.pseudo = changePseudo
+                self.ui.listNames.clear()
+                self.s.send("/userlist".encode())
 
 
-        except timeout:
-            self.ShowMessageErreur("Erreur : Timeout. Le serveur ne repond pas")
-            self.ui.txtOutput.setText(self.message_buffer)
-            sb = self.ui.txtOutput.verticalScrollBar()
-            sb.setValue(sb.maximum())
+            except timeout:
+                self.ShowMessageErreur("Erreur : Timeout. Le serveur ne repond pas")
+                self.ui.txtOutput.setText(self.message_buffer)
+                sb = self.ui.txtOutput.verticalScrollBar()
+                sb.setValue(sb.maximum())
 
     def connecter(self):
         """
@@ -952,7 +963,15 @@ class start(QtGui.QMainWindow):
         self.portCo = port
         Addr = (ip,port)
         self.s = socket(AF_INET, SOCK_STREAM)
-        self.s.connect(Addr)
+        self.s.settimeout(5.0)
+        try:
+            self.s.connect(Addr)
+        except timeout:
+            self.ShowMessageErreur("Erreur : Timeout. Le serveur ne repond pas")
+            self.ui.txtOutput.setText(self.message_buffer)
+            sb = self.ui.txtOutput.verticalScrollBar()
+            sb.setValue(sb.maximum())
+            
         self.thread.setConfig(self.s, self)
         self.ui.lineEdit.setDisabled(False)
         self.ui.pushButton.setDisabled(False)
@@ -965,18 +984,18 @@ class start(QtGui.QMainWindow):
         cmd2 = self.ui.lineEdit_2.text()
         if cmd2 != "":
             self.s.settimeout(5.0)
-        cmdPseudo = "/newname "+cmd2
-        try:
-            self.s.send(cmdPseudo.encode())
-            self.pseudo = cmd2
-            self.ui.pushButton_6.setDisabled(False)
+            cmdPseudo = "/newname "+cmd2
+            self.s.settimeout(5.0)
+            try:
+                self.s.send(cmdPseudo.encode())
+                self.pseudo = cmd2
+                self.ui.pushButton_6.setDisabled(False)
 
-
-        except timeout:
-            self.ShowMessageErreur("Erreur : Timeout. Le serveur ne repond pas")
-            self.ui.txtOutput.setText(self.message_buffer)
-            sb = self.ui.txtOutput.verticalScrollBar()
-            sb.setValue(sb.maximum())
+            except timeout:
+                self.ShowMessageErreur("Erreur : Timeout. Le serveur ne repond pas")
+                self.ui.txtOutput.setText(self.message_buffer)
+                sb = self.ui.txtOutput.verticalScrollBar()
+                sb.setValue(sb.maximum())
 
     def deco(self):
         """
