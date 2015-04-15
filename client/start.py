@@ -1,11 +1,11 @@
-from main import Ui_MainWindow
+from view.main import Ui_MainWindow
 from PyQt4 import QtGui, QtCore
 from PySide.QtCore import *
 from PySide.QtGui import *
 import time, threading, datetime, time, random,re
 from socket import *
-from pmWindow import Ui_Dialog2
-from pmFile import Ui_Dialog3
+from view.pmWindow import Ui_Dialog2
+from view.pmFile import Ui_Dialog3
 import configparser
 from threading import *
 
@@ -88,7 +88,7 @@ class StreamHandler (Thread):
         """
         print('[Media] Starting media transfer for ' + self.filename)
 
-        f = open(self.filename,"wb")
+        f = open("download/" + self.filename,"wb")
         while 1:
             data = self.mconn.recv(1024)
             if not data: break
