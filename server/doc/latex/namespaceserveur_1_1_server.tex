@@ -1,0 +1,609 @@
+\hypertarget{namespaceserveur_1_1_server}{}\section{serveur.\+Server Namespace Reference}
+\label{namespaceserveur_1_1_server}\index{serveur.\+Server@{serveur.\+Server}}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \hyperlink{namespaceserveur_1_1_server_a707c337588955a442d5c92d610c9400c}{main} ()
+\begin{DoxyCompactList}\small\item\em Load Configuration and Start the \hyperlink{namespaceserveur_1_1_server}{Server}. \end{DoxyCompactList}\item 
+def \hyperlink{namespaceserveur_1_1_server_aa5901fbb54ba27621b0e5f29e5888444}{handle\+\_\+connection} (connection, client\+\_\+address)
+\begin{DoxyCompactList}\small\item\em Handle a connection from a client. \end{DoxyCompactList}\item 
+def \hyperlink{namespaceserveur_1_1_server_a844a3af381027a8543410eaf7a4dd93f}{handle\+\_\+request} (connection, data)
+\begin{DoxyCompactList}\small\item\em Handle a request. \end{DoxyCompactList}\item 
+def \hyperlink{namespaceserveur_1_1_server_aa8b6effcc4dc0218b564730d1cae55c1}{broadcast\+\_\+message} (connection, message)
+\begin{DoxyCompactList}\small\item\em Broadcast a message to all the users connected except to the sender of the request. \end{DoxyCompactList}\item 
+def \hyperlink{namespaceserveur_1_1_server_a40c77305ecdab5cda4433f70be8eed82}{user\+\_\+list\+\_\+active} (connection)
+\begin{DoxyCompactList}\small\item\em Send the list of enable user. \end{DoxyCompactList}\item 
+def \hyperlink{namespaceserveur_1_1_server_acb501b38f5951a2e4a0329e637b03654}{user\+\_\+list\+\_\+away} (connection)
+\begin{DoxyCompactList}\small\item\em Send the list of disable user. \end{DoxyCompactList}\item 
+def \hyperlink{namespaceserveur_1_1_server_a3b2565e14f3411c33c78a87b14d5c7aa}{change\+\_\+name} (connection, pseudo)
+\begin{DoxyCompactList}\small\item\em Change the nickname of the user. \end{DoxyCompactList}\item 
+def \hyperlink{namespaceserveur_1_1_server_af2287f3dd72634208a5834f16ab4164e}{new\+\_\+name} (connection, pseudo)
+\begin{DoxyCompactList}\small\item\em Affect the nickname of the user for the first time. \end{DoxyCompactList}\item 
+def \hyperlink{namespaceserveur_1_1_server_a7627a95511d9f92f85e31acb3e5cf37d}{ask\+\_\+private\+\_\+message} (connection, pseudo)
+\begin{DoxyCompactList}\small\item\em Ask for a private discussion between the sender of the request and the pseudo. \end{DoxyCompactList}\item 
+def \hyperlink{namespaceserveur_1_1_server_a4b08076d42c840ea98b62ac1193d1be0}{accept\+\_\+private\+\_\+message} (connection, pseudo)
+\begin{DoxyCompactList}\small\item\em Accept a private discussion. \end{DoxyCompactList}\item 
+def \hyperlink{namespaceserveur_1_1_server_a66de962a82a1e46a2ab327905acefc69}{reject\+\_\+private\+\_\+message} (connection, pseudo)
+\begin{DoxyCompactList}\small\item\em Reject a private discussion. \end{DoxyCompactList}\item 
+def \hyperlink{namespaceserveur_1_1_server_ad4678b89ffd724367bd5c934b6147181}{private\+\_\+message} (connection, pseudo, msg)
+\begin{DoxyCompactList}\small\item\em Send a private message if a private discussion had been accepted. \end{DoxyCompactList}\item 
+def \hyperlink{namespaceserveur_1_1_server_a7220418c66856209858c366fcdefa91b}{ask\+\_\+file} (connection, pseudo, file)
+\begin{DoxyCompactList}\small\item\em Ask for a file transfer between the sender of the request and the pseudo. \end{DoxyCompactList}\item 
+def \hyperlink{namespaceserveur_1_1_server_a45bcce6e97e0e182908b70b388fcffe3}{accept\+\_\+file} (connection, pseudo, file, port)
+\begin{DoxyCompactList}\small\item\em Accept a file transfer. \end{DoxyCompactList}\item 
+def \hyperlink{namespaceserveur_1_1_server_a8cf6fc7cdac024fded57580916e129da}{reject\+\_\+file} (connection, pseudo, file)
+\begin{DoxyCompactList}\small\item\em Reject a file transfer. \end{DoxyCompactList}\item 
+def \hyperlink{namespaceserveur_1_1_server_a89251bb74b7d097111767d047e41a589}{enable\+\_\+user} (connection)
+\begin{DoxyCompactList}\small\item\em Enable user. \end{DoxyCompactList}\item 
+def \hyperlink{namespaceserveur_1_1_server_ac11fb7270de13c531e636e7614e85dc7}{disable\+\_\+user} (connection)
+\begin{DoxyCompactList}\small\item\em Disable user. \end{DoxyCompactList}\item 
+def \hyperlink{namespaceserveur_1_1_server_aabf56827aa7e57c8f7d98f93380eb322}{quit\+\_\+user} (connection)
+\begin{DoxyCompactList}\small\item\em Disconnect user. \end{DoxyCompactList}\item 
+def \hyperlink{namespaceserveur_1_1_server_a82bca8859619cc604e59e53bb1b6d074}{get\+\_\+connection\+\_\+by\+\_\+pseudo} (pseudo)
+\begin{DoxyCompactList}\small\item\em Get the socket descriptor by a pseudo. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+int \hyperlink{namespaceserveur_1_1_server_a4712f809a0369863821f1f3611b0c6a9}{U\+S\+E\+R\+L\+I\+S\+T\+\_\+\+E\+N\+A\+B\+L\+E} = 300
+\begin{DoxyCompactList}\small\item\em Code retour \#\#\# I\+N\+F\+O. \end{DoxyCompactList}\item 
+int \hyperlink{namespaceserveur_1_1_server_a90e5e028b94e11e73745c0830ea48dd6}{U\+S\+E\+R\+L\+I\+S\+T\+\_\+\+D\+I\+S\+A\+B\+L\+E} = 301
+\item 
+int \hyperlink{namespaceserveur_1_1_server_ac0f5caaab094186afb567ed676c6c436}{H\+A\+S\+\_\+\+J\+O\+I\+N} = 302
+\item 
+int \hyperlink{namespaceserveur_1_1_server_aee84037f6f1efd56db62026cf807154a}{H\+A\+S\+\_\+\+L\+E\+F\+T} = 303
+\item 
+int \hyperlink{namespaceserveur_1_1_server_ad8db2b5152d0350c9409bfc9ba4dcd9d}{N\+E\+W\+\_\+\+M\+S\+G} = 304
+\item 
+int \hyperlink{namespaceserveur_1_1_server_ab1031701e2171ce16c5dd1a070475f57}{N\+A\+M\+E\+\_\+\+C\+H\+A\+N\+G\+E\+D} = 305
+\item 
+int \hyperlink{namespaceserveur_1_1_server_aa668a288f5b7e4fb9aec27110086d34b}{N\+E\+W\+\_\+\+P\+M} = 306
+\item 
+int \hyperlink{namespaceserveur_1_1_server_a5971c26b5a11d4b32fb157f394dbf970}{A\+S\+K\+I\+N\+G\+\_\+\+F\+O\+R\+\_\+\+P\+M} = 307
+\item 
+int \hyperlink{namespaceserveur_1_1_server_ae4a2e2d9be1880700b134a73845a5520}{P\+R\+I\+V\+A\+T\+E\+\_\+\+D\+I\+S\+C\+U\+\_\+\+A\+C\+C\+E\+P\+T\+E\+D\+\_\+\+F\+R\+O\+M} = 308
+\item 
+int \hyperlink{namespaceserveur_1_1_server_a09d0e3676dc690b25a7383d8cfe539ee}{P\+R\+I\+V\+A\+T\+E\+\_\+\+D\+I\+S\+C\+U\+\_\+\+R\+E\+F\+U\+S\+E\+D\+\_\+\+F\+R\+O\+M} = 309
+\item 
+int \hyperlink{namespaceserveur_1_1_server_ac22188a1cc57ff59633b41f74b8b51c6}{I\+S\+\_\+\+N\+O\+W\+\_\+\+E\+N\+A\+B\+L\+E} = 310
+\item 
+int \hyperlink{namespaceserveur_1_1_server_a3550282baac54ac0efc954c284cd84d5}{I\+S\+\_\+\+N\+O\+W\+\_\+\+D\+I\+S\+A\+B\+L\+E} = 311
+\item 
+int \hyperlink{namespaceserveur_1_1_server_a837bafb63c6e00fb5381b9bea4e63079}{H\+A\+S\+\_\+\+A\+S\+K\+E\+D\+\_\+\+F\+I\+L\+E} = 312
+\item 
+int \hyperlink{namespaceserveur_1_1_server_aa12a15d74898daa2caab6d6814d75496}{C\+A\+N\+\_\+\+S\+E\+N\+D\+\_\+\+F\+I\+L\+E} = 313
+\item 
+int \hyperlink{namespaceserveur_1_1_server_a22452d53acf82b8fa8a06e845bdad0ce}{H\+A\+S\+\_\+\+R\+E\+J\+E\+C\+T\+\_\+\+F\+I\+L\+E} = 314
+\item 
+int \hyperlink{namespaceserveur_1_1_server_ad304925210a67430160b5676248d80d0}{S\+U\+C\+C\+\_\+\+C\+H\+A\+N\+N\+E\+L\+\_\+\+J\+O\+I\+N\+E\+D} = 200
+\begin{DoxyCompactList}\small\item\em S\+U\+C\+C\+E\+S\+S. \end{DoxyCompactList}\item 
+int \hyperlink{namespaceserveur_1_1_server_ae84e83aefad2ba9384f3a4212fd4285e}{S\+U\+C\+C\+\_\+\+C\+H\+A\+N\+N\+E\+L\+\_\+\+Q\+U\+I\+T} = 201
+\item 
+int \hyperlink{namespaceserveur_1_1_server_a598115c26902f7ec21c6a8e85661e31e}{S\+U\+C\+C\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+S\+E\+N\+D\+E\+D} = 202
+\item 
+int \hyperlink{namespaceserveur_1_1_server_abc774b5cecac227491c81d7701444ceb}{S\+U\+C\+C\+\_\+\+N\+I\+C\+K\+N\+A\+M\+E\+\_\+\+C\+H\+A\+N\+G\+E\+D} = 203
+\item 
+int \hyperlink{namespaceserveur_1_1_server_a0539b6dde60545a7317bf2e7f93ab480}{S\+U\+C\+C\+\_\+\+P\+M\+\_\+\+S\+E\+N\+D\+E\+D} = 205
+\item 
+int \hyperlink{namespaceserveur_1_1_server_aff7a1e808175d6f1a8e3b755000da949}{S\+U\+C\+C\+E\+S\+S\+F\+U\+L\+\_\+\+A\+S\+K\+E\+D\+\_\+\+C\+O\+N\+V} = 206
+\item 
+int \hyperlink{namespaceserveur_1_1_server_aaf720e9592d40b4fcf6029832ca535da}{S\+U\+C\+C\+E\+S\+S\+F\+U\+L\+\_\+\+A\+C\+C\+E\+P\+T\+E\+D\+\_\+\+C\+O\+N\+V} = 207
+\item 
+int \hyperlink{namespaceserveur_1_1_server_a9f83ae7ff8cb2651e529da4329f9e970}{S\+U\+C\+C\+E\+S\+S\+F\+U\+L\+\_\+\+R\+E\+F\+U\+S\+E\+D\+\_\+\+C\+O\+N\+V} = 208
+\item 
+int \hyperlink{namespaceserveur_1_1_server_a19003994913e70d651187ef62efe973c}{S\+U\+C\+C\+\_\+\+E\+N\+A\+B\+L\+E\+D} = 209
+\item 
+int \hyperlink{namespaceserveur_1_1_server_ab8e45b028661530017c97c32eb7d2dee}{S\+U\+C\+C\+\_\+\+D\+I\+S\+A\+B\+L\+E\+D} = 210
+\item 
+int \hyperlink{namespaceserveur_1_1_server_ab3db5fdda6776cd1e74dec924e6d6574}{S\+U\+C\+C\+\_\+\+P\+M\+F\+I\+L\+E} = 211
+\item 
+int \hyperlink{namespaceserveur_1_1_server_aad1e9d7581726a0bc75c1467d6e42bff}{S\+U\+C\+C\+\_\+\+A\+C\+C\+E\+P\+T\+E\+D\+\_\+\+F\+I\+L\+E} = 212
+\item 
+int \hyperlink{namespaceserveur_1_1_server_acd1e4e31d269a159b14f6da936904872}{S\+U\+C\+C\+\_\+\+R\+E\+F\+U\+S\+E\+D\+\_\+\+F\+I\+L\+E} = 213
+\item 
+int \hyperlink{namespaceserveur_1_1_server_a4d3b6c592a26cc6826e3b69835623943}{E\+R\+R\+\_\+\+N\+I\+C\+K\+N\+A\+M\+E\+\_\+\+A\+L\+R\+E\+A\+D\+Y\+\_\+\+U\+S\+E\+D} = 400
+\begin{DoxyCompactList}\small\item\em E\+R\+R\+O\+R. \end{DoxyCompactList}\item 
+int \hyperlink{namespaceserveur_1_1_server_a8f7a9fdc4d39eff1a30a45c7938b5b9d}{E\+R\+R\+\_\+\+N\+O\+\_\+\+N\+I\+C\+K\+N\+A\+M\+E} = 401
+\item 
+int \hyperlink{namespaceserveur_1_1_server_a4512fc325db14fac1ebf0bec16386b8a}{E\+R\+R\+\_\+\+C\+O\+N\+V\+\_\+\+N\+O\+T\+\_\+\+A\+L\+L\+O\+W\+E\+D} = 402
+\item 
+int \hyperlink{namespaceserveur_1_1_server_ac42886a59c2147c57efa2e5523cc7119}{D\+E\+S\+T\+\_\+\+N\+O\+T\+\_\+\+F\+O\+U\+N\+D} = 403
+\item 
+int \hyperlink{namespaceserveur_1_1_server_a3cf6b579bb10ae775e915c456519c40a}{E\+R\+R\+\_\+\+A\+L\+R\+E\+A\+D\+Y\+\_\+\+A\+S\+K\+E\+D\+\_\+\+F\+O\+R\+\_\+\+P\+M} = 404
+\item 
+int \hyperlink{namespaceserveur_1_1_server_a0e6d24729e75dabd0920b2fad909f457}{E\+R\+R\+\_\+\+N\+O\+\_\+\+I\+N\+V\+I\+T\+\_\+\+T\+O\+\_\+\+C\+O\+N\+V\+\_\+\+F\+O\+U\+N\+D} = 405
+\item 
+int \hyperlink{namespaceserveur_1_1_server_a27e74ff26eae4e8de6820c0e3b91ade7}{E\+R\+R\+\_\+\+U\+N\+K\+N\+O\+W\+N\+\_\+\+A\+C\+C\+E\+P\+T\+E\+D\+\_\+\+F\+I\+L\+E} = 406
+\item 
+int \hyperlink{namespaceserveur_1_1_server_a4c9f787c7de5779b57e9a7393a0acaca}{C\+O\+M\+M\+A\+N\+D\+\_\+\+N\+O\+T\+\_\+\+F\+O\+U\+N\+D} = 407
+\item 
+int \hyperlink{namespaceserveur_1_1_server_a4abda6258ac6dc7f92187af7145e3a7a}{E\+R\+R\+\_\+\+I\+N\+V\+A\+L\+I\+D\+\_\+\+N\+I\+C\+K\+N\+A\+M\+E} = 408
+\item 
+int \hyperlink{namespaceserveur_1_1_server_adaad9aff6fb95fa9bf3c504c5a1eb40f}{E\+R\+R\+\_\+\+I\+N\+T\+E\+R\+N\+A\+L\+\_\+\+S\+E\+R\+V\+E\+R\+\_\+\+E\+R\+R\+O\+R} = 409
+\item 
+int \hyperlink{namespaceserveur_1_1_server_a29f22082a703724f3f9946d44f8d988a}{E\+R\+R\+\_\+\+N\+O\+T\+\_\+\+D\+I\+S\+A\+B\+L\+E\+D} = 410
+\item 
+int \hyperlink{namespaceserveur_1_1_server_a7b43a87e1df2463e5c27c867f42177ba}{E\+R\+R\+\_\+\+N\+O\+T\+\_\+\+E\+N\+A\+B\+L\+E\+D} = 411
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\hypertarget{namespaceserveur_1_1_server_a45bcce6e97e0e182908b70b388fcffe3}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!accept\+\_\+file@{accept\+\_\+file}}
+\index{accept\+\_\+file@{accept\+\_\+file}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{accept\+\_\+file}]{\setlength{\rightskip}{0pt plus 5cm}def serveur.\+Server.\+accept\+\_\+file (
+\begin{DoxyParamCaption}
+\item[{}]{connection, }
+\item[{}]{pseudo, }
+\item[{}]{file, }
+\item[{}]{port}
+\end{DoxyParamCaption}
+)}\label{namespaceserveur_1_1_server_a45bcce6e97e0e182908b70b388fcffe3}
+
+
+Accept a file transfer. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em connection} & the socket descriptor of the person who accept a file transfer \\
+\hline
+{\em pseudo} & the pseudo of the person who asked for a file transfer \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespaceserveur_1_1_server_a4b08076d42c840ea98b62ac1193d1be0}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!accept\+\_\+private\+\_\+message@{accept\+\_\+private\+\_\+message}}
+\index{accept\+\_\+private\+\_\+message@{accept\+\_\+private\+\_\+message}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{accept\+\_\+private\+\_\+message}]{\setlength{\rightskip}{0pt plus 5cm}def serveur.\+Server.\+accept\+\_\+private\+\_\+message (
+\begin{DoxyParamCaption}
+\item[{}]{connection, }
+\item[{}]{pseudo}
+\end{DoxyParamCaption}
+)}\label{namespaceserveur_1_1_server_a4b08076d42c840ea98b62ac1193d1be0}
+
+
+Accept a private discussion. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em connection} & the socket descriptor of the person who accept the private discussion \\
+\hline
+{\em pseudo} & the pseudo of the person who asked for a private discussion \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespaceserveur_1_1_server_a7220418c66856209858c366fcdefa91b}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!ask\+\_\+file@{ask\+\_\+file}}
+\index{ask\+\_\+file@{ask\+\_\+file}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{ask\+\_\+file}]{\setlength{\rightskip}{0pt plus 5cm}def serveur.\+Server.\+ask\+\_\+file (
+\begin{DoxyParamCaption}
+\item[{}]{connection, }
+\item[{}]{pseudo, }
+\item[{}]{file}
+\end{DoxyParamCaption}
+)}\label{namespaceserveur_1_1_server_a7220418c66856209858c366fcdefa91b}
+
+
+Ask for a file transfer between the sender of the request and the pseudo. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em connection} & the socket descriptor of the sender \\
+\hline
+{\em pseudo} & the pseudo of target of the demand \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespaceserveur_1_1_server_a7627a95511d9f92f85e31acb3e5cf37d}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!ask\+\_\+private\+\_\+message@{ask\+\_\+private\+\_\+message}}
+\index{ask\+\_\+private\+\_\+message@{ask\+\_\+private\+\_\+message}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{ask\+\_\+private\+\_\+message}]{\setlength{\rightskip}{0pt plus 5cm}def serveur.\+Server.\+ask\+\_\+private\+\_\+message (
+\begin{DoxyParamCaption}
+\item[{}]{connection, }
+\item[{}]{pseudo}
+\end{DoxyParamCaption}
+)}\label{namespaceserveur_1_1_server_a7627a95511d9f92f85e31acb3e5cf37d}
+
+
+Ask for a private discussion between the sender of the request and the pseudo. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em connection} & the socket descriptor of the sender \\
+\hline
+{\em pseudo} & the pseudo of target of the demand \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespaceserveur_1_1_server_aa8b6effcc4dc0218b564730d1cae55c1}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!broadcast\+\_\+message@{broadcast\+\_\+message}}
+\index{broadcast\+\_\+message@{broadcast\+\_\+message}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{broadcast\+\_\+message}]{\setlength{\rightskip}{0pt plus 5cm}def serveur.\+Server.\+broadcast\+\_\+message (
+\begin{DoxyParamCaption}
+\item[{}]{connection, }
+\item[{}]{message}
+\end{DoxyParamCaption}
+)}\label{namespaceserveur_1_1_server_aa8b6effcc4dc0218b564730d1cae55c1}
+
+
+Broadcast a message to all the users connected except to the sender of the request. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em connection} & the socket descriptor of the request sender \\
+\hline
+{\em message} & message to broadcast (String) \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespaceserveur_1_1_server_a3b2565e14f3411c33c78a87b14d5c7aa}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!change\+\_\+name@{change\+\_\+name}}
+\index{change\+\_\+name@{change\+\_\+name}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{change\+\_\+name}]{\setlength{\rightskip}{0pt plus 5cm}def serveur.\+Server.\+change\+\_\+name (
+\begin{DoxyParamCaption}
+\item[{}]{connection, }
+\item[{}]{pseudo}
+\end{DoxyParamCaption}
+)}\label{namespaceserveur_1_1_server_a3b2565e14f3411c33c78a87b14d5c7aa}
+
+
+Change the nickname of the user. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em connection} & the socket descriptor of the target \\
+\hline
+{\em pseudo} & new nickname for the user (String) \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespaceserveur_1_1_server_ac11fb7270de13c531e636e7614e85dc7}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!disable\+\_\+user@{disable\+\_\+user}}
+\index{disable\+\_\+user@{disable\+\_\+user}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{disable\+\_\+user}]{\setlength{\rightskip}{0pt plus 5cm}def serveur.\+Server.\+disable\+\_\+user (
+\begin{DoxyParamCaption}
+\item[{}]{connection}
+\end{DoxyParamCaption}
+)}\label{namespaceserveur_1_1_server_ac11fb7270de13c531e636e7614e85dc7}
+
+
+Disable user. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em connection} & the socket descriptor of the person to disable \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespaceserveur_1_1_server_a89251bb74b7d097111767d047e41a589}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!enable\+\_\+user@{enable\+\_\+user}}
+\index{enable\+\_\+user@{enable\+\_\+user}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{enable\+\_\+user}]{\setlength{\rightskip}{0pt plus 5cm}def serveur.\+Server.\+enable\+\_\+user (
+\begin{DoxyParamCaption}
+\item[{}]{connection}
+\end{DoxyParamCaption}
+)}\label{namespaceserveur_1_1_server_a89251bb74b7d097111767d047e41a589}
+
+
+Enable user. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em connection} & the socket descriptor of the person to enable \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespaceserveur_1_1_server_a82bca8859619cc604e59e53bb1b6d074}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!get\+\_\+connection\+\_\+by\+\_\+pseudo@{get\+\_\+connection\+\_\+by\+\_\+pseudo}}
+\index{get\+\_\+connection\+\_\+by\+\_\+pseudo@{get\+\_\+connection\+\_\+by\+\_\+pseudo}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{get\+\_\+connection\+\_\+by\+\_\+pseudo}]{\setlength{\rightskip}{0pt plus 5cm}def serveur.\+Server.\+get\+\_\+connection\+\_\+by\+\_\+pseudo (
+\begin{DoxyParamCaption}
+\item[{}]{pseudo}
+\end{DoxyParamCaption}
+)}\label{namespaceserveur_1_1_server_a82bca8859619cc604e59e53bb1b6d074}
+
+
+Get the socket descriptor by a pseudo. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em pseudo} & pseudo \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the socket descriptor of the pseudo or None 
+\end{DoxyReturn}
+\hypertarget{namespaceserveur_1_1_server_aa5901fbb54ba27621b0e5f29e5888444}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!handle\+\_\+connection@{handle\+\_\+connection}}
+\index{handle\+\_\+connection@{handle\+\_\+connection}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{handle\+\_\+connection}]{\setlength{\rightskip}{0pt plus 5cm}def serveur.\+Server.\+handle\+\_\+connection (
+\begin{DoxyParamCaption}
+\item[{}]{connection, }
+\item[{}]{client\+\_\+address}
+\end{DoxyParamCaption}
+)}\label{namespaceserveur_1_1_server_aa5901fbb54ba27621b0e5f29e5888444}
+
+
+Handle a connection from a client. 
+
+Wait for request from the client 
+\begin{DoxyParams}{Parameters}
+{\em connection} & the socket descriptor of the connection \\
+\hline
+{\em client\+\_\+adress} & (\char`\"{}ip\char`\"{}, port) of the connection \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespaceserveur_1_1_server_a844a3af381027a8543410eaf7a4dd93f}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!handle\+\_\+request@{handle\+\_\+request}}
+\index{handle\+\_\+request@{handle\+\_\+request}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{handle\+\_\+request}]{\setlength{\rightskip}{0pt plus 5cm}def serveur.\+Server.\+handle\+\_\+request (
+\begin{DoxyParamCaption}
+\item[{}]{connection, }
+\item[{}]{data}
+\end{DoxyParamCaption}
+)}\label{namespaceserveur_1_1_server_a844a3af381027a8543410eaf7a4dd93f}
+
+
+Handle a request. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em connection} & the socket descriptor of the request sender \\
+\hline
+{\em data} & the request to handle in String \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespaceserveur_1_1_server_a707c337588955a442d5c92d610c9400c}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!main@{main}}
+\index{main@{main}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{main}]{\setlength{\rightskip}{0pt plus 5cm}def serveur.\+Server.\+main (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\label{namespaceserveur_1_1_server_a707c337588955a442d5c92d610c9400c}
+
+
+Load Configuration and Start the \hyperlink{namespaceserveur_1_1_server}{Server}. 
+
+\hypertarget{namespaceserveur_1_1_server_af2287f3dd72634208a5834f16ab4164e}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!new\+\_\+name@{new\+\_\+name}}
+\index{new\+\_\+name@{new\+\_\+name}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{new\+\_\+name}]{\setlength{\rightskip}{0pt plus 5cm}def serveur.\+Server.\+new\+\_\+name (
+\begin{DoxyParamCaption}
+\item[{}]{connection, }
+\item[{}]{pseudo}
+\end{DoxyParamCaption}
+)}\label{namespaceserveur_1_1_server_af2287f3dd72634208a5834f16ab4164e}
+
+
+Affect the nickname of the user for the first time. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em connection} & the socket descriptor of the target \\
+\hline
+{\em pseudo} & nickname for the user (String) \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespaceserveur_1_1_server_ad4678b89ffd724367bd5c934b6147181}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!private\+\_\+message@{private\+\_\+message}}
+\index{private\+\_\+message@{private\+\_\+message}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{private\+\_\+message}]{\setlength{\rightskip}{0pt plus 5cm}def serveur.\+Server.\+private\+\_\+message (
+\begin{DoxyParamCaption}
+\item[{}]{connection, }
+\item[{}]{pseudo, }
+\item[{}]{msg}
+\end{DoxyParamCaption}
+)}\label{namespaceserveur_1_1_server_ad4678b89ffd724367bd5c934b6147181}
+
+
+Send a private message if a private discussion had been accepted. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em connection} & the soccket descriptor of the sender \\
+\hline
+{\em pseudo} & the pseudo of the private message target \\
+\hline
+{\em msg} & the message to send \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespaceserveur_1_1_server_aabf56827aa7e57c8f7d98f93380eb322}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!quit\+\_\+user@{quit\+\_\+user}}
+\index{quit\+\_\+user@{quit\+\_\+user}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{quit\+\_\+user}]{\setlength{\rightskip}{0pt plus 5cm}def serveur.\+Server.\+quit\+\_\+user (
+\begin{DoxyParamCaption}
+\item[{}]{connection}
+\end{DoxyParamCaption}
+)}\label{namespaceserveur_1_1_server_aabf56827aa7e57c8f7d98f93380eb322}
+
+
+Disconnect user. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em connection} & the socket descriptor of the person to disconnect \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespaceserveur_1_1_server_a8cf6fc7cdac024fded57580916e129da}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!reject\+\_\+file@{reject\+\_\+file}}
+\index{reject\+\_\+file@{reject\+\_\+file}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{reject\+\_\+file}]{\setlength{\rightskip}{0pt plus 5cm}def serveur.\+Server.\+reject\+\_\+file (
+\begin{DoxyParamCaption}
+\item[{}]{connection, }
+\item[{}]{pseudo, }
+\item[{}]{file}
+\end{DoxyParamCaption}
+)}\label{namespaceserveur_1_1_server_a8cf6fc7cdac024fded57580916e129da}
+
+
+Reject a file transfer. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em connection} & the socket descriptor of the person who reject a file transfer \\
+\hline
+{\em pseudo} & the pseudo of the person who asked for a file transfer \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespaceserveur_1_1_server_a66de962a82a1e46a2ab327905acefc69}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!reject\+\_\+private\+\_\+message@{reject\+\_\+private\+\_\+message}}
+\index{reject\+\_\+private\+\_\+message@{reject\+\_\+private\+\_\+message}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{reject\+\_\+private\+\_\+message}]{\setlength{\rightskip}{0pt plus 5cm}def serveur.\+Server.\+reject\+\_\+private\+\_\+message (
+\begin{DoxyParamCaption}
+\item[{}]{connection, }
+\item[{}]{pseudo}
+\end{DoxyParamCaption}
+)}\label{namespaceserveur_1_1_server_a66de962a82a1e46a2ab327905acefc69}
+
+
+Reject a private discussion. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em connection} & the socket descriptor of the person who reject private discussion \\
+\hline
+{\em pseudo} & the pseudo of the person who asked for a private discussion \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespaceserveur_1_1_server_a40c77305ecdab5cda4433f70be8eed82}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!user\+\_\+list\+\_\+active@{user\+\_\+list\+\_\+active}}
+\index{user\+\_\+list\+\_\+active@{user\+\_\+list\+\_\+active}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{user\+\_\+list\+\_\+active}]{\setlength{\rightskip}{0pt plus 5cm}def serveur.\+Server.\+user\+\_\+list\+\_\+active (
+\begin{DoxyParamCaption}
+\item[{}]{connection}
+\end{DoxyParamCaption}
+)}\label{namespaceserveur_1_1_server_a40c77305ecdab5cda4433f70be8eed82}
+
+
+Send the list of enable user. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em connection} & the socket descriptor of the target \\
+\hline
+\end{DoxyParams}
+\hypertarget{namespaceserveur_1_1_server_acb501b38f5951a2e4a0329e637b03654}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!user\+\_\+list\+\_\+away@{user\+\_\+list\+\_\+away}}
+\index{user\+\_\+list\+\_\+away@{user\+\_\+list\+\_\+away}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{user\+\_\+list\+\_\+away}]{\setlength{\rightskip}{0pt plus 5cm}def serveur.\+Server.\+user\+\_\+list\+\_\+away (
+\begin{DoxyParamCaption}
+\item[{}]{connection}
+\end{DoxyParamCaption}
+)}\label{namespaceserveur_1_1_server_acb501b38f5951a2e4a0329e637b03654}
+
+
+Send the list of disable user. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em connection} & the socket descriptor of the target \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Variable Documentation}
+\hypertarget{namespaceserveur_1_1_server_a5971c26b5a11d4b32fb157f394dbf970}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!A\+S\+K\+I\+N\+G\+\_\+\+F\+O\+R\+\_\+\+P\+M@{A\+S\+K\+I\+N\+G\+\_\+\+F\+O\+R\+\_\+\+P\+M}}
+\index{A\+S\+K\+I\+N\+G\+\_\+\+F\+O\+R\+\_\+\+P\+M@{A\+S\+K\+I\+N\+G\+\_\+\+F\+O\+R\+\_\+\+P\+M}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{A\+S\+K\+I\+N\+G\+\_\+\+F\+O\+R\+\_\+\+P\+M}]{\setlength{\rightskip}{0pt plus 5cm}int serveur.\+Server.\+A\+S\+K\+I\+N\+G\+\_\+\+F\+O\+R\+\_\+\+P\+M = 307}\label{namespaceserveur_1_1_server_a5971c26b5a11d4b32fb157f394dbf970}
+\hypertarget{namespaceserveur_1_1_server_aa12a15d74898daa2caab6d6814d75496}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!C\+A\+N\+\_\+\+S\+E\+N\+D\+\_\+\+F\+I\+L\+E@{C\+A\+N\+\_\+\+S\+E\+N\+D\+\_\+\+F\+I\+L\+E}}
+\index{C\+A\+N\+\_\+\+S\+E\+N\+D\+\_\+\+F\+I\+L\+E@{C\+A\+N\+\_\+\+S\+E\+N\+D\+\_\+\+F\+I\+L\+E}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{C\+A\+N\+\_\+\+S\+E\+N\+D\+\_\+\+F\+I\+L\+E}]{\setlength{\rightskip}{0pt plus 5cm}int serveur.\+Server.\+C\+A\+N\+\_\+\+S\+E\+N\+D\+\_\+\+F\+I\+L\+E = 313}\label{namespaceserveur_1_1_server_aa12a15d74898daa2caab6d6814d75496}
+\hypertarget{namespaceserveur_1_1_server_a4c9f787c7de5779b57e9a7393a0acaca}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!C\+O\+M\+M\+A\+N\+D\+\_\+\+N\+O\+T\+\_\+\+F\+O\+U\+N\+D@{C\+O\+M\+M\+A\+N\+D\+\_\+\+N\+O\+T\+\_\+\+F\+O\+U\+N\+D}}
+\index{C\+O\+M\+M\+A\+N\+D\+\_\+\+N\+O\+T\+\_\+\+F\+O\+U\+N\+D@{C\+O\+M\+M\+A\+N\+D\+\_\+\+N\+O\+T\+\_\+\+F\+O\+U\+N\+D}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{C\+O\+M\+M\+A\+N\+D\+\_\+\+N\+O\+T\+\_\+\+F\+O\+U\+N\+D}]{\setlength{\rightskip}{0pt plus 5cm}int serveur.\+Server.\+C\+O\+M\+M\+A\+N\+D\+\_\+\+N\+O\+T\+\_\+\+F\+O\+U\+N\+D = 407}\label{namespaceserveur_1_1_server_a4c9f787c7de5779b57e9a7393a0acaca}
+\hypertarget{namespaceserveur_1_1_server_ac42886a59c2147c57efa2e5523cc7119}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!D\+E\+S\+T\+\_\+\+N\+O\+T\+\_\+\+F\+O\+U\+N\+D@{D\+E\+S\+T\+\_\+\+N\+O\+T\+\_\+\+F\+O\+U\+N\+D}}
+\index{D\+E\+S\+T\+\_\+\+N\+O\+T\+\_\+\+F\+O\+U\+N\+D@{D\+E\+S\+T\+\_\+\+N\+O\+T\+\_\+\+F\+O\+U\+N\+D}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{D\+E\+S\+T\+\_\+\+N\+O\+T\+\_\+\+F\+O\+U\+N\+D}]{\setlength{\rightskip}{0pt plus 5cm}int serveur.\+Server.\+D\+E\+S\+T\+\_\+\+N\+O\+T\+\_\+\+F\+O\+U\+N\+D = 403}\label{namespaceserveur_1_1_server_ac42886a59c2147c57efa2e5523cc7119}
+\hypertarget{namespaceserveur_1_1_server_a3cf6b579bb10ae775e915c456519c40a}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!E\+R\+R\+\_\+\+A\+L\+R\+E\+A\+D\+Y\+\_\+\+A\+S\+K\+E\+D\+\_\+\+F\+O\+R\+\_\+\+P\+M@{E\+R\+R\+\_\+\+A\+L\+R\+E\+A\+D\+Y\+\_\+\+A\+S\+K\+E\+D\+\_\+\+F\+O\+R\+\_\+\+P\+M}}
+\index{E\+R\+R\+\_\+\+A\+L\+R\+E\+A\+D\+Y\+\_\+\+A\+S\+K\+E\+D\+\_\+\+F\+O\+R\+\_\+\+P\+M@{E\+R\+R\+\_\+\+A\+L\+R\+E\+A\+D\+Y\+\_\+\+A\+S\+K\+E\+D\+\_\+\+F\+O\+R\+\_\+\+P\+M}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{E\+R\+R\+\_\+\+A\+L\+R\+E\+A\+D\+Y\+\_\+\+A\+S\+K\+E\+D\+\_\+\+F\+O\+R\+\_\+\+P\+M}]{\setlength{\rightskip}{0pt plus 5cm}int serveur.\+Server.\+E\+R\+R\+\_\+\+A\+L\+R\+E\+A\+D\+Y\+\_\+\+A\+S\+K\+E\+D\+\_\+\+F\+O\+R\+\_\+\+P\+M = 404}\label{namespaceserveur_1_1_server_a3cf6b579bb10ae775e915c456519c40a}
+\hypertarget{namespaceserveur_1_1_server_a4512fc325db14fac1ebf0bec16386b8a}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!E\+R\+R\+\_\+\+C\+O\+N\+V\+\_\+\+N\+O\+T\+\_\+\+A\+L\+L\+O\+W\+E\+D@{E\+R\+R\+\_\+\+C\+O\+N\+V\+\_\+\+N\+O\+T\+\_\+\+A\+L\+L\+O\+W\+E\+D}}
+\index{E\+R\+R\+\_\+\+C\+O\+N\+V\+\_\+\+N\+O\+T\+\_\+\+A\+L\+L\+O\+W\+E\+D@{E\+R\+R\+\_\+\+C\+O\+N\+V\+\_\+\+N\+O\+T\+\_\+\+A\+L\+L\+O\+W\+E\+D}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{E\+R\+R\+\_\+\+C\+O\+N\+V\+\_\+\+N\+O\+T\+\_\+\+A\+L\+L\+O\+W\+E\+D}]{\setlength{\rightskip}{0pt plus 5cm}int serveur.\+Server.\+E\+R\+R\+\_\+\+C\+O\+N\+V\+\_\+\+N\+O\+T\+\_\+\+A\+L\+L\+O\+W\+E\+D = 402}\label{namespaceserveur_1_1_server_a4512fc325db14fac1ebf0bec16386b8a}
+\hypertarget{namespaceserveur_1_1_server_adaad9aff6fb95fa9bf3c504c5a1eb40f}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!E\+R\+R\+\_\+\+I\+N\+T\+E\+R\+N\+A\+L\+\_\+\+S\+E\+R\+V\+E\+R\+\_\+\+E\+R\+R\+O\+R@{E\+R\+R\+\_\+\+I\+N\+T\+E\+R\+N\+A\+L\+\_\+\+S\+E\+R\+V\+E\+R\+\_\+\+E\+R\+R\+O\+R}}
+\index{E\+R\+R\+\_\+\+I\+N\+T\+E\+R\+N\+A\+L\+\_\+\+S\+E\+R\+V\+E\+R\+\_\+\+E\+R\+R\+O\+R@{E\+R\+R\+\_\+\+I\+N\+T\+E\+R\+N\+A\+L\+\_\+\+S\+E\+R\+V\+E\+R\+\_\+\+E\+R\+R\+O\+R}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{E\+R\+R\+\_\+\+I\+N\+T\+E\+R\+N\+A\+L\+\_\+\+S\+E\+R\+V\+E\+R\+\_\+\+E\+R\+R\+O\+R}]{\setlength{\rightskip}{0pt plus 5cm}int serveur.\+Server.\+E\+R\+R\+\_\+\+I\+N\+T\+E\+R\+N\+A\+L\+\_\+\+S\+E\+R\+V\+E\+R\+\_\+\+E\+R\+R\+O\+R = 409}\label{namespaceserveur_1_1_server_adaad9aff6fb95fa9bf3c504c5a1eb40f}
+\hypertarget{namespaceserveur_1_1_server_a4abda6258ac6dc7f92187af7145e3a7a}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!E\+R\+R\+\_\+\+I\+N\+V\+A\+L\+I\+D\+\_\+\+N\+I\+C\+K\+N\+A\+M\+E@{E\+R\+R\+\_\+\+I\+N\+V\+A\+L\+I\+D\+\_\+\+N\+I\+C\+K\+N\+A\+M\+E}}
+\index{E\+R\+R\+\_\+\+I\+N\+V\+A\+L\+I\+D\+\_\+\+N\+I\+C\+K\+N\+A\+M\+E@{E\+R\+R\+\_\+\+I\+N\+V\+A\+L\+I\+D\+\_\+\+N\+I\+C\+K\+N\+A\+M\+E}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{E\+R\+R\+\_\+\+I\+N\+V\+A\+L\+I\+D\+\_\+\+N\+I\+C\+K\+N\+A\+M\+E}]{\setlength{\rightskip}{0pt plus 5cm}int serveur.\+Server.\+E\+R\+R\+\_\+\+I\+N\+V\+A\+L\+I\+D\+\_\+\+N\+I\+C\+K\+N\+A\+M\+E = 408}\label{namespaceserveur_1_1_server_a4abda6258ac6dc7f92187af7145e3a7a}
+\hypertarget{namespaceserveur_1_1_server_a4d3b6c592a26cc6826e3b69835623943}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!E\+R\+R\+\_\+\+N\+I\+C\+K\+N\+A\+M\+E\+\_\+\+A\+L\+R\+E\+A\+D\+Y\+\_\+\+U\+S\+E\+D@{E\+R\+R\+\_\+\+N\+I\+C\+K\+N\+A\+M\+E\+\_\+\+A\+L\+R\+E\+A\+D\+Y\+\_\+\+U\+S\+E\+D}}
+\index{E\+R\+R\+\_\+\+N\+I\+C\+K\+N\+A\+M\+E\+\_\+\+A\+L\+R\+E\+A\+D\+Y\+\_\+\+U\+S\+E\+D@{E\+R\+R\+\_\+\+N\+I\+C\+K\+N\+A\+M\+E\+\_\+\+A\+L\+R\+E\+A\+D\+Y\+\_\+\+U\+S\+E\+D}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{E\+R\+R\+\_\+\+N\+I\+C\+K\+N\+A\+M\+E\+\_\+\+A\+L\+R\+E\+A\+D\+Y\+\_\+\+U\+S\+E\+D}]{\setlength{\rightskip}{0pt plus 5cm}int serveur.\+Server.\+E\+R\+R\+\_\+\+N\+I\+C\+K\+N\+A\+M\+E\+\_\+\+A\+L\+R\+E\+A\+D\+Y\+\_\+\+U\+S\+E\+D = 400}\label{namespaceserveur_1_1_server_a4d3b6c592a26cc6826e3b69835623943}
+
+
+E\+R\+R\+O\+R. 
+
+\hypertarget{namespaceserveur_1_1_server_a0e6d24729e75dabd0920b2fad909f457}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!E\+R\+R\+\_\+\+N\+O\+\_\+\+I\+N\+V\+I\+T\+\_\+\+T\+O\+\_\+\+C\+O\+N\+V\+\_\+\+F\+O\+U\+N\+D@{E\+R\+R\+\_\+\+N\+O\+\_\+\+I\+N\+V\+I\+T\+\_\+\+T\+O\+\_\+\+C\+O\+N\+V\+\_\+\+F\+O\+U\+N\+D}}
+\index{E\+R\+R\+\_\+\+N\+O\+\_\+\+I\+N\+V\+I\+T\+\_\+\+T\+O\+\_\+\+C\+O\+N\+V\+\_\+\+F\+O\+U\+N\+D@{E\+R\+R\+\_\+\+N\+O\+\_\+\+I\+N\+V\+I\+T\+\_\+\+T\+O\+\_\+\+C\+O\+N\+V\+\_\+\+F\+O\+U\+N\+D}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{E\+R\+R\+\_\+\+N\+O\+\_\+\+I\+N\+V\+I\+T\+\_\+\+T\+O\+\_\+\+C\+O\+N\+V\+\_\+\+F\+O\+U\+N\+D}]{\setlength{\rightskip}{0pt plus 5cm}int serveur.\+Server.\+E\+R\+R\+\_\+\+N\+O\+\_\+\+I\+N\+V\+I\+T\+\_\+\+T\+O\+\_\+\+C\+O\+N\+V\+\_\+\+F\+O\+U\+N\+D = 405}\label{namespaceserveur_1_1_server_a0e6d24729e75dabd0920b2fad909f457}
+\hypertarget{namespaceserveur_1_1_server_a8f7a9fdc4d39eff1a30a45c7938b5b9d}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!E\+R\+R\+\_\+\+N\+O\+\_\+\+N\+I\+C\+K\+N\+A\+M\+E@{E\+R\+R\+\_\+\+N\+O\+\_\+\+N\+I\+C\+K\+N\+A\+M\+E}}
+\index{E\+R\+R\+\_\+\+N\+O\+\_\+\+N\+I\+C\+K\+N\+A\+M\+E@{E\+R\+R\+\_\+\+N\+O\+\_\+\+N\+I\+C\+K\+N\+A\+M\+E}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{E\+R\+R\+\_\+\+N\+O\+\_\+\+N\+I\+C\+K\+N\+A\+M\+E}]{\setlength{\rightskip}{0pt plus 5cm}int serveur.\+Server.\+E\+R\+R\+\_\+\+N\+O\+\_\+\+N\+I\+C\+K\+N\+A\+M\+E = 401}\label{namespaceserveur_1_1_server_a8f7a9fdc4d39eff1a30a45c7938b5b9d}
+\hypertarget{namespaceserveur_1_1_server_a29f22082a703724f3f9946d44f8d988a}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!E\+R\+R\+\_\+\+N\+O\+T\+\_\+\+D\+I\+S\+A\+B\+L\+E\+D@{E\+R\+R\+\_\+\+N\+O\+T\+\_\+\+D\+I\+S\+A\+B\+L\+E\+D}}
+\index{E\+R\+R\+\_\+\+N\+O\+T\+\_\+\+D\+I\+S\+A\+B\+L\+E\+D@{E\+R\+R\+\_\+\+N\+O\+T\+\_\+\+D\+I\+S\+A\+B\+L\+E\+D}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{E\+R\+R\+\_\+\+N\+O\+T\+\_\+\+D\+I\+S\+A\+B\+L\+E\+D}]{\setlength{\rightskip}{0pt plus 5cm}int serveur.\+Server.\+E\+R\+R\+\_\+\+N\+O\+T\+\_\+\+D\+I\+S\+A\+B\+L\+E\+D = 410}\label{namespaceserveur_1_1_server_a29f22082a703724f3f9946d44f8d988a}
+\hypertarget{namespaceserveur_1_1_server_a7b43a87e1df2463e5c27c867f42177ba}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!E\+R\+R\+\_\+\+N\+O\+T\+\_\+\+E\+N\+A\+B\+L\+E\+D@{E\+R\+R\+\_\+\+N\+O\+T\+\_\+\+E\+N\+A\+B\+L\+E\+D}}
+\index{E\+R\+R\+\_\+\+N\+O\+T\+\_\+\+E\+N\+A\+B\+L\+E\+D@{E\+R\+R\+\_\+\+N\+O\+T\+\_\+\+E\+N\+A\+B\+L\+E\+D}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{E\+R\+R\+\_\+\+N\+O\+T\+\_\+\+E\+N\+A\+B\+L\+E\+D}]{\setlength{\rightskip}{0pt plus 5cm}int serveur.\+Server.\+E\+R\+R\+\_\+\+N\+O\+T\+\_\+\+E\+N\+A\+B\+L\+E\+D = 411}\label{namespaceserveur_1_1_server_a7b43a87e1df2463e5c27c867f42177ba}
+\hypertarget{namespaceserveur_1_1_server_a27e74ff26eae4e8de6820c0e3b91ade7}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!E\+R\+R\+\_\+\+U\+N\+K\+N\+O\+W\+N\+\_\+\+A\+C\+C\+E\+P\+T\+E\+D\+\_\+\+F\+I\+L\+E@{E\+R\+R\+\_\+\+U\+N\+K\+N\+O\+W\+N\+\_\+\+A\+C\+C\+E\+P\+T\+E\+D\+\_\+\+F\+I\+L\+E}}
+\index{E\+R\+R\+\_\+\+U\+N\+K\+N\+O\+W\+N\+\_\+\+A\+C\+C\+E\+P\+T\+E\+D\+\_\+\+F\+I\+L\+E@{E\+R\+R\+\_\+\+U\+N\+K\+N\+O\+W\+N\+\_\+\+A\+C\+C\+E\+P\+T\+E\+D\+\_\+\+F\+I\+L\+E}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{E\+R\+R\+\_\+\+U\+N\+K\+N\+O\+W\+N\+\_\+\+A\+C\+C\+E\+P\+T\+E\+D\+\_\+\+F\+I\+L\+E}]{\setlength{\rightskip}{0pt plus 5cm}int serveur.\+Server.\+E\+R\+R\+\_\+\+U\+N\+K\+N\+O\+W\+N\+\_\+\+A\+C\+C\+E\+P\+T\+E\+D\+\_\+\+F\+I\+L\+E = 406}\label{namespaceserveur_1_1_server_a27e74ff26eae4e8de6820c0e3b91ade7}
+\hypertarget{namespaceserveur_1_1_server_a837bafb63c6e00fb5381b9bea4e63079}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!H\+A\+S\+\_\+\+A\+S\+K\+E\+D\+\_\+\+F\+I\+L\+E@{H\+A\+S\+\_\+\+A\+S\+K\+E\+D\+\_\+\+F\+I\+L\+E}}
+\index{H\+A\+S\+\_\+\+A\+S\+K\+E\+D\+\_\+\+F\+I\+L\+E@{H\+A\+S\+\_\+\+A\+S\+K\+E\+D\+\_\+\+F\+I\+L\+E}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{H\+A\+S\+\_\+\+A\+S\+K\+E\+D\+\_\+\+F\+I\+L\+E}]{\setlength{\rightskip}{0pt plus 5cm}int serveur.\+Server.\+H\+A\+S\+\_\+\+A\+S\+K\+E\+D\+\_\+\+F\+I\+L\+E = 312}\label{namespaceserveur_1_1_server_a837bafb63c6e00fb5381b9bea4e63079}
+\hypertarget{namespaceserveur_1_1_server_ac0f5caaab094186afb567ed676c6c436}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!H\+A\+S\+\_\+\+J\+O\+I\+N@{H\+A\+S\+\_\+\+J\+O\+I\+N}}
+\index{H\+A\+S\+\_\+\+J\+O\+I\+N@{H\+A\+S\+\_\+\+J\+O\+I\+N}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{H\+A\+S\+\_\+\+J\+O\+I\+N}]{\setlength{\rightskip}{0pt plus 5cm}int serveur.\+Server.\+H\+A\+S\+\_\+\+J\+O\+I\+N = 302}\label{namespaceserveur_1_1_server_ac0f5caaab094186afb567ed676c6c436}
+\hypertarget{namespaceserveur_1_1_server_aee84037f6f1efd56db62026cf807154a}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!H\+A\+S\+\_\+\+L\+E\+F\+T@{H\+A\+S\+\_\+\+L\+E\+F\+T}}
+\index{H\+A\+S\+\_\+\+L\+E\+F\+T@{H\+A\+S\+\_\+\+L\+E\+F\+T}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{H\+A\+S\+\_\+\+L\+E\+F\+T}]{\setlength{\rightskip}{0pt plus 5cm}int serveur.\+Server.\+H\+A\+S\+\_\+\+L\+E\+F\+T = 303}\label{namespaceserveur_1_1_server_aee84037f6f1efd56db62026cf807154a}
+\hypertarget{namespaceserveur_1_1_server_a22452d53acf82b8fa8a06e845bdad0ce}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!H\+A\+S\+\_\+\+R\+E\+J\+E\+C\+T\+\_\+\+F\+I\+L\+E@{H\+A\+S\+\_\+\+R\+E\+J\+E\+C\+T\+\_\+\+F\+I\+L\+E}}
+\index{H\+A\+S\+\_\+\+R\+E\+J\+E\+C\+T\+\_\+\+F\+I\+L\+E@{H\+A\+S\+\_\+\+R\+E\+J\+E\+C\+T\+\_\+\+F\+I\+L\+E}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{H\+A\+S\+\_\+\+R\+E\+J\+E\+C\+T\+\_\+\+F\+I\+L\+E}]{\setlength{\rightskip}{0pt plus 5cm}int serveur.\+Server.\+H\+A\+S\+\_\+\+R\+E\+J\+E\+C\+T\+\_\+\+F\+I\+L\+E = 314}\label{namespaceserveur_1_1_server_a22452d53acf82b8fa8a06e845bdad0ce}
+\hypertarget{namespaceserveur_1_1_server_a3550282baac54ac0efc954c284cd84d5}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!I\+S\+\_\+\+N\+O\+W\+\_\+\+D\+I\+S\+A\+B\+L\+E@{I\+S\+\_\+\+N\+O\+W\+\_\+\+D\+I\+S\+A\+B\+L\+E}}
+\index{I\+S\+\_\+\+N\+O\+W\+\_\+\+D\+I\+S\+A\+B\+L\+E@{I\+S\+\_\+\+N\+O\+W\+\_\+\+D\+I\+S\+A\+B\+L\+E}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{I\+S\+\_\+\+N\+O\+W\+\_\+\+D\+I\+S\+A\+B\+L\+E}]{\setlength{\rightskip}{0pt plus 5cm}int serveur.\+Server.\+I\+S\+\_\+\+N\+O\+W\+\_\+\+D\+I\+S\+A\+B\+L\+E = 311}\label{namespaceserveur_1_1_server_a3550282baac54ac0efc954c284cd84d5}
+\hypertarget{namespaceserveur_1_1_server_ac22188a1cc57ff59633b41f74b8b51c6}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!I\+S\+\_\+\+N\+O\+W\+\_\+\+E\+N\+A\+B\+L\+E@{I\+S\+\_\+\+N\+O\+W\+\_\+\+E\+N\+A\+B\+L\+E}}
+\index{I\+S\+\_\+\+N\+O\+W\+\_\+\+E\+N\+A\+B\+L\+E@{I\+S\+\_\+\+N\+O\+W\+\_\+\+E\+N\+A\+B\+L\+E}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{I\+S\+\_\+\+N\+O\+W\+\_\+\+E\+N\+A\+B\+L\+E}]{\setlength{\rightskip}{0pt plus 5cm}int serveur.\+Server.\+I\+S\+\_\+\+N\+O\+W\+\_\+\+E\+N\+A\+B\+L\+E = 310}\label{namespaceserveur_1_1_server_ac22188a1cc57ff59633b41f74b8b51c6}
+\hypertarget{namespaceserveur_1_1_server_ab1031701e2171ce16c5dd1a070475f57}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!N\+A\+M\+E\+\_\+\+C\+H\+A\+N\+G\+E\+D@{N\+A\+M\+E\+\_\+\+C\+H\+A\+N\+G\+E\+D}}
+\index{N\+A\+M\+E\+\_\+\+C\+H\+A\+N\+G\+E\+D@{N\+A\+M\+E\+\_\+\+C\+H\+A\+N\+G\+E\+D}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{N\+A\+M\+E\+\_\+\+C\+H\+A\+N\+G\+E\+D}]{\setlength{\rightskip}{0pt plus 5cm}int serveur.\+Server.\+N\+A\+M\+E\+\_\+\+C\+H\+A\+N\+G\+E\+D = 305}\label{namespaceserveur_1_1_server_ab1031701e2171ce16c5dd1a070475f57}
+\hypertarget{namespaceserveur_1_1_server_ad8db2b5152d0350c9409bfc9ba4dcd9d}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!N\+E\+W\+\_\+\+M\+S\+G@{N\+E\+W\+\_\+\+M\+S\+G}}
+\index{N\+E\+W\+\_\+\+M\+S\+G@{N\+E\+W\+\_\+\+M\+S\+G}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{N\+E\+W\+\_\+\+M\+S\+G}]{\setlength{\rightskip}{0pt plus 5cm}int serveur.\+Server.\+N\+E\+W\+\_\+\+M\+S\+G = 304}\label{namespaceserveur_1_1_server_ad8db2b5152d0350c9409bfc9ba4dcd9d}
+\hypertarget{namespaceserveur_1_1_server_aa668a288f5b7e4fb9aec27110086d34b}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!N\+E\+W\+\_\+\+P\+M@{N\+E\+W\+\_\+\+P\+M}}
+\index{N\+E\+W\+\_\+\+P\+M@{N\+E\+W\+\_\+\+P\+M}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{N\+E\+W\+\_\+\+P\+M}]{\setlength{\rightskip}{0pt plus 5cm}int serveur.\+Server.\+N\+E\+W\+\_\+\+P\+M = 306}\label{namespaceserveur_1_1_server_aa668a288f5b7e4fb9aec27110086d34b}
+\hypertarget{namespaceserveur_1_1_server_ae4a2e2d9be1880700b134a73845a5520}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!P\+R\+I\+V\+A\+T\+E\+\_\+\+D\+I\+S\+C\+U\+\_\+\+A\+C\+C\+E\+P\+T\+E\+D\+\_\+\+F\+R\+O\+M@{P\+R\+I\+V\+A\+T\+E\+\_\+\+D\+I\+S\+C\+U\+\_\+\+A\+C\+C\+E\+P\+T\+E\+D\+\_\+\+F\+R\+O\+M}}
+\index{P\+R\+I\+V\+A\+T\+E\+\_\+\+D\+I\+S\+C\+U\+\_\+\+A\+C\+C\+E\+P\+T\+E\+D\+\_\+\+F\+R\+O\+M@{P\+R\+I\+V\+A\+T\+E\+\_\+\+D\+I\+S\+C\+U\+\_\+\+A\+C\+C\+E\+P\+T\+E\+D\+\_\+\+F\+R\+O\+M}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{P\+R\+I\+V\+A\+T\+E\+\_\+\+D\+I\+S\+C\+U\+\_\+\+A\+C\+C\+E\+P\+T\+E\+D\+\_\+\+F\+R\+O\+M}]{\setlength{\rightskip}{0pt plus 5cm}int serveur.\+Server.\+P\+R\+I\+V\+A\+T\+E\+\_\+\+D\+I\+S\+C\+U\+\_\+\+A\+C\+C\+E\+P\+T\+E\+D\+\_\+\+F\+R\+O\+M = 308}\label{namespaceserveur_1_1_server_ae4a2e2d9be1880700b134a73845a5520}
+\hypertarget{namespaceserveur_1_1_server_a09d0e3676dc690b25a7383d8cfe539ee}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!P\+R\+I\+V\+A\+T\+E\+\_\+\+D\+I\+S\+C\+U\+\_\+\+R\+E\+F\+U\+S\+E\+D\+\_\+\+F\+R\+O\+M@{P\+R\+I\+V\+A\+T\+E\+\_\+\+D\+I\+S\+C\+U\+\_\+\+R\+E\+F\+U\+S\+E\+D\+\_\+\+F\+R\+O\+M}}
+\index{P\+R\+I\+V\+A\+T\+E\+\_\+\+D\+I\+S\+C\+U\+\_\+\+R\+E\+F\+U\+S\+E\+D\+\_\+\+F\+R\+O\+M@{P\+R\+I\+V\+A\+T\+E\+\_\+\+D\+I\+S\+C\+U\+\_\+\+R\+E\+F\+U\+S\+E\+D\+\_\+\+F\+R\+O\+M}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{P\+R\+I\+V\+A\+T\+E\+\_\+\+D\+I\+S\+C\+U\+\_\+\+R\+E\+F\+U\+S\+E\+D\+\_\+\+F\+R\+O\+M}]{\setlength{\rightskip}{0pt plus 5cm}int serveur.\+Server.\+P\+R\+I\+V\+A\+T\+E\+\_\+\+D\+I\+S\+C\+U\+\_\+\+R\+E\+F\+U\+S\+E\+D\+\_\+\+F\+R\+O\+M = 309}\label{namespaceserveur_1_1_server_a09d0e3676dc690b25a7383d8cfe539ee}
+\hypertarget{namespaceserveur_1_1_server_aad1e9d7581726a0bc75c1467d6e42bff}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!S\+U\+C\+C\+\_\+\+A\+C\+C\+E\+P\+T\+E\+D\+\_\+\+F\+I\+L\+E@{S\+U\+C\+C\+\_\+\+A\+C\+C\+E\+P\+T\+E\+D\+\_\+\+F\+I\+L\+E}}
+\index{S\+U\+C\+C\+\_\+\+A\+C\+C\+E\+P\+T\+E\+D\+\_\+\+F\+I\+L\+E@{S\+U\+C\+C\+\_\+\+A\+C\+C\+E\+P\+T\+E\+D\+\_\+\+F\+I\+L\+E}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{S\+U\+C\+C\+\_\+\+A\+C\+C\+E\+P\+T\+E\+D\+\_\+\+F\+I\+L\+E}]{\setlength{\rightskip}{0pt plus 5cm}int serveur.\+Server.\+S\+U\+C\+C\+\_\+\+A\+C\+C\+E\+P\+T\+E\+D\+\_\+\+F\+I\+L\+E = 212}\label{namespaceserveur_1_1_server_aad1e9d7581726a0bc75c1467d6e42bff}
+\hypertarget{namespaceserveur_1_1_server_ad304925210a67430160b5676248d80d0}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!S\+U\+C\+C\+\_\+\+C\+H\+A\+N\+N\+E\+L\+\_\+\+J\+O\+I\+N\+E\+D@{S\+U\+C\+C\+\_\+\+C\+H\+A\+N\+N\+E\+L\+\_\+\+J\+O\+I\+N\+E\+D}}
+\index{S\+U\+C\+C\+\_\+\+C\+H\+A\+N\+N\+E\+L\+\_\+\+J\+O\+I\+N\+E\+D@{S\+U\+C\+C\+\_\+\+C\+H\+A\+N\+N\+E\+L\+\_\+\+J\+O\+I\+N\+E\+D}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{S\+U\+C\+C\+\_\+\+C\+H\+A\+N\+N\+E\+L\+\_\+\+J\+O\+I\+N\+E\+D}]{\setlength{\rightskip}{0pt plus 5cm}int serveur.\+Server.\+S\+U\+C\+C\+\_\+\+C\+H\+A\+N\+N\+E\+L\+\_\+\+J\+O\+I\+N\+E\+D = 200}\label{namespaceserveur_1_1_server_ad304925210a67430160b5676248d80d0}
+
+
+S\+U\+C\+C\+E\+S\+S. 
+
+\hypertarget{namespaceserveur_1_1_server_ae84e83aefad2ba9384f3a4212fd4285e}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!S\+U\+C\+C\+\_\+\+C\+H\+A\+N\+N\+E\+L\+\_\+\+Q\+U\+I\+T@{S\+U\+C\+C\+\_\+\+C\+H\+A\+N\+N\+E\+L\+\_\+\+Q\+U\+I\+T}}
+\index{S\+U\+C\+C\+\_\+\+C\+H\+A\+N\+N\+E\+L\+\_\+\+Q\+U\+I\+T@{S\+U\+C\+C\+\_\+\+C\+H\+A\+N\+N\+E\+L\+\_\+\+Q\+U\+I\+T}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{S\+U\+C\+C\+\_\+\+C\+H\+A\+N\+N\+E\+L\+\_\+\+Q\+U\+I\+T}]{\setlength{\rightskip}{0pt plus 5cm}int serveur.\+Server.\+S\+U\+C\+C\+\_\+\+C\+H\+A\+N\+N\+E\+L\+\_\+\+Q\+U\+I\+T = 201}\label{namespaceserveur_1_1_server_ae84e83aefad2ba9384f3a4212fd4285e}
+\hypertarget{namespaceserveur_1_1_server_ab8e45b028661530017c97c32eb7d2dee}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!S\+U\+C\+C\+\_\+\+D\+I\+S\+A\+B\+L\+E\+D@{S\+U\+C\+C\+\_\+\+D\+I\+S\+A\+B\+L\+E\+D}}
+\index{S\+U\+C\+C\+\_\+\+D\+I\+S\+A\+B\+L\+E\+D@{S\+U\+C\+C\+\_\+\+D\+I\+S\+A\+B\+L\+E\+D}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{S\+U\+C\+C\+\_\+\+D\+I\+S\+A\+B\+L\+E\+D}]{\setlength{\rightskip}{0pt plus 5cm}int serveur.\+Server.\+S\+U\+C\+C\+\_\+\+D\+I\+S\+A\+B\+L\+E\+D = 210}\label{namespaceserveur_1_1_server_ab8e45b028661530017c97c32eb7d2dee}
+\hypertarget{namespaceserveur_1_1_server_a19003994913e70d651187ef62efe973c}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!S\+U\+C\+C\+\_\+\+E\+N\+A\+B\+L\+E\+D@{S\+U\+C\+C\+\_\+\+E\+N\+A\+B\+L\+E\+D}}
+\index{S\+U\+C\+C\+\_\+\+E\+N\+A\+B\+L\+E\+D@{S\+U\+C\+C\+\_\+\+E\+N\+A\+B\+L\+E\+D}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{S\+U\+C\+C\+\_\+\+E\+N\+A\+B\+L\+E\+D}]{\setlength{\rightskip}{0pt plus 5cm}int serveur.\+Server.\+S\+U\+C\+C\+\_\+\+E\+N\+A\+B\+L\+E\+D = 209}\label{namespaceserveur_1_1_server_a19003994913e70d651187ef62efe973c}
+\hypertarget{namespaceserveur_1_1_server_a598115c26902f7ec21c6a8e85661e31e}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!S\+U\+C\+C\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+S\+E\+N\+D\+E\+D@{S\+U\+C\+C\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+S\+E\+N\+D\+E\+D}}
+\index{S\+U\+C\+C\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+S\+E\+N\+D\+E\+D@{S\+U\+C\+C\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+S\+E\+N\+D\+E\+D}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{S\+U\+C\+C\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+S\+E\+N\+D\+E\+D}]{\setlength{\rightskip}{0pt plus 5cm}int serveur.\+Server.\+S\+U\+C\+C\+\_\+\+M\+E\+S\+S\+A\+G\+E\+\_\+\+S\+E\+N\+D\+E\+D = 202}\label{namespaceserveur_1_1_server_a598115c26902f7ec21c6a8e85661e31e}
+\hypertarget{namespaceserveur_1_1_server_abc774b5cecac227491c81d7701444ceb}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!S\+U\+C\+C\+\_\+\+N\+I\+C\+K\+N\+A\+M\+E\+\_\+\+C\+H\+A\+N\+G\+E\+D@{S\+U\+C\+C\+\_\+\+N\+I\+C\+K\+N\+A\+M\+E\+\_\+\+C\+H\+A\+N\+G\+E\+D}}
+\index{S\+U\+C\+C\+\_\+\+N\+I\+C\+K\+N\+A\+M\+E\+\_\+\+C\+H\+A\+N\+G\+E\+D@{S\+U\+C\+C\+\_\+\+N\+I\+C\+K\+N\+A\+M\+E\+\_\+\+C\+H\+A\+N\+G\+E\+D}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{S\+U\+C\+C\+\_\+\+N\+I\+C\+K\+N\+A\+M\+E\+\_\+\+C\+H\+A\+N\+G\+E\+D}]{\setlength{\rightskip}{0pt plus 5cm}int serveur.\+Server.\+S\+U\+C\+C\+\_\+\+N\+I\+C\+K\+N\+A\+M\+E\+\_\+\+C\+H\+A\+N\+G\+E\+D = 203}\label{namespaceserveur_1_1_server_abc774b5cecac227491c81d7701444ceb}
+\hypertarget{namespaceserveur_1_1_server_a0539b6dde60545a7317bf2e7f93ab480}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!S\+U\+C\+C\+\_\+\+P\+M\+\_\+\+S\+E\+N\+D\+E\+D@{S\+U\+C\+C\+\_\+\+P\+M\+\_\+\+S\+E\+N\+D\+E\+D}}
+\index{S\+U\+C\+C\+\_\+\+P\+M\+\_\+\+S\+E\+N\+D\+E\+D@{S\+U\+C\+C\+\_\+\+P\+M\+\_\+\+S\+E\+N\+D\+E\+D}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{S\+U\+C\+C\+\_\+\+P\+M\+\_\+\+S\+E\+N\+D\+E\+D}]{\setlength{\rightskip}{0pt plus 5cm}int serveur.\+Server.\+S\+U\+C\+C\+\_\+\+P\+M\+\_\+\+S\+E\+N\+D\+E\+D = 205}\label{namespaceserveur_1_1_server_a0539b6dde60545a7317bf2e7f93ab480}
+\hypertarget{namespaceserveur_1_1_server_ab3db5fdda6776cd1e74dec924e6d6574}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!S\+U\+C\+C\+\_\+\+P\+M\+F\+I\+L\+E@{S\+U\+C\+C\+\_\+\+P\+M\+F\+I\+L\+E}}
+\index{S\+U\+C\+C\+\_\+\+P\+M\+F\+I\+L\+E@{S\+U\+C\+C\+\_\+\+P\+M\+F\+I\+L\+E}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{S\+U\+C\+C\+\_\+\+P\+M\+F\+I\+L\+E}]{\setlength{\rightskip}{0pt plus 5cm}int serveur.\+Server.\+S\+U\+C\+C\+\_\+\+P\+M\+F\+I\+L\+E = 211}\label{namespaceserveur_1_1_server_ab3db5fdda6776cd1e74dec924e6d6574}
+\hypertarget{namespaceserveur_1_1_server_acd1e4e31d269a159b14f6da936904872}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!S\+U\+C\+C\+\_\+\+R\+E\+F\+U\+S\+E\+D\+\_\+\+F\+I\+L\+E@{S\+U\+C\+C\+\_\+\+R\+E\+F\+U\+S\+E\+D\+\_\+\+F\+I\+L\+E}}
+\index{S\+U\+C\+C\+\_\+\+R\+E\+F\+U\+S\+E\+D\+\_\+\+F\+I\+L\+E@{S\+U\+C\+C\+\_\+\+R\+E\+F\+U\+S\+E\+D\+\_\+\+F\+I\+L\+E}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{S\+U\+C\+C\+\_\+\+R\+E\+F\+U\+S\+E\+D\+\_\+\+F\+I\+L\+E}]{\setlength{\rightskip}{0pt plus 5cm}int serveur.\+Server.\+S\+U\+C\+C\+\_\+\+R\+E\+F\+U\+S\+E\+D\+\_\+\+F\+I\+L\+E = 213}\label{namespaceserveur_1_1_server_acd1e4e31d269a159b14f6da936904872}
+\hypertarget{namespaceserveur_1_1_server_aaf720e9592d40b4fcf6029832ca535da}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!S\+U\+C\+C\+E\+S\+S\+F\+U\+L\+\_\+\+A\+C\+C\+E\+P\+T\+E\+D\+\_\+\+C\+O\+N\+V@{S\+U\+C\+C\+E\+S\+S\+F\+U\+L\+\_\+\+A\+C\+C\+E\+P\+T\+E\+D\+\_\+\+C\+O\+N\+V}}
+\index{S\+U\+C\+C\+E\+S\+S\+F\+U\+L\+\_\+\+A\+C\+C\+E\+P\+T\+E\+D\+\_\+\+C\+O\+N\+V@{S\+U\+C\+C\+E\+S\+S\+F\+U\+L\+\_\+\+A\+C\+C\+E\+P\+T\+E\+D\+\_\+\+C\+O\+N\+V}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{S\+U\+C\+C\+E\+S\+S\+F\+U\+L\+\_\+\+A\+C\+C\+E\+P\+T\+E\+D\+\_\+\+C\+O\+N\+V}]{\setlength{\rightskip}{0pt plus 5cm}int serveur.\+Server.\+S\+U\+C\+C\+E\+S\+S\+F\+U\+L\+\_\+\+A\+C\+C\+E\+P\+T\+E\+D\+\_\+\+C\+O\+N\+V = 207}\label{namespaceserveur_1_1_server_aaf720e9592d40b4fcf6029832ca535da}
+\hypertarget{namespaceserveur_1_1_server_aff7a1e808175d6f1a8e3b755000da949}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!S\+U\+C\+C\+E\+S\+S\+F\+U\+L\+\_\+\+A\+S\+K\+E\+D\+\_\+\+C\+O\+N\+V@{S\+U\+C\+C\+E\+S\+S\+F\+U\+L\+\_\+\+A\+S\+K\+E\+D\+\_\+\+C\+O\+N\+V}}
+\index{S\+U\+C\+C\+E\+S\+S\+F\+U\+L\+\_\+\+A\+S\+K\+E\+D\+\_\+\+C\+O\+N\+V@{S\+U\+C\+C\+E\+S\+S\+F\+U\+L\+\_\+\+A\+S\+K\+E\+D\+\_\+\+C\+O\+N\+V}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{S\+U\+C\+C\+E\+S\+S\+F\+U\+L\+\_\+\+A\+S\+K\+E\+D\+\_\+\+C\+O\+N\+V}]{\setlength{\rightskip}{0pt plus 5cm}int serveur.\+Server.\+S\+U\+C\+C\+E\+S\+S\+F\+U\+L\+\_\+\+A\+S\+K\+E\+D\+\_\+\+C\+O\+N\+V = 206}\label{namespaceserveur_1_1_server_aff7a1e808175d6f1a8e3b755000da949}
+\hypertarget{namespaceserveur_1_1_server_a9f83ae7ff8cb2651e529da4329f9e970}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!S\+U\+C\+C\+E\+S\+S\+F\+U\+L\+\_\+\+R\+E\+F\+U\+S\+E\+D\+\_\+\+C\+O\+N\+V@{S\+U\+C\+C\+E\+S\+S\+F\+U\+L\+\_\+\+R\+E\+F\+U\+S\+E\+D\+\_\+\+C\+O\+N\+V}}
+\index{S\+U\+C\+C\+E\+S\+S\+F\+U\+L\+\_\+\+R\+E\+F\+U\+S\+E\+D\+\_\+\+C\+O\+N\+V@{S\+U\+C\+C\+E\+S\+S\+F\+U\+L\+\_\+\+R\+E\+F\+U\+S\+E\+D\+\_\+\+C\+O\+N\+V}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{S\+U\+C\+C\+E\+S\+S\+F\+U\+L\+\_\+\+R\+E\+F\+U\+S\+E\+D\+\_\+\+C\+O\+N\+V}]{\setlength{\rightskip}{0pt plus 5cm}int serveur.\+Server.\+S\+U\+C\+C\+E\+S\+S\+F\+U\+L\+\_\+\+R\+E\+F\+U\+S\+E\+D\+\_\+\+C\+O\+N\+V = 208}\label{namespaceserveur_1_1_server_a9f83ae7ff8cb2651e529da4329f9e970}
+\hypertarget{namespaceserveur_1_1_server_a90e5e028b94e11e73745c0830ea48dd6}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!U\+S\+E\+R\+L\+I\+S\+T\+\_\+\+D\+I\+S\+A\+B\+L\+E@{U\+S\+E\+R\+L\+I\+S\+T\+\_\+\+D\+I\+S\+A\+B\+L\+E}}
+\index{U\+S\+E\+R\+L\+I\+S\+T\+\_\+\+D\+I\+S\+A\+B\+L\+E@{U\+S\+E\+R\+L\+I\+S\+T\+\_\+\+D\+I\+S\+A\+B\+L\+E}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{U\+S\+E\+R\+L\+I\+S\+T\+\_\+\+D\+I\+S\+A\+B\+L\+E}]{\setlength{\rightskip}{0pt plus 5cm}int serveur.\+Server.\+U\+S\+E\+R\+L\+I\+S\+T\+\_\+\+D\+I\+S\+A\+B\+L\+E = 301}\label{namespaceserveur_1_1_server_a90e5e028b94e11e73745c0830ea48dd6}
+\hypertarget{namespaceserveur_1_1_server_a4712f809a0369863821f1f3611b0c6a9}{}\index{serveur\+::\+Server@{serveur\+::\+Server}!U\+S\+E\+R\+L\+I\+S\+T\+\_\+\+E\+N\+A\+B\+L\+E@{U\+S\+E\+R\+L\+I\+S\+T\+\_\+\+E\+N\+A\+B\+L\+E}}
+\index{U\+S\+E\+R\+L\+I\+S\+T\+\_\+\+E\+N\+A\+B\+L\+E@{U\+S\+E\+R\+L\+I\+S\+T\+\_\+\+E\+N\+A\+B\+L\+E}!serveur\+::\+Server@{serveur\+::\+Server}}
+\subsubsection[{U\+S\+E\+R\+L\+I\+S\+T\+\_\+\+E\+N\+A\+B\+L\+E}]{\setlength{\rightskip}{0pt plus 5cm}int serveur.\+Server.\+U\+S\+E\+R\+L\+I\+S\+T\+\_\+\+E\+N\+A\+B\+L\+E = 300}\label{namespaceserveur_1_1_server_a4712f809a0369863821f1f3611b0c6a9}
+
+
+Code retour \#\#\# I\+N\+F\+O. 
+

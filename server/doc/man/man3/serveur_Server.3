@@ -1,0 +1,541 @@
+.TH "serveur.Server" 3 "Wed Apr 15 2015" "Version 1.0" "Server DNC" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+serveur.Server \- 
+.SH SYNOPSIS
+.br
+.PP
+.SS "Functions"
+
+.in +1c
+.ti -1c
+.RI "def \fBmain\fP ()"
+.br
+.RI "\fILoad Configuration and Start the \fBServer\fP\&. \fP"
+.ti -1c
+.RI "def \fBhandle_connection\fP (connection, client_address)"
+.br
+.RI "\fIHandle a connection from a client\&. \fP"
+.ti -1c
+.RI "def \fBhandle_request\fP (connection, data)"
+.br
+.RI "\fIHandle a request\&. \fP"
+.ti -1c
+.RI "def \fBbroadcast_message\fP (connection, message)"
+.br
+.RI "\fIBroadcast a message to all the users connected except to the sender of the request\&. \fP"
+.ti -1c
+.RI "def \fBuser_list_active\fP (connection)"
+.br
+.RI "\fISend the list of enable user\&. \fP"
+.ti -1c
+.RI "def \fBuser_list_away\fP (connection)"
+.br
+.RI "\fISend the list of disable user\&. \fP"
+.ti -1c
+.RI "def \fBchange_name\fP (connection, pseudo)"
+.br
+.RI "\fIChange the nickname of the user\&. \fP"
+.ti -1c
+.RI "def \fBnew_name\fP (connection, pseudo)"
+.br
+.RI "\fIAffect the nickname of the user for the first time\&. \fP"
+.ti -1c
+.RI "def \fBask_private_message\fP (connection, pseudo)"
+.br
+.RI "\fIAsk for a private discussion between the sender of the request and the pseudo\&. \fP"
+.ti -1c
+.RI "def \fBaccept_private_message\fP (connection, pseudo)"
+.br
+.RI "\fIAccept a private discussion\&. \fP"
+.ti -1c
+.RI "def \fBreject_private_message\fP (connection, pseudo)"
+.br
+.RI "\fIReject a private discussion\&. \fP"
+.ti -1c
+.RI "def \fBprivate_message\fP (connection, pseudo, msg)"
+.br
+.RI "\fISend a private message if a private discussion had been accepted\&. \fP"
+.ti -1c
+.RI "def \fBask_file\fP (connection, pseudo, file)"
+.br
+.RI "\fIAsk for a file transfer between the sender of the request and the pseudo\&. \fP"
+.ti -1c
+.RI "def \fBaccept_file\fP (connection, pseudo, file, port)"
+.br
+.RI "\fIAccept a file transfer\&. \fP"
+.ti -1c
+.RI "def \fBreject_file\fP (connection, pseudo, file)"
+.br
+.RI "\fIReject a file transfer\&. \fP"
+.ti -1c
+.RI "def \fBenable_user\fP (connection)"
+.br
+.RI "\fIEnable user\&. \fP"
+.ti -1c
+.RI "def \fBdisable_user\fP (connection)"
+.br
+.RI "\fIDisable user\&. \fP"
+.ti -1c
+.RI "def \fBquit_user\fP (connection)"
+.br
+.RI "\fIDisconnect user\&. \fP"
+.ti -1c
+.RI "def \fBget_connection_by_pseudo\fP (pseudo)"
+.br
+.RI "\fIGet the socket descriptor by a pseudo\&. \fP"
+.in -1c
+.SS "Variables"
+
+.in +1c
+.ti -1c
+.RI "int \fBUSERLIST_ENABLE\fP = 300"
+.br
+.RI "\fICode retour ### INFO\&. \fP"
+.ti -1c
+.RI "int \fBUSERLIST_DISABLE\fP = 301"
+.br
+.ti -1c
+.RI "int \fBHAS_JOIN\fP = 302"
+.br
+.ti -1c
+.RI "int \fBHAS_LEFT\fP = 303"
+.br
+.ti -1c
+.RI "int \fBNEW_MSG\fP = 304"
+.br
+.ti -1c
+.RI "int \fBNAME_CHANGED\fP = 305"
+.br
+.ti -1c
+.RI "int \fBNEW_PM\fP = 306"
+.br
+.ti -1c
+.RI "int \fBASKING_FOR_PM\fP = 307"
+.br
+.ti -1c
+.RI "int \fBPRIVATE_DISCU_ACCEPTED_FROM\fP = 308"
+.br
+.ti -1c
+.RI "int \fBPRIVATE_DISCU_REFUSED_FROM\fP = 309"
+.br
+.ti -1c
+.RI "int \fBIS_NOW_ENABLE\fP = 310"
+.br
+.ti -1c
+.RI "int \fBIS_NOW_DISABLE\fP = 311"
+.br
+.ti -1c
+.RI "int \fBHAS_ASKED_FILE\fP = 312"
+.br
+.ti -1c
+.RI "int \fBCAN_SEND_FILE\fP = 313"
+.br
+.ti -1c
+.RI "int \fBHAS_REJECT_FILE\fP = 314"
+.br
+.ti -1c
+.RI "int \fBSUCC_CHANNEL_JOINED\fP = 200"
+.br
+.RI "\fISUCCESS\&. \fP"
+.ti -1c
+.RI "int \fBSUCC_CHANNEL_QUIT\fP = 201"
+.br
+.ti -1c
+.RI "int \fBSUCC_MESSAGE_SENDED\fP = 202"
+.br
+.ti -1c
+.RI "int \fBSUCC_NICKNAME_CHANGED\fP = 203"
+.br
+.ti -1c
+.RI "int \fBSUCC_PM_SENDED\fP = 205"
+.br
+.ti -1c
+.RI "int \fBSUCCESSFUL_ASKED_CONV\fP = 206"
+.br
+.ti -1c
+.RI "int \fBSUCCESSFUL_ACCEPTED_CONV\fP = 207"
+.br
+.ti -1c
+.RI "int \fBSUCCESSFUL_REFUSED_CONV\fP = 208"
+.br
+.ti -1c
+.RI "int \fBSUCC_ENABLED\fP = 209"
+.br
+.ti -1c
+.RI "int \fBSUCC_DISABLED\fP = 210"
+.br
+.ti -1c
+.RI "int \fBSUCC_PMFILE\fP = 211"
+.br
+.ti -1c
+.RI "int \fBSUCC_ACCEPTED_FILE\fP = 212"
+.br
+.ti -1c
+.RI "int \fBSUCC_REFUSED_FILE\fP = 213"
+.br
+.ti -1c
+.RI "int \fBERR_NICKNAME_ALREADY_USED\fP = 400"
+.br
+.RI "\fIERROR\&. \fP"
+.ti -1c
+.RI "int \fBERR_NO_NICKNAME\fP = 401"
+.br
+.ti -1c
+.RI "int \fBERR_CONV_NOT_ALLOWED\fP = 402"
+.br
+.ti -1c
+.RI "int \fBDEST_NOT_FOUND\fP = 403"
+.br
+.ti -1c
+.RI "int \fBERR_ALREADY_ASKED_FOR_PM\fP = 404"
+.br
+.ti -1c
+.RI "int \fBERR_NO_INVIT_TO_CONV_FOUND\fP = 405"
+.br
+.ti -1c
+.RI "int \fBERR_UNKNOWN_ACCEPTED_FILE\fP = 406"
+.br
+.ti -1c
+.RI "int \fBCOMMAND_NOT_FOUND\fP = 407"
+.br
+.ti -1c
+.RI "int \fBERR_INVALID_NICKNAME\fP = 408"
+.br
+.ti -1c
+.RI "int \fBERR_INTERNAL_SERVER_ERROR\fP = 409"
+.br
+.ti -1c
+.RI "int \fBERR_NOT_DISABLED\fP = 410"
+.br
+.ti -1c
+.RI "int \fBERR_NOT_ENABLED\fP = 411"
+.br
+.in -1c
+.SH "Function Documentation"
+.PP 
+.SS "def serveur\&.Server\&.accept_file ( connection,  pseudo,  file,  port)"
+
+.PP
+Accept a file transfer\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIconnection\fP the socket descriptor of the person who accept a file transfer 
+.br
+\fIpseudo\fP the pseudo of the person who asked for a file transfer 
+.RE
+.PP
+
+.SS "def serveur\&.Server\&.accept_private_message ( connection,  pseudo)"
+
+.PP
+Accept a private discussion\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIconnection\fP the socket descriptor of the person who accept the private discussion 
+.br
+\fIpseudo\fP the pseudo of the person who asked for a private discussion 
+.RE
+.PP
+
+.SS "def serveur\&.Server\&.ask_file ( connection,  pseudo,  file)"
+
+.PP
+Ask for a file transfer between the sender of the request and the pseudo\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIconnection\fP the socket descriptor of the sender 
+.br
+\fIpseudo\fP the pseudo of target of the demand 
+.RE
+.PP
+
+.SS "def serveur\&.Server\&.ask_private_message ( connection,  pseudo)"
+
+.PP
+Ask for a private discussion between the sender of the request and the pseudo\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIconnection\fP the socket descriptor of the sender 
+.br
+\fIpseudo\fP the pseudo of target of the demand 
+.RE
+.PP
+
+.SS "def serveur\&.Server\&.broadcast_message ( connection,  message)"
+
+.PP
+Broadcast a message to all the users connected except to the sender of the request\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIconnection\fP the socket descriptor of the request sender 
+.br
+\fImessage\fP message to broadcast (String) 
+.RE
+.PP
+
+.SS "def serveur\&.Server\&.change_name ( connection,  pseudo)"
+
+.PP
+Change the nickname of the user\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIconnection\fP the socket descriptor of the target 
+.br
+\fIpseudo\fP new nickname for the user (String) 
+.RE
+.PP
+
+.SS "def serveur\&.Server\&.disable_user ( connection)"
+
+.PP
+Disable user\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIconnection\fP the socket descriptor of the person to disable 
+.RE
+.PP
+
+.SS "def serveur\&.Server\&.enable_user ( connection)"
+
+.PP
+Enable user\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIconnection\fP the socket descriptor of the person to enable 
+.RE
+.PP
+
+.SS "def serveur\&.Server\&.get_connection_by_pseudo ( pseudo)"
+
+.PP
+Get the socket descriptor by a pseudo\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIpseudo\fP pseudo 
+.RE
+.PP
+\fBReturns:\fP
+.RS 4
+the socket descriptor of the pseudo or None 
+.RE
+.PP
+
+.SS "def serveur\&.Server\&.handle_connection ( connection,  client_address)"
+
+.PP
+Handle a connection from a client\&. Wait for request from the client 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIconnection\fP the socket descriptor of the connection 
+.br
+\fIclient_adress\fP ('ip', port) of the connection 
+.RE
+.PP
+
+.SS "def serveur\&.Server\&.handle_request ( connection,  data)"
+
+.PP
+Handle a request\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIconnection\fP the socket descriptor of the request sender 
+.br
+\fIdata\fP the request to handle in String 
+.RE
+.PP
+
+.SS "def serveur\&.Server\&.main ()"
+
+.PP
+Load Configuration and Start the \fBServer\fP\&. 
+.SS "def serveur\&.Server\&.new_name ( connection,  pseudo)"
+
+.PP
+Affect the nickname of the user for the first time\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIconnection\fP the socket descriptor of the target 
+.br
+\fIpseudo\fP nickname for the user (String) 
+.RE
+.PP
+
+.SS "def serveur\&.Server\&.private_message ( connection,  pseudo,  msg)"
+
+.PP
+Send a private message if a private discussion had been accepted\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIconnection\fP the soccket descriptor of the sender 
+.br
+\fIpseudo\fP the pseudo of the private message target 
+.br
+\fImsg\fP the message to send 
+.RE
+.PP
+
+.SS "def serveur\&.Server\&.quit_user ( connection)"
+
+.PP
+Disconnect user\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIconnection\fP the socket descriptor of the person to disconnect 
+.RE
+.PP
+
+.SS "def serveur\&.Server\&.reject_file ( connection,  pseudo,  file)"
+
+.PP
+Reject a file transfer\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIconnection\fP the socket descriptor of the person who reject a file transfer 
+.br
+\fIpseudo\fP the pseudo of the person who asked for a file transfer 
+.RE
+.PP
+
+.SS "def serveur\&.Server\&.reject_private_message ( connection,  pseudo)"
+
+.PP
+Reject a private discussion\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIconnection\fP the socket descriptor of the person who reject private discussion 
+.br
+\fIpseudo\fP the pseudo of the person who asked for a private discussion 
+.RE
+.PP
+
+.SS "def serveur\&.Server\&.user_list_active ( connection)"
+
+.PP
+Send the list of enable user\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIconnection\fP the socket descriptor of the target 
+.RE
+.PP
+
+.SS "def serveur\&.Server\&.user_list_away ( connection)"
+
+.PP
+Send the list of disable user\&. 
+.PP
+\fBParameters:\fP
+.RS 4
+\fIconnection\fP the socket descriptor of the target 
+.RE
+.PP
+
+.SH "Variable Documentation"
+.PP 
+.SS "int serveur\&.Server\&.ASKING_FOR_PM = 307"
+
+.SS "int serveur\&.Server\&.CAN_SEND_FILE = 313"
+
+.SS "int serveur\&.Server\&.COMMAND_NOT_FOUND = 407"
+
+.SS "int serveur\&.Server\&.DEST_NOT_FOUND = 403"
+
+.SS "int serveur\&.Server\&.ERR_ALREADY_ASKED_FOR_PM = 404"
+
+.SS "int serveur\&.Server\&.ERR_CONV_NOT_ALLOWED = 402"
+
+.SS "int serveur\&.Server\&.ERR_INTERNAL_SERVER_ERROR = 409"
+
+.SS "int serveur\&.Server\&.ERR_INVALID_NICKNAME = 408"
+
+.SS "int serveur\&.Server\&.ERR_NICKNAME_ALREADY_USED = 400"
+
+.PP
+ERROR\&. 
+.SS "int serveur\&.Server\&.ERR_NO_INVIT_TO_CONV_FOUND = 405"
+
+.SS "int serveur\&.Server\&.ERR_NO_NICKNAME = 401"
+
+.SS "int serveur\&.Server\&.ERR_NOT_DISABLED = 410"
+
+.SS "int serveur\&.Server\&.ERR_NOT_ENABLED = 411"
+
+.SS "int serveur\&.Server\&.ERR_UNKNOWN_ACCEPTED_FILE = 406"
+
+.SS "int serveur\&.Server\&.HAS_ASKED_FILE = 312"
+
+.SS "int serveur\&.Server\&.HAS_JOIN = 302"
+
+.SS "int serveur\&.Server\&.HAS_LEFT = 303"
+
+.SS "int serveur\&.Server\&.HAS_REJECT_FILE = 314"
+
+.SS "int serveur\&.Server\&.IS_NOW_DISABLE = 311"
+
+.SS "int serveur\&.Server\&.IS_NOW_ENABLE = 310"
+
+.SS "int serveur\&.Server\&.NAME_CHANGED = 305"
+
+.SS "int serveur\&.Server\&.NEW_MSG = 304"
+
+.SS "int serveur\&.Server\&.NEW_PM = 306"
+
+.SS "int serveur\&.Server\&.PRIVATE_DISCU_ACCEPTED_FROM = 308"
+
+.SS "int serveur\&.Server\&.PRIVATE_DISCU_REFUSED_FROM = 309"
+
+.SS "int serveur\&.Server\&.SUCC_ACCEPTED_FILE = 212"
+
+.SS "int serveur\&.Server\&.SUCC_CHANNEL_JOINED = 200"
+
+.PP
+SUCCESS\&. 
+.SS "int serveur\&.Server\&.SUCC_CHANNEL_QUIT = 201"
+
+.SS "int serveur\&.Server\&.SUCC_DISABLED = 210"
+
+.SS "int serveur\&.Server\&.SUCC_ENABLED = 209"
+
+.SS "int serveur\&.Server\&.SUCC_MESSAGE_SENDED = 202"
+
+.SS "int serveur\&.Server\&.SUCC_NICKNAME_CHANGED = 203"
+
+.SS "int serveur\&.Server\&.SUCC_PM_SENDED = 205"
+
+.SS "int serveur\&.Server\&.SUCC_PMFILE = 211"
+
+.SS "int serveur\&.Server\&.SUCC_REFUSED_FILE = 213"
+
+.SS "int serveur\&.Server\&.SUCCESSFUL_ACCEPTED_CONV = 207"
+
+.SS "int serveur\&.Server\&.SUCCESSFUL_ASKED_CONV = 206"
+
+.SS "int serveur\&.Server\&.SUCCESSFUL_REFUSED_CONV = 208"
+
+.SS "int serveur\&.Server\&.USERLIST_DISABLE = 301"
+
+.SS "int serveur\&.Server\&.USERLIST_ENABLE = 300"
+
+.PP
+Code retour ### INFO\&. 
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for Server DNC from the source code\&.
