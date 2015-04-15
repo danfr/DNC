@@ -416,7 +416,7 @@ class privateMessage() :
 
 
         if self.codeNb(txt.split(" ")[0]) == "NEW_PM" :
-            self.message_buffer2 += '<br><span style="color : grey"> ' + self.getTimeStamp() + '</span> <span style="color : red"> &#60; '+ self.pmPerson +' &#62; </span> ' + self.htmlToText(' '.join(txt.split(" ")[2:])) + ''
+            self.message_buffer2 += '<br><span style="color : grey"> ' + self.getTimeStamp() + '</span> <span style="color : red"> &#60; '+ txt.split(" ")[1] +' &#62; </span> ' + self.htmlToText(' '.join(txt.split(" ")[2:])) + ''
 
 
         self.ui.txtOutput.setText(self.message_buffer2)
