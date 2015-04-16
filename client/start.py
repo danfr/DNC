@@ -2,7 +2,7 @@ from view.main import Ui_MainWindow
 from PyQt4 import QtGui, QtCore
 from PySide.QtCore import *
 from PySide.QtGui import *
-import time, threading, datetime, time, random,re
+import time, threading, datetime, time, random,re, os
 from socket import *
 from view.pmWindow import Ui_Dialog2
 from view.pmFile import Ui_Dialog3
@@ -88,6 +88,9 @@ class StreamHandler (Thread):
         :return:
         """
         print('[Media] Starting media transfer for ' + self.filename)
+        
+        if not os.path.exists("download/"):
+            os.makedirs("download/")
 
         f = open("download/" + self.filename,"wb")
         while 1:
