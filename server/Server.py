@@ -181,16 +181,16 @@ def handle_request(connection, data):
                         reject_private_message(connection, array_data[1])
                         return
                     if array_data[0] == "/pm":
-                        private_message(connection, array_data[1], " ".join(array_data[2:]))
+                        private_message(connection, array_data[1], " ".join(array_data[2:]).strip())
                         return
                     if array_data[0] == "/pmfile":
-                        ask_file(connection, array_data[1], " ".join(array_data[2:]))
+                        ask_file(connection, array_data[1], " ".join(array_data[2:]).strip())
                         return
                     if array_data[0] == "/acceptfile":
-                        accept_file(connection, array_data[1], " ".join(array_data[3:]), array_data[2])
+                        accept_file(connection, array_data[1], " ".join(array_data[3:]).strip(), array_data[2])
                         return
                     if array_data[0] == "/rejectfile":
-                        reject_file(connection, array_data[1], " ".join(array_data[2:]))
+                        reject_file(connection, array_data[1], " ".join(array_data[2:]).strip())
                         return
             connection.sendall("{}".format(COMMAND_NOT_FOUND).encode())
         else:
