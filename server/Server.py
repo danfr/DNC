@@ -181,16 +181,16 @@ def handle_request(connection, data):
                         reject_private_message(connection, array_data[1])
                         return
                     if array_data[0] == "/pm":
-                        private_message(connection, array_data[1], " ".join(array_data[2:]))
+                        private_message(connection, array_data[1], " ".join(array_data[2:]).strip())
                         return
                     if array_data[0] == "/pmfile":
-                        ask_file(connection, array_data[1], " ".join(array_data[2:]))
+                        ask_file(connection, array_data[1], " ".join(array_data[2:]).strip())
                         return
                     if array_data[0] == "/acceptfile":
-                        accept_file(connection, array_data[1], " ".join(array_data[3:]), array_data[2])
+                        accept_file(connection, array_data[1], " ".join(array_data[3:]).strip(), array_data[2])
                         return
                     if array_data[0] == "/rejectfile":
-                        reject_file(connection, array_data[1], " ".join(array_data[2:]))
+                        reject_file(connection, array_data[1], " ".join(array_data[2:]).strip())
                         return
             connection.sendall("{}".format(COMMAND_NOT_FOUND).encode())
         else:
@@ -310,7 +310,7 @@ def ask_private_message(connection, pseudo):
                                                 ERR_ALREADY_ASKED_FOR_PM), Log.lvl.INFO)
         else:
             askPM.append(pm)
-            log.printL("askPm {}".format(askPM), Log.lvl.DEBUG)
+            #log.printL("askPm {}".format(askPM), Log.lvl.DEBUG)
             c.sendall("{} {}".format(ASKING_FOR_PM, usersConnected[connection][1]).encode())
             log.printL("Send to {} : {} {}".format(usersConnected[c][0], ASKING_FOR_PM,
                                                    usersConnected[connection][1]), Log.lvl.INFO)

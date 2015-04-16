@@ -538,9 +538,11 @@ class start(QtGui.QMainWindow):
             self.s.send("/userlistaway".encode())
 
         if self.codeNb(txt.split(" ")[0]) == "HAS_ASKED_FILE":
-            self.ShowMessageOK(txt.split(" ")[1]+" share a file with you, do you want download "+' '.join(txt.split(" ")[2].split("/")[-1:])+" ?")
-            self.questionMessage(txt.split(" ")[1],txt.split(" ")[2])
-            self.fileNom = ' '.join(txt.split(" ")[2].split("/")[-1:])
+            nomfichierEn = ' '.join(txt.split(" ")[2:])
+            nomfichier = ' '.join(nomfichierEn.split("/")[-1:])
+            self.ShowMessageOK(txt.split(" ")[1]+" share a file with you, do you want download "+nomfichier+" ?")
+            self.questionMessage(txt.split(" ")[1],nomfichierEn)
+            self.fileNom = nomfichier
 
         if self.codeNb(txt.split(" ")[0]) == "SUCC_ASKED_FILE":
             self.ShowMessageOK("Succes asked file")
@@ -555,7 +557,8 @@ class start(QtGui.QMainWindow):
             ms = socket(AF_INET, SOCK_STREAM)
             print(txt.split(" ")[2]+" "+txt.split(" ")[3])
             ms.connect((str(txt.split(" ")[2]), int(txt.split(" ")[3])))
-            f = open(txt.split(" ")[4], "rb")
+            namefichier = ' '.join(txt.split(" ")[4:])
+            f = open(namefichier, "rb")
             data = f.read()
             f.close()
             ms.send(data)
