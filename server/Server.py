@@ -108,7 +108,8 @@ def main():
         sys.exit(0)
 
 
-##  Handle a connection from a client.
+##
+#   Handle a connection from a client.
 #   Wait for request from the client
 #   @param connection the socket descriptor of the connection
 #   @param client_adress ("ip", port) of the connection
@@ -183,7 +184,7 @@ def handle_request(connection, data):
                         private_message(connection, array_data[1], " ".join(array_data[2:]))
                         return
                     if array_data[0] == "/pmfile":
-                        ask_file(connection, array_data[1], array_data[2])
+                        ask_file(connection, array_data[1], " ".join(array_data[2:]))
                         return
                     if array_data[0] == "/acceptfile":
                         accept_file(connection, array_data[1], " ".join(array_data[3:]), array_data[2])
