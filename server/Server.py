@@ -310,7 +310,7 @@ def ask_private_message(connection, pseudo):
                                                 ERR_ALREADY_ASKED_FOR_PM), Log.lvl.INFO)
         else:
             askPM.append(pm)
-            log.printL("askPm {}".format(askPM), Log.lvl.DEBUG)
+            #log.printL("askPm {}".format(askPM), Log.lvl.DEBUG)
             c.sendall("{} {}".format(ASKING_FOR_PM, usersConnected[connection][1]).encode())
             log.printL("Send to {} : {} {}".format(usersConnected[c][0], ASKING_FOR_PM,
                                                    usersConnected[connection][1]), Log.lvl.INFO)
