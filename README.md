@@ -1,5 +1,5 @@
 # DNC
 
-Network Project - L3 MIASHS
+Network Project for local IRC chat
 
-Renand HUSSON - Quentin ROULAND
+Renand HUSSON - Quentin ROULAND - Clément ARNAUDEAU
