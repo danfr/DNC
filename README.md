@@ -1,4 +1,4 @@
-# DNC
+# DNC42
 
 Network Project for local IRC chat
 
