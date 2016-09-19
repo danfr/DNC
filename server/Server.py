@@ -488,7 +488,7 @@ def quit_user(connection):
         log.printL("Client IP -> {} close connection not properly"
                    "".format(usersConnected[connection][0]), Log.lvl.WARNING)
     connection.close()
-    log.printL("Disconnection from IP -> {}".format(usersConnected[connection][0]), Log.lvl.INFO)
+    log.printL("Disconnected from IP -> {}".format(usersConnected[connection][0]), Log.lvl.INFO)
     pseudo = usersConnected[connection][1]
     usersConnected.pop(connection)
     broadcast_message(connection, "{} {}".format(HAS_LEFT, pseudo))

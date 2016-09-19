@@ -1,14 +1,18 @@
-from view.main import Ui_MainWindow
+import configparser
+import datetime
+import random
+import re
+import threading
+import time
+from socket import *
+from threading import *
+
 from PyQt4 import QtGui, QtCore
 from PySide.QtCore import *
 from PySide.QtGui import *
-import time, threading, datetime, time, random,re, os
-from socket import *
-from view.pmWindow import Ui_Dialog2
+from view.main import Ui_MainWindow
 from view.pmFile import Ui_Dialog3
-import configparser
-import pydoc
-from threading import *
+from view.pmWindow import Ui_Dialog2
 
 
 #########################################################
