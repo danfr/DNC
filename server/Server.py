@@ -56,6 +56,9 @@ ERR_INTERNAL_SERVER_ERROR = 409
 ERR_NOT_DISABLED = 410
 ERR_NOT_ENABLED = 411
 
+# Config
+config = configparser.ConfigParser()
+
 
 ##
 #   Load Configuration and Start the Server
@@ -70,7 +73,6 @@ def main():
     askFT = []
 
     # Config
-    config = configparser.ConfigParser()
     if not os.path.isfile("dncServer.conf"):
         config['NETWORK'] = {'port': '2222'}
         config['LOG'] = {'logDirectory': 'log'}
@@ -81,7 +83,7 @@ def main():
     log.printL("Configuration Load", Log.lvl.INFO)
     log.printL("Server start", Log.lvl.INFO)
 
-    #Init socket serv
+    # Init socket serv
     sock = socket.socket()
     sock.bind(("", int(config["NETWORK"]["port"])))
     sock.listen(5)
@@ -89,7 +91,7 @@ def main():
 
     try:
         while True:
-            #Connection client
+            # Connection client
             connection, client_address = sock.accept()
             usersConnected[connection] = [client_address, None, True]  # (ip,port) pseudo status
             threading.Thread(target=handle_connection, args=(connection, client_address)).start()
@@ -98,7 +100,7 @@ def main():
         for con, value in usersConnected.items():
             con.shutdown(socket.SHUT_RD)
     finally:
-        #Wait for threads finish
+        # Wait for threads finish
         log.printL("Wait for threads ending", Log.lvl.INFO)
         for t in threading.enumerate():
             if t != threading.main_thread():
@@ -134,7 +136,6 @@ def handle_connection(connection, client_address):
 #   Handle a request.
 #   @param connection the socket descriptor of the request sender
 #   @param data the request to handle in String
-# TODO : Mettre les comandes dans un fichier de properties
 def handle_request(connection, data):
     try:
         array_data = data.split(" ")
@@ -148,22 +149,22 @@ def handle_request(connection, data):
                 return
             else:
                 ### Command for user enable & disable ###
-                if array_data[0] == "/name":
+                if array_data[0] == config["COMMAND"]["username"]:
                     change_name(connection, array_data[1])
                     return
-                if array_data[0] == "/userlist":
+                if array_data[0] == config["COMMAND"]["userlist"]:
                     user_list_active(connection)
                     return
-                if array_data[0] == "/userlistaway":
+                if array_data[0] == config["COMMAND"]["userlistaway"]:
                     user_list_away(connection)
                     return
-                if array_data[0] == "/enable":
+                if array_data[0] == config["COMMAND"]["enable"]:
                     enable_user(connection)
                     return
-                if array_data[0] == "/disable":
+                if array_data[0] == config["COMMAND"]["disable"]:
                     disable_user(connection)
                     return
-                if array_data[0] == "/quit":
+                if array_data[0] == config["COMMAND"]["quit"]:
                     connection.shutdown(socket.SHUT_RD)
                     return
 
@@ -172,34 +173,34 @@ def handle_request(connection, data):
                     connection.sendall("{}".format(ERR_CONV_NOT_ALLOWED).encode())
                     return
                 else:
-                    if array_data[0] == "/askpm":
+                    if array_data[0] == config["COMMAND"]["askpm"]:
                         ask_private_message(connection, array_data[1])
                         return
-                    if array_data[0] == "/acceptpm":
+                    if array_data[0] == config["COMMAND"]["acceptpm"]:
                         accept_private_message(connection, array_data[1])
                         return
-                    if array_data[0] == "/rejectpm":
+                    if array_data[0] == config["COMMAND"]["rejectpm"]:
                         reject_private_message(connection, array_data[1])
                         return
-                    if array_data[0] == "/pm":
+                    if array_data[0] == config["COMMAND"]["pm"]:
                         private_message(connection, array_data[1], " ".join(array_data[2:]).strip())
                         return
-                    if array_data[0] == "/pmfile":
+                    if array_data[0] == config["COMMAND"]["pmfile"]:
                         ask_file(connection, array_data[1], " ".join(array_data[2:]).strip())
                         return
-                    if array_data[0] == "/acceptfile":
+                    if array_data[0] == config["COMMAND"]["acceptfile"]:
                         accept_file(connection, array_data[1], " ".join(array_data[3:]).strip(), array_data[2])
                         return
-                    if array_data[0] == "/rejectfile":
+                    if array_data[0] == config["COMMAND"]["rejectfile"]:
                         reject_file(connection, array_data[1], " ".join(array_data[2:]).strip())
                         return
             connection.sendall("{}".format(COMMAND_NOT_FOUND).encode())
         else:
             ### Command for user without nickname ###
-            if array_data[0] == "/newname":
+            if array_data[0] == config["COMMAND"]["newname"]:
                 new_name(connection, array_data[1])
                 return
-            if array_data[0] == "/quit":
+            if array_data[0] == config["COMMAND"]["quit"]:
                 connection.shutdown(socket.SHUT_RD)
                 return
             connection.sendall("{}".format(ERR_NO_NICKNAME).encode())
@@ -216,7 +217,7 @@ def handle_request(connection, data):
 #   @param connection the socket descriptor of the request sender
 #   @param message message to broadcast (String)
 def broadcast_message(connection, message):
-    #log.printL("User Connected : {}".format(usersConnected), Log.lvl.DEBUG)
+    # log.printL("User Connected : {}".format(usersConnected), Log.lvl.DEBUG)
     for con, value in usersConnected.items():
         # value 1 : pseudo value 2 : status (enable/disable)
         if value[1] is not None and con != connection and value[2]:
@@ -311,7 +312,7 @@ def ask_private_message(connection, pseudo):
                                                 ERR_ALREADY_ASKED_FOR_PM), Log.lvl.INFO)
         else:
             askPM.append(pm)
-            #log.printL("askPm {}".format(askPM), Log.lvl.DEBUG)
+            # log.printL("askPm {}".format(askPM), Log.lvl.DEBUG)
             c.sendall("{} {}".format(ASKING_FOR_PM, usersConnected[connection][1]).encode())
             log.printL("Send to {} : {} {}".format(usersConnected[c][0], ASKING_FOR_PM,
                                                    usersConnected[connection][1]), Log.lvl.INFO)
@@ -325,7 +326,7 @@ def ask_private_message(connection, pseudo):
 #   @param connection the socket descriptor of the person who accept the private discussion
 #   @param pseudo the pseudo of the person who asked for a private discussion
 def accept_private_message(connection, pseudo):
-    #log.printL("askPm {}".format(askPM), Log.lvl.DEBUG)
+    # log.printL("askPm {}".format(askPM), Log.lvl.DEBUG)
     c = get_connection_by_pseudo(pseudo)
     if c is None:
         connection.sendall("{}".format(DEST_NOT_FOUND).encode())
@@ -452,7 +453,7 @@ def ask_file(connection, pseudo, file):
 #   @param connection the socket descriptor of the person who accept a file transfer
 #   @param pseudo the pseudo of the person who asked for a file transfer
 def accept_file(connection, pseudo, file, port):
-    #log.printL("askFT {}".format(askFT), Log.lvl.DEBUG)
+    # log.printL("askFT {}".format(askFT), Log.lvl.DEBUG)
     c = get_connection_by_pseudo(pseudo)
     if c is None:
         connection.sendall("{}".format(DEST_NOT_FOUND).encode())
