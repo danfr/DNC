@@ -1,13 +1,13 @@
-## @package Server
+# @package Server
 #  Module server
-import os
-import socket
-import threading
-import sys
 import configparser
+import os
 import re
-import Log
+import socket
+import sys
+import threading
 
+import Log
 
 #   Code retour
 #   INFO
@@ -134,6 +134,7 @@ def handle_connection(connection, client_address):
 #   Handle a request.
 #   @param connection the socket descriptor of the request sender
 #   @param data the request to handle in String
+# TODO : Mettre les comandes dans un fichier de properties
 def handle_request(connection, data):
     try:
         array_data = data.split(" ")
@@ -363,6 +364,7 @@ def reject_private_message(connection, pseudo):
         if pm not in askPM:
             if pm in validatePM:
                 validatePM.remove(pm)
+                # TODO : Encapsuler l'envoi de message
                 connection.sendall("{}".format(SUCCESSFUL_REFUSED_CONV).encode())
                 log.printL("Send to {} : {}".format(usersConnected[connection][0],
                                                     SUCCESSFUL_REFUSED_CONV), Log.lvl.INFO)
