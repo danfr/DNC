@@ -12,3 +12,6 @@ D:\Mes documents\Visual Studio\ProjetDNC_client\ProjetDNC_client\obj\Release\Pro
 D:\Mes documents\Visual Studio\ProjetDNC_client\ProjetDNC_client\obj\Release\fr-FR\ProjetDNC_client.resources.dll
 D:\Mes documents\Visual Studio\ProjetDNC_client\ProjetDNC_client\obj\Release\ProjetDNC_client.exe
 D:\Mes documents\Visual Studio\ProjetDNC_client\ProjetDNC_client\obj\Release\ProjetDNC_client.pdb
+C:\Users\DYNAMITE\Documents\Visual Studio 2015\Projects\DNC42\client_win\ProjetDNC_client\bin\Release\ProjetDNC_client.exe.config
+C:\Users\DYNAMITE\Documents\Visual Studio 2015\Projects\DNC42\client_win\ProjetDNC_client\obj\Release\ProjetDNC_client.exe
+C:\Users\DYNAMITE\Documents\Visual Studio 2015\Projects\DNC42\client_win\ProjetDNC_client\obj\Release\ProjetDNC_client.pdb
