@@ -388,8 +388,8 @@ def private_message(connection, pseudo, msg):
         # if pm not in validatePM and pmr not in validatePM:
             # send_to(connection, ERR_CONV_NOT_ALLOWED)
         # else:
-		send_to(c, NEW_PM, connection, msg)
-		send_to(connection, SUCC_PM_SENDED)
+        send_to(c, NEW_PM, connection, msg)
+        send_to(connection, SUCC_PM_SENDED)
 
 
 ##
