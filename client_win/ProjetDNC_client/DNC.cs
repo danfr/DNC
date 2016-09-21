@@ -22,30 +22,31 @@ namespace ProjetDNC_client
         /// </summary>
         private void timer_Tick(object sender, EventArgs e)
         {
-            Envoyer("who");
+            Envoyer("/userlist");
         }
 
         /// <summary>
         /// Envoi d'une requête DNC formattée au serveur
         /// </summary>
-        /// <param name="prefixe">Préfixe de la requête</param>
+        /// <param name="pseudo">Pseudo de la cible</param>
         /// <param name="commande">Commande de la requête</param>
         /// <param name="contenu">Contenu de la requête</param>
-        public void Envoyer(string prefixe, string commande, string contenu)
+        public void Envoyer(string pseudo, string commande, string contenu)
         {
-            if (prefixe != "")
+            contenu = contenu.Replace('\r', ' ').Replace('\n', ' ').Trim();
+
+            if (pseudo != null && pseudo != "")
             {
-                prefixe = "@" + prefixe;
+                pseudo = " " + pseudo;
             }
 
-            if (commande != "")
+            if (contenu != null && contenu != "")
             {
-                commande = ":" + commande;
+                contenu = " " + contenu;
             }
 
-            contenu = contenu.Replace('\r', ' ').Replace('\n', ' ').Replace('|', ' ').Trim();
+            string mess = commande + pseudo + contenu;
 
-            string mess = prefixe + "|" + commande + "|" + contenu + "\\r\\n\r\n";
             sock.Send(Encoding.UTF8.GetBytes(mess));
         }
 
@@ -76,9 +77,14 @@ namespace ProjetDNC_client
         {
             sock.Receive(myBuff);
             string reponse = Encoding.UTF8.GetString(myBuff);
-            string[] tab = reponse.Split('|');
+            string[] tab = reponse.Split(new char[] { ' ' }, 3);
 
-            return new Mess(tab[0], tab[1], tab[2]);
+            if(tab.Length == 1)
+                return new Mess(tab[0], "", "");
+            else if(tab.Length == 2)
+                return new Mess(tab[0], tab[1], "");
+            else
+                return new Mess(tab[0], tab[1], tab[2]);
         }
 
         /// <summary>
@@ -88,17 +94,13 @@ namespace ProjetDNC_client
         {
             mon_pseudo = pseudo;
 
-            //Vide le buffer et l'affiche avant de lancer l'écoute
-            Mess premier = Recevoir();
-            Chat_append("*", premier.Content);
-
             //Lancement d'un timer pour l'appel régulier à la commande :who
             timer = new System.Windows.Forms.Timer();
             timer.Tick += new EventHandler(timer_Tick);
             timer.Interval = 10000; // Toutes les 10 secondes
             timer.Start();
 
-            Envoyer("who"); //Récupération de la liste des clients connectés
+            Envoyer("/userlist"); //Récupération de la liste des clients connectés
             t = new Thread(() => Ecoute(this, sock));
             t.Start();
         }
@@ -119,9 +121,16 @@ namespace ProjetDNC_client
                 //Réception du message
                 sock.Receive(Buff);
                 string reponse = Encoding.UTF8.GetString(Buff);
-                string[] tab = reponse.Split('|');
+                string[] tab = reponse.Split(new char[] { ' ' }, 3);
 
-                Mess message = new Mess(tab[0], tab[1], tab[2]);
+                Mess message = null;
+
+                if (tab.Length == 1)
+                    message =  new Mess(tab[0], "", "");
+                else if (tab.Length == 2)
+                    message = new Mess(tab[0], tab[1], "");
+                else
+                    message = new Mess(tab[0], tab[1], tab[2]);
 
                 //Traitement
                 switch (message.Code)
@@ -156,9 +165,9 @@ namespace ProjetDNC_client
                         form.Invoke(form.del_private_msg, new Object[] { "refuse", message.Sender, "" });
                         break;
                     }
-                    case 15: //Réponse à la requête :who
+                    case 300: //Réponse à la requête :who
                     {
-                        form.Invoke(form.del_traiter_who, new Object[] { message.Content });
+                        form.Invoke(form.del_traiter_who, new Object[] { message.Sender });
                         break;
                     }
                     case 19: //Fin de conversation privée
@@ -220,8 +229,7 @@ namespace ProjetDNC_client
         public Mess(string code, string sender, string content)
         {
             this.code = int.Parse(code);
-            if (sender != "")
-                this.sender = sender.Remove(0, 1);
+            this.sender = sender;
             this.content = content;
         }
     }

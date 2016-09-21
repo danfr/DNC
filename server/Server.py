@@ -374,7 +374,7 @@ def reject_private_message(connection, pseudo):
 
 
 ##
-#   Send a private message if a private discussion had been accepted
+#   Send a private message if a private discussion had been accepted (verification disabled)
 #   @param connection the soccket descriptor of the sender
 #   @param pseudo the pseudo of the private message target
 #   @param msg the message to send
@@ -385,11 +385,11 @@ def private_message(connection, pseudo, msg):
     else:
         pm = (connection, c)
         pmr = (c, connection)
-        if pm not in validatePM and pmr not in validatePM:
-            send_to(connection, ERR_CONV_NOT_ALLOWED)
-        else:
-            send_to(c, NEW_PM, connection, msg)
-            send_to(connection, SUCC_PM_SENDED)
+        # if pm not in validatePM and pmr not in validatePM:
+            # send_to(connection, ERR_CONV_NOT_ALLOWED)
+        # else:
+		send_to(c, NEW_PM, connection, msg)
+		send_to(connection, SUCC_PM_SENDED)
 
 
 ##

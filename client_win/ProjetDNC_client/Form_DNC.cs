@@ -93,19 +93,10 @@ namespace ProjetDNC_client
                 IPAddress adr = IPAddress.Parse(adresse); //ipHostInfo.AddressList[0]; //ou 
                 sock.Connect(adr, int.Parse(port));
 
-                Mess rep = Recevoir();
-                if (rep.Code == 201) //Connexion établie
-                {
-                    //Lancement de la boite de dialogue de connexion
-                    Form_login fl = new Form_login(this);
+                //Lancement de la boite de dialogue de connexion
+                Form_login fl = new Form_login(this);
 
-                    fl.ShowDialog(this);
-                }
-                else
-                {
-                    MessageBox.Show("Connexion au serveur incomplète !\nLa connexion à bien été établie mais aucune donnée n'est reçue.", "Erreur de connexion", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Application.Exit();
-                }
+                fl.ShowDialog(this);
             }
             catch (SocketException err) //Echec de connexion
             {
@@ -132,16 +123,8 @@ namespace ProjetDNC_client
             if(t != null)
                 t.Abort(); //Arret de l'écoute si le thread est lancé
 
-            if (sock.Connected && private_combo.Items.Count > 0)
-            {
-                foreach (string item in private_combo.Items)
-                {
-                    Envoyer(item.ToString(), "end");
-                }
-            }
-
             if(sock.Connected)
-                Envoyer("quit"); //Envoi de la commande de déconnexion
+                Envoyer("/quit"); //Envoi de la commande de déconnexion
 
             Thread.Sleep(1000); //Attente du traitement des requetes par le serveur
 
@@ -187,10 +170,10 @@ namespace ProjetDNC_client
         private void déconnexionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             timer.Stop(); //Arret des requetes automatiques
-            Envoyer("away");
+            Envoyer("/disable");
             MessageBox.Show("Session en pause, cliquez sur OK pour reprendre.", "Pause", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-            Envoyer("active");
-            Envoyer("who");
+            Envoyer("/enable");
+            Envoyer("/userlist");
             timer.Start();
         }
 
@@ -220,7 +203,7 @@ namespace ProjetDNC_client
         {
             if (this.private_text.Text.Trim() != "")
             {
-                Envoyer(private_combo.SelectedItem.ToString(), "say", private_text.Text);
+                Envoyer(private_combo.SelectedItem.ToString(), "/pm", private_text.Text);
                 this.private_text.Clear();
             }
         }
@@ -259,24 +242,20 @@ namespace ProjetDNC_client
         /// <param name="content">Réponse du serveur</param>
         public void Traiter_who(string content)
         {
-            content = content.Replace("\\r", "").Replace("\\n", "").Replace('\n', ' ').Replace('\r', ' ').Replace('\0', ' ').Trim();
+            content = content.Replace('\0', ' ').Trim();
             string[] tab = content.Split(' ');
             users_list.Items.Clear();
             clients_actifs.Clear();
 
+            ListViewItem cur = users_list.Items.Add(mon_pseudo);
+            cur.BackColor = Color.LightGreen;
+
             foreach (string cli in tab)
             {
-                if (cli.Contains(":away"))
-                {
-                    string client = cli.Replace(":away", "");
-                    ListViewItem cur = users_list.Items.Add(client);
-                    cur.BackColor = Color.LightSalmon;
-                }
-                else
-                {
+                if (cli != mon_pseudo)
+                { 
+                    clients_actifs.Add(cli);
                     users_list.Items.Add(cli);
-                    if (cli != mon_pseudo)
-                        clients_actifs.Add(cli);
                 }
             }
         }

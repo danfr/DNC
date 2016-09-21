@@ -26,7 +26,7 @@ namespace ProjetDNC_client
         private void change_btn_Click(object sender, EventArgs e)
         {
             mf.tmp_pseudo = pseudo_txt.Text.Trim();
-            mf.Envoyer("", "nick", pseudo_txt.Text.Trim());
+            mf.Envoyer("", "/name", pseudo_txt.Text.Trim());
             this.Close();
         }
     }
