@@ -46,6 +46,7 @@ namespace ProjetDNC_client
             }
 
             string mess = commande + pseudo + contenu;
+            mess = mess.Trim();
 
             sock.Send(Encoding.UTF8.GetBytes(mess));
         }
@@ -140,39 +141,39 @@ namespace ProjetDNC_client
                         form.Invoke(form.del_chat_append, new Object[] { "*", message.Content });
                         break;
                     }
-                    case 1: //Message public
+                    case 304: //Message public
                     {
-                        form.Invoke(form.del_chat_append, new Object[] { "<" + message.Sender + ">", message.Content });
+                        form.Invoke(form.del_chat_append, new Object[] { "<" + message.Info + ">", message.Content });
                         break;
                     }
                     case 10: //Message privé
                     {
-                        form.Invoke(form.del_private_msg, new Object[] { "dit", message.Sender, message.Content });
+                        form.Invoke(form.del_private_msg, new Object[] { "dit", message.Info, message.Content });
                         break;
                     }
                     case 11: //Demande de conversation privée
                     {
-                        form.Invoke(form.del_private_msg, new Object[] { "demande", message.Sender, "" });
+                        form.Invoke(form.del_private_msg, new Object[] { "demande", message.Info, "" });
                         break;
                     }
                     case 12: //Acceptation de conversation privée
                     {
-                        form.Invoke(form.del_private_msg, new Object[] { "accepte", message.Sender, "" });
+                        form.Invoke(form.del_private_msg, new Object[] { "accepte", message.Info, "" });
                         break;
                     }
                     case 13: //Refus de conversation privée
                     {
-                        form.Invoke(form.del_private_msg, new Object[] { "refuse", message.Sender, "" });
+                        form.Invoke(form.del_private_msg, new Object[] { "refuse", message.Info, "" });
                         break;
                     }
                     case 300: //Réponse à la requête :who
                     {
-                        form.Invoke(form.del_traiter_who, new Object[] { message.Sender });
+                        form.Invoke(form.del_traiter_who, new Object[] { message.Info + " " + message.Content });
                         break;
                     }
                     case 19: //Fin de conversation privée
                     {
-                        form.Invoke(form.del_private_msg, new Object[] { "quitte", message.Sender, "" });
+                        form.Invoke(form.del_private_msg, new Object[] { "quitte", message.Info, "" });
                         break;
                     }
                     case 200: //Succès
@@ -185,6 +186,20 @@ namespace ProjetDNC_client
 
                         break;
                     }
+                    case 201: //Différents codes de succès (osef)
+                    case 202:
+                    case 203:
+                    case 204:
+                    case 205:
+                    case 206:
+                    case 207:
+                    case 208:
+                    case 209:
+                    case 210:
+                    case 211:
+                    case 212:
+                    case 213:
+                        break;
                     case 301: //Erreur d'identification
                     {
                         form.Invoke(form.del_reg_err, new Object[] { message.Content });
@@ -208,7 +223,7 @@ namespace ProjetDNC_client
     public class Mess //Structuration des messages
     {
         private int code;
-        private string sender;
+        private string info;
         private string content;
 
         public int Code
@@ -216,9 +231,9 @@ namespace ProjetDNC_client
             get { return code; }
         }
 
-        public string Sender
+        public string Info
         {
-            get { return sender; }
+            get { return info; }
         }
 
         public string Content
@@ -226,10 +241,10 @@ namespace ProjetDNC_client
             get { return content; }
         }
 
-        public Mess(string code, string sender, string content)
+        public Mess(string code, string info, string content)
         {
             this.code = int.Parse(code);
-            this.sender = sender;
+            this.info = info;
             this.content = content;
         }
     }

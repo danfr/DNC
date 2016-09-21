@@ -151,7 +151,7 @@ namespace ProjetDNC_client
         {
             if (this.pubic_text.Text.Trim() != "")
             {
-                Envoyer("", "say", this.pubic_text.Text);
+                Envoyer("", "", this.pubic_text.Text);
                 this.pubic_text.Clear();
             }
         }
