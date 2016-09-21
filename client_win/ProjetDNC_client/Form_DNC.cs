@@ -23,6 +23,14 @@ namespace ProjetDNC_client
         public delegate void chat_append(string from, string contenu);
         public chat_append del_chat_append;
 
+        //Fonction déléguée d'ajout d'un user dans le chat
+        public delegate void new_user(string from);
+        public new_user del_new_user;
+
+        //Fonction déléguée de supressiond'un user dans le chat
+        public delegate void del_user(string from);
+        public del_user del_del_user;
+
         //Fonction déléguée d'affchage de l'erreur de pseudo
         public delegate void reg_err(string contenu);
         public reg_err del_reg_err;
@@ -52,6 +60,8 @@ namespace ProjetDNC_client
 
             //Instanciation des méthodes déléguées
             del_chat_append = new chat_append(Chat_append);
+            del_new_user = new new_user(New_user);
+            del_del_user = new del_user(Del_user);
             del_reg_err = new reg_err(Reg_err);
             del_traiter_who = new traiter_who(Traiter_who);
             del_close_fromserv = new close_fromserv(Close_fromserv);
@@ -224,7 +234,48 @@ namespace ProjetDNC_client
         /// <param name="content">Texte du message</param>
         public void Chat_append(string from, string content)
         {
-            chat_window.AppendText(from + "  " + content);
+            DateTime time = DateTime.Now;
+            string format = "HH:mm:ss";
+            if(chat_window.TextLength == 0)
+                chat_window.AppendText("[" + time.ToString(format) + "] " + from + "  " + content);
+            else
+                chat_window.AppendText("\r\n" + "[" + time.ToString(format) + "] " + from + "  " + content);
+        }
+
+        /// <summary>
+        /// Gère l'ajout d'un nouvel utilisateur
+        /// </summary>
+        /// <param name="from">nouvel utilisateur</param>
+        public void New_user(string from)
+        {
+            Font f = new Font(FontFamily.GenericSansSerif, 12.0f, FontStyle.Bold, GraphicsUnit.Pixel);
+            ListViewItem cur = users_list.Items.Add(from);
+            cur.Font = f;
+            clients_actifs.Add(from);
+            Chat_append("*", from + " a rejoint le chat");
+        }
+
+        /// <summary>
+        /// Gère la supression d'un utilisateur
+        /// </summary>
+        /// <param name="from">utilisateur à supprimer</param>
+        public void Del_user(string from)
+        {
+            from = from.Replace('\0', ' ').Trim();
+            ListViewItem sup = null;
+            foreach (ListViewItem cur in users_list.Items)
+            {
+                if(cur.Text == from)
+                {
+                    sup = cur;
+                    break;
+                }
+            }
+
+            users_list.Items.Remove(sup);
+            clients_actifs.Remove(from);
+
+            Chat_append("*", from + " a quitté le chat");
         }
 
         /// <summary>
@@ -244,18 +295,64 @@ namespace ProjetDNC_client
         {
             content = content.Replace('\0', ' ').Trim();
             string[] tab = content.Split(' ');
-            users_list.Items.Clear();
-            clients_actifs.Clear();
 
-            ListViewItem cur = users_list.Items.Add(mon_pseudo);
-            cur.BackColor = Color.LightGreen;
-
-            foreach (string cli in tab)
+            if (!content.Contains("AWAY"))
             {
-                if (cli != mon_pseudo)
-                { 
-                    clients_actifs.Add(cli);
-                    users_list.Items.Add(cli);
+                ListViewItem cur = null;
+                Font f = new Font(FontFamily.GenericSansSerif, 12.0f, FontStyle.Bold, GraphicsUnit.Pixel);
+
+                foreach (string cli in tab)
+                {
+                    if (cli != mon_pseudo && !clients_actifs.Contains(cli))
+                    {
+                        clients_actifs.Add(cli);
+                        cur = users_list.Items.Add(cli);
+                        cur.Font = f;
+                    }
+                    else if(cli == mon_pseudo)
+                    {
+                        foreach (ListViewItem item in users_list.Items)
+                        {
+                            if (item.Text == mon_pseudo)
+                                return;
+                        }
+
+                        cur = users_list.Items.Add(cli);
+                        cur.Font = f;
+                        cur.BackColor = Color.LightGreen;
+                    }
+                }
+            }
+            else
+            {
+                List<ListViewItem> asupprimer = new List<ListViewItem>();
+                foreach(ListViewItem cur in users_list.Items)
+                {
+                    if (cur.Font.Italic && clients_actifs.Contains(cur.Text))
+                        asupprimer.Add(cur);
+                        
+                }
+
+                foreach(ListViewItem sup in asupprimer)
+                {
+                    users_list.Items.Remove(sup);
+                }
+
+                //Ajout des utilisateurs AWAY
+                foreach (string cli in tab)
+                {
+                    if (cli != mon_pseudo && cli != "AWAY")
+                    {
+                        clients_actifs.Remove(cli);
+                        Font f = new Font(FontFamily.GenericSansSerif, 12.0f, FontStyle.Italic, GraphicsUnit.Pixel);
+
+                        foreach (ListViewItem cur in users_list.Items)
+                        {
+                            if(cur.Text == cli)
+                                cur.Font = f;
+                        }
+                        
+                    }
                 }
             }
         }

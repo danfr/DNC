@@ -37,7 +37,8 @@ namespace ProjetDNC_client
         private void connexion_btn_Click(object sender, EventArgs e)
         {
             mf.Envoyer("", "/newname", pseudo_txt.Text);
-            Mess reponse = mf.Recevoir();
+            Mess reponse = mf.Recevoir(); //On ignore le 302
+            reponse = mf.Recevoir();
 
             if (reponse.Code == 200)
             {

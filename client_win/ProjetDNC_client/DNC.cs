@@ -141,9 +141,19 @@ namespace ProjetDNC_client
                         form.Invoke(form.del_chat_append, new Object[] { "*", message.Content });
                         break;
                     }
+                    case 302: //Utilisateur connecté
+                    {
+                        form.Invoke(form.del_new_user, new Object[] { message.Info });
+                        break;
+                    }
+                    case 303: //Utilisateur déconnecté
+                    {
+                        form.Invoke(form.del_del_user, new Object[] { message.Info });
+                        break;
+                    }
                     case 304: //Message public
                     {
-                        form.Invoke(form.del_chat_append, new Object[] { "<" + message.Info + ">", message.Content });
+                        form.Invoke(form.del_chat_append, new Object[] { "<" + message.Info + "> :", message.Content });
                         break;
                     }
                     case 10: //Message privé
@@ -169,6 +179,12 @@ namespace ProjetDNC_client
                     case 300: //Réponse à la requête :who
                     {
                         form.Invoke(form.del_traiter_who, new Object[] { message.Info + " " + message.Content });
+                        Envoyer("/userlistaway");
+                        break;
+                    }
+                    case 301:
+                    {
+                        form.Invoke(form.del_traiter_who, new Object[] { "AWAY " + message.Info + " " + message.Content });
                         break;
                     }
                     case 19: //Fin de conversation privée
@@ -200,7 +216,7 @@ namespace ProjetDNC_client
                     case 212:
                     case 213:
                         break;
-                    case 301: //Erreur d'identification
+                    case 666: //Erreur d'identification
                     {
                         form.Invoke(form.del_reg_err, new Object[] { message.Content });
                         break;
