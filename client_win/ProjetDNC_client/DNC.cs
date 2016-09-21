@@ -122,6 +122,14 @@ namespace ProjetDNC_client
                 //Réception du message
                 sock.Receive(Buff);
                 string reponse = Encoding.UTF8.GetString(Buff);
+                reponse = reponse.Replace('\0', ' ').Trim(); //Enlèvement des caractères nuls
+
+                if (reponse.Length == 0) //Déconnexion à l'initiative du serveur
+                {
+                    form.Invoke(form.del_close_fromserv);
+                    return;
+                }
+
                 string[] tab = reponse.Split(new char[] { ' ' }, 3);
 
                 Mess message = null;
@@ -136,11 +144,6 @@ namespace ProjetDNC_client
                 //Traitement
                 switch (message.Code)
                 {
-                    case 0: //Message du serveur
-                    {
-                        form.Invoke(form.del_chat_append, new Object[] { "*", message.Content });
-                        break;
-                    }
                     case 302: //Utilisateur connecté
                     {
                         form.Invoke(form.del_new_user, new Object[] { message.Info });
@@ -156,24 +159,28 @@ namespace ProjetDNC_client
                         form.Invoke(form.del_chat_append, new Object[] { "<" + message.Info + "> :", message.Content });
                         break;
                     }
-                    case 10: //Message privé
+                    case 305: //Changement de nom
                     {
-                        form.Invoke(form.del_private_msg, new Object[] { "dit", message.Info, message.Content });
+                        form.Invoke(form.del_pseudo_change, new Object[] {  message.Info , message.Content });
                         break;
                     }
-                    case 11: //Demande de conversation privée
+                    case 306: //Message privé
                     {
-                        form.Invoke(form.del_private_msg, new Object[] { "demande", message.Info, "" });
+                        form.Invoke(form.del_chat_append, new Object[] { "<" + message.Info + "> PRIVATE:", message.Content });
                         break;
                     }
-                    case 12: //Acceptation de conversation privée
+                    case 307: //On ignore la négociation des messages privés
+                    case 308:
+                    case 309:
+                        break;
+                    case 310: //Fin AFK
                     {
-                        form.Invoke(form.del_private_msg, new Object[] { "accepte", message.Info, "" });
+                        form.Invoke(form.del_chat_append, new Object[] { "*", message.Info + " is now available" });
                         break;
                     }
-                    case 13: //Refus de conversation privée
+                    case 311: //Début AFK
                     {
-                        form.Invoke(form.del_private_msg, new Object[] { "refuse", message.Info, "" });
+                        form.Invoke(form.del_chat_append, new Object[] { "*", message.Info + " is AFK" });
                         break;
                     }
                     case 300: //Réponse à la requête :who
@@ -187,12 +194,7 @@ namespace ProjetDNC_client
                         form.Invoke(form.del_traiter_who, new Object[] { "AWAY " + message.Info + " " + message.Content });
                         break;
                     }
-                    case 19: //Fin de conversation privée
-                    {
-                        form.Invoke(form.del_private_msg, new Object[] { "quitte", message.Info, "" });
-                        break;
-                    }
-                    case 200: //Succès
+                    case 203: //Succès
                     {
                         if (form.tmp_pseudo != null) //Succès après un changement de pseudo
                         {
@@ -204,7 +206,6 @@ namespace ProjetDNC_client
                     }
                     case 201: //Différents codes de succès (osef)
                     case 202:
-                    case 203:
                     case 204:
                     case 205:
                     case 206:
@@ -216,16 +217,6 @@ namespace ProjetDNC_client
                     case 212:
                     case 213:
                         break;
-                    case 666: //Erreur d'identification
-                    {
-                        form.Invoke(form.del_reg_err, new Object[] { message.Content });
-                        break;
-                    }
-                    case 401: //Arret du serveur
-                    {
-                        form.Invoke(form.del_close_fromserv);
-                        break;
-                    }
                     default:
                     {
                         form.Invoke(form.del_error_show, new Object[] { message.Code, message.Content });

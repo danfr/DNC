@@ -37,8 +37,12 @@ namespace ProjetDNC_client
         private void connexion_btn_Click(object sender, EventArgs e)
         {
             mf.Envoyer("", "/newname", pseudo_txt.Text);
-            Mess reponse = mf.Recevoir(); //On ignore le 302
-            reponse = mf.Recevoir();
+            Mess reponse = mf.Recevoir(); 
+
+            if(reponse.Code == 302) //On ignore le 302
+            {
+                reponse = mf.Recevoir();
+            }
 
             if (reponse.Code == 200)
             {
@@ -49,12 +53,10 @@ namespace ProjetDNC_client
             else if (reponse.Code == 408)
             {
                 MessageBox.Show("Pseudo incorrect !\n(" + reponse.Code + ")", "Erreur de connexion", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                mf.Recevoir(); //Vidage du buffer
             }
             else
             {
                 MessageBox.Show("Erreur inconnue !\n(" + reponse.Code + ")", "Erreur de connexion", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                mf.Recevoir();
             }
         }
     }

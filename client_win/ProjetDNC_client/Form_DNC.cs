@@ -17,6 +17,7 @@ namespace ProjetDNC_client
     {
         public Socket sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         public List<string> clients_actifs = new List<string>();
+        public List<ListViewItem> liste_items = new List<ListViewItem>();
         public List<string> sessions_privees = new List<string>();
 
         //Fonction déléguée d'ajout dans le chat
@@ -30,6 +31,10 @@ namespace ProjetDNC_client
         //Fonction déléguée de supressiond'un user dans le chat
         public delegate void del_user(string from);
         public del_user del_del_user;
+
+        //Fonction déléguée de supressiond'un user dans le chat
+        public delegate void pseudo_change(string ancien, string nouveau);
+        public pseudo_change del_pseudo_change;
 
         //Fonction déléguée d'affchage de l'erreur de pseudo
         public delegate void reg_err(string contenu);
@@ -62,6 +67,7 @@ namespace ProjetDNC_client
             del_chat_append = new chat_append(Chat_append);
             del_new_user = new new_user(New_user);
             del_del_user = new del_user(Del_user);
+            del_pseudo_change = new pseudo_change(Pseudo_change);
             del_reg_err = new reg_err(Reg_err);
             del_traiter_who = new traiter_who(Traiter_who);
             del_close_fromserv = new close_fromserv(Close_fromserv);
@@ -138,7 +144,8 @@ namespace ProjetDNC_client
 
             Thread.Sleep(1000); //Attente du traitement des requetes par le serveur
 
-            sock.Close(); //Fermeture le la socket client
+            if (sock.Connected)
+                sock.Close(); //Fermeture le la socket client
         }
 
         /// <summary>
@@ -248,11 +255,11 @@ namespace ProjetDNC_client
         /// <param name="from">nouvel utilisateur</param>
         public void New_user(string from)
         {
-            Font f = new Font(FontFamily.GenericSansSerif, 12.0f, FontStyle.Bold, GraphicsUnit.Pixel);
+            Font f = new Font(FontFamily.GenericSansSerif, 14.0f, FontStyle.Bold, GraphicsUnit.Pixel);
             ListViewItem cur = users_list.Items.Add(from);
             cur.Font = f;
             clients_actifs.Add(from);
-            Chat_append("*", from + " a rejoint le chat");
+            Chat_append("*", from + " joined the chat");
         }
 
         /// <summary>
@@ -261,7 +268,6 @@ namespace ProjetDNC_client
         /// <param name="from">utilisateur à supprimer</param>
         public void Del_user(string from)
         {
-            from = from.Replace('\0', ' ').Trim();
             ListViewItem sup = null;
             foreach (ListViewItem cur in users_list.Items)
             {
@@ -275,7 +281,35 @@ namespace ProjetDNC_client
             users_list.Items.Remove(sup);
             clients_actifs.Remove(from);
 
-            Chat_append("*", from + " a quitté le chat");
+            Chat_append("*", from + " left the chat");
+        }
+
+        /// <summary>
+        /// Gère le changement de nom d'un user
+        /// </summary>
+        /// <param name="ancien">utilisateur à modiifer</param>
+        /// /// <param name="nouveau">nouveau nom</param>
+        public void Pseudo_change(string ancien, string nouveau)
+        {
+            ListViewItem sup = null;
+            foreach (ListViewItem lvi in users_list.Items)
+            {
+                if (lvi.Text == ancien)
+                {
+                    sup = lvi;
+                    break;
+                }
+            }
+
+            users_list.Items.Remove(sup);
+            clients_actifs.Remove(ancien);
+            Font f = new Font(FontFamily.GenericSansSerif, 14.0f, FontStyle.Bold, GraphicsUnit.Pixel);
+            ListViewItem cur = users_list.Items.Add(nouveau);
+            cur.Font = f;
+            clients_actifs.Add(nouveau);
+
+
+            Chat_append("*", ancien + " is now known as " + nouveau);
         }
 
         /// <summary>
@@ -293,67 +327,63 @@ namespace ProjetDNC_client
         /// <param name="content">Réponse du serveur</param>
         public void Traiter_who(string content)
         {
-            content = content.Replace('\0', ' ').Trim();
             string[] tab = content.Split(' ');
 
             if (!content.Contains("AWAY"))
             {
+                liste_items.Clear();
+
                 ListViewItem cur = null;
-                Font f = new Font(FontFamily.GenericSansSerif, 12.0f, FontStyle.Bold, GraphicsUnit.Pixel);
+                Font f = new Font(FontFamily.GenericSansSerif, 14.0f, FontStyle.Bold, GraphicsUnit.Pixel);
 
                 foreach (string cli in tab)
                 {
-                    if (cli != mon_pseudo && !clients_actifs.Contains(cli))
+                    if (cli != mon_pseudo)
                     {
                         clients_actifs.Add(cli);
-                        cur = users_list.Items.Add(cli);
+                        cur = new ListViewItem(cli);
                         cur.Font = f;
+                        liste_items.Add(cur);
                     }
                     else if(cli == mon_pseudo)
                     {
-                        foreach (ListViewItem item in users_list.Items)
-                        {
-                            if (item.Text == mon_pseudo)
-                                return;
-                        }
-
-                        cur = users_list.Items.Add(cli);
+                        cur = new ListViewItem(cli);
                         cur.Font = f;
                         cur.BackColor = Color.LightGreen;
+                        liste_items.Add(cur);
                     }
                 }
             }
             else
             {
-                List<ListViewItem> asupprimer = new List<ListViewItem>();
-                foreach(ListViewItem cur in users_list.Items)
-                {
-                    if (cur.Font.Italic && clients_actifs.Contains(cur.Text))
-                        asupprimer.Add(cur);
-                        
-                }
-
-                foreach(ListViewItem sup in asupprimer)
-                {
-                    users_list.Items.Remove(sup);
-                }
+                ListViewItem cur = null;
+                Font f = new Font(FontFamily.GenericSansSerif, 14.0f, FontStyle.Italic, GraphicsUnit.Pixel);
 
                 //Ajout des utilisateurs AWAY
                 foreach (string cli in tab)
                 {
-                    if (cli != mon_pseudo && cli != "AWAY")
+                    if (cli != "AWAY")
                     {
-                        clients_actifs.Remove(cli);
-                        Font f = new Font(FontFamily.GenericSansSerif, 12.0f, FontStyle.Italic, GraphicsUnit.Pixel);
-
-                        foreach (ListViewItem cur in users_list.Items)
+                        if (cli != mon_pseudo)
                         {
-                            if(cur.Text == cli)
-                                cur.Font = f;
+                            clients_actifs.Remove(cli);
+
+                            cur = new ListViewItem(cli);
+                            cur.Font = f;
+                            liste_items.Add(cur);
                         }
-                        
+                        else
+                        {
+                            cur = new ListViewItem(cli);
+                            cur.Font = f;
+                            cur.BackColor = Color.LightGreen;
+                            liste_items.Add(cur);
+                        }
                     }
                 }
+
+                users_list.Items.Clear();
+                users_list.Items.AddRange(liste_items.ToArray());
             }
         }
 
@@ -369,9 +399,9 @@ namespace ProjetDNC_client
             }
 
             if (sock.Connected)
-                Envoyer("quit");
+                sock.Close();
 
-            MessageBox.Show("Le serveur est en cours d'arret...", "Arret du serveur", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            MessageBox.Show("Le serveur s'est arrêté !", "Arret du serveur", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
             this.Close();
         }
