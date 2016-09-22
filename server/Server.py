@@ -390,6 +390,7 @@ def private_message(connection, pseudo, msg):
         # else:
         send_to(c, NEW_PM, connection, msg)
         send_to(connection, SUCC_PM_SENDED)
+        send_to(connection, NEW_PM, connection, msg)
 
 
 ##
