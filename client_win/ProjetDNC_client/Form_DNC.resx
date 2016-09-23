@@ -117,30 +117,21 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="fonctionsToolStripMenuItem.ShortcutKeyDisplayString" xml:space="preserve">
+    <value />
+  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="conversationPrivéeToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Ctrl+Alt+C</value>
+  <data name="fonctionsToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Alt+C</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="conversationPrivéeToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>294, 22</value>
+  <data name="fonctionsToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>87, 20</value>
   </data>
-  <data name="conversationPrivéeToolStripMenuItem.Text" xml:space="preserve">
-    <value>Conversation privée...</value>
+  <data name="fonctionsToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Commandes</value>
   </data>
   <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="arrêtDeConversationPrivéeToolStripMenuItem.Enabled" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
-  <data name="arrêtDeConversationPrivéeToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Ctrl+Alt+S</value>
-  </data>
-  <data name="arrêtDeConversationPrivéeToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>294, 22</value>
-  </data>
-  <data name="arrêtDeConversationPrivéeToolStripMenuItem.Text" xml:space="preserve">
-    <value>Arrêt de conversation privée...</value>
-  </data>
   <data name="transfertDeFichierToolStripMenuItem.Enabled" type="System.Boolean, mscorlib">
     <value>False</value>
   </data>
@@ -148,22 +139,10 @@
     <value>Ctrl+Alt+T</value>
   </data>
   <data name="transfertDeFichierToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>294, 22</value>
+    <value>246, 22</value>
   </data>
   <data name="transfertDeFichierToolStripMenuItem.Text" xml:space="preserve">
     <value>Transfert de fichier...</value>
-  </data>
-  <data name="fonctionsToolStripMenuItem.ShortcutKeyDisplayString" xml:space="preserve">
-    <value />
-  </data>
-  <data name="fonctionsToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Alt+C</value>
-  </data>
-  <data name="fonctionsToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>87, 20</value>
-  </data>
-  <data name="fonctionsToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;Commandes</value>
   </data>
   <data name="outilsToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
     <value>Alt+S</value>
@@ -226,7 +205,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;menuStrip.ZOrder" xml:space="preserve">
-    <value>8</value>
+    <value>9</value>
   </data>
   <data name="chat_window.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Bottom, Left, Right</value>
@@ -259,7 +238,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;chat_window.ZOrder" xml:space="preserve">
-    <value>7</value>
+    <value>8</value>
   </data>
   <data name="users_list.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Bottom, Right</value>
@@ -292,7 +271,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;users_list.ZOrder" xml:space="preserve">
-    <value>6</value>
+    <value>7</value>
   </data>
   <data name="pubic_text.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Left, Right</value>
@@ -322,7 +301,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;pubic_text.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>6</value>
   </data>
   <data name="public_btn.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Right</value>
@@ -349,7 +328,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;public_btn.ZOrder" xml:space="preserve">
-    <value>4</value>
+    <value>5</value>
   </data>
   <data name="private_btn.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Right</value>
@@ -358,7 +337,7 @@
     <value>NoControl</value>
   </data>
   <data name="private_btn.Location" type="System.Drawing.Point, System.Drawing">
-    <value>605, 482</value>
+    <value>605, 499</value>
   </data>
   <data name="private_btn.Size" type="System.Drawing.Size, System.Drawing">
     <value>113, 24</value>
@@ -368,9 +347,6 @@
   </data>
   <data name="private_btn.Text" xml:space="preserve">
     <value>Message privé</value>
-  </data>
-  <data name="private_btn.Visible" type="System.Boolean, mscorlib">
-    <value>False</value>
   </data>
   <data name="&gt;&gt;private_btn.Name" xml:space="preserve">
     <value>private_btn</value>
@@ -382,7 +358,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;private_btn.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>3</value>
   </data>
   <data name="private_text.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Left, Right</value>
@@ -391,7 +367,7 @@
     <value>Microsoft Sans Serif, 11.25pt</value>
   </data>
   <data name="private_text.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 482</value>
+    <value>12, 499</value>
   </data>
   <data name="private_text.MaxLength" type="System.Int32, mscorlib">
     <value>492</value>
@@ -401,9 +377,6 @@
   </data>
   <data name="private_text.TabIndex" type="System.Int32, mscorlib">
     <value>5</value>
-  </data>
-  <data name="private_text.Visible" type="System.Boolean, mscorlib">
-    <value>False</value>
   </data>
   <data name="&gt;&gt;private_text.Name" xml:space="preserve">
     <value>private_text</value>
@@ -415,7 +388,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;private_text.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>4</value>
   </data>
   <data name="private_lbl.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Right</value>
@@ -424,7 +397,7 @@
     <value>True</value>
   </data>
   <data name="private_lbl.Location" type="System.Drawing.Point, System.Drawing">
-    <value>726, 489</value>
+    <value>726, 504</value>
   </data>
   <data name="private_lbl.Size" type="System.Drawing.Size, System.Drawing">
     <value>19, 13</value>
@@ -434,9 +407,6 @@
   </data>
   <data name="private_lbl.Text" xml:space="preserve">
     <value>à :</value>
-  </data>
-  <data name="private_lbl.Visible" type="System.Boolean, mscorlib">
-    <value>False</value>
   </data>
   <data name="&gt;&gt;private_lbl.Name" xml:space="preserve">
     <value>private_lbl</value>
@@ -448,33 +418,66 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;private_lbl.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>2</value>
   </data>
-  <data name="private_combo.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Right</value>
+  <data name="label1.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left, Right</value>
   </data>
-  <data name="private_combo.Location" type="System.Drawing.Point, System.Drawing">
-    <value>751, 484</value>
+  <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 485</value>
   </data>
-  <data name="private_combo.Size" type="System.Drawing.Size, System.Drawing">
-    <value>121, 21</value>
+  <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>860, 2</value>
   </data>
-  <data name="private_combo.TabIndex" type="System.Int32, mscorlib">
-    <value>8</value>
+  <data name="label1.TabIndex" type="System.Int32, mscorlib">
+    <value>101</value>
   </data>
-  <data name="private_combo.Visible" type="System.Boolean, mscorlib">
-    <value>False</value>
+  <data name="&gt;&gt;label1.Name" xml:space="preserve">
+    <value>label1</value>
   </data>
-  <data name="&gt;&gt;private_combo.Name" xml:space="preserve">
-    <value>private_combo</value>
+  <data name="&gt;&gt;label1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;private_combo.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;private_combo.Parent" xml:space="preserve">
+  <data name="&gt;&gt;label1.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="&gt;&gt;private_combo.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="private_to_txt.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Right</value>
+  </data>
+  <data name="private_to_txt.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="private_to_txt.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Microsoft Sans Serif, 8.25pt, style=Bold</value>
+  </data>
+  <data name="private_to_txt.Location" type="System.Drawing.Point, System.Drawing">
+    <value>751, 501</value>
+  </data>
+  <data name="private_to_txt.Size" type="System.Drawing.Size, System.Drawing">
+    <value>121, 20</value>
+  </data>
+  <data name="private_to_txt.TabIndex" type="System.Int32, mscorlib">
+    <value>102</value>
+  </data>
+  <data name="private_to_txt.Text" xml:space="preserve">
+    <value>(Cliquer sur le nom)</value>
+  </data>
+  <data name="private_to_txt.TextAlign" type="System.Windows.Forms.HorizontalAlignment, System.Windows.Forms">
+    <value>Center</value>
+  </data>
+  <data name="&gt;&gt;private_to_txt.Name" xml:space="preserve">
+    <value>private_to_txt</value>
+  </data>
+  <data name="&gt;&gt;private_to_txt.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;private_to_txt.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;private_to_txt.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
@@ -721,18 +724,6 @@
     <value>fonctionsToolStripMenuItem</value>
   </data>
   <data name="&gt;&gt;fonctionsToolStripMenuItem.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;conversationPrivéeToolStripMenuItem.Name" xml:space="preserve">
-    <value>conversationPrivéeToolStripMenuItem</value>
-  </data>
-  <data name="&gt;&gt;conversationPrivéeToolStripMenuItem.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;arrêtDeConversationPrivéeToolStripMenuItem.Name" xml:space="preserve">
-    <value>arrêtDeConversationPrivéeToolStripMenuItem</value>
-  </data>
-  <data name="&gt;&gt;arrêtDeConversationPrivéeToolStripMenuItem.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;transfertDeFichierToolStripMenuItem.Name" xml:space="preserve">

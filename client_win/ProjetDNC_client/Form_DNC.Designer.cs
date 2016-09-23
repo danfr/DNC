@@ -30,8 +30,6 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main_form));
             this.fonctionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.conversationPrivéeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.arrêtDeConversationPrivéeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.transfertDeFichierToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.outilsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.changerDeNomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -45,30 +43,17 @@
             this.private_btn = new System.Windows.Forms.Button();
             this.private_text = new System.Windows.Forms.TextBox();
             this.private_lbl = new System.Windows.Forms.Label();
-            this.private_combo = new System.Windows.Forms.ComboBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.private_to_txt = new System.Windows.Forms.TextBox();
             this.menuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // fonctionsToolStripMenuItem
             // 
             this.fonctionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.conversationPrivéeToolStripMenuItem,
-            this.arrêtDeConversationPrivéeToolStripMenuItem,
             this.transfertDeFichierToolStripMenuItem});
             this.fonctionsToolStripMenuItem.Name = "fonctionsToolStripMenuItem";
             resources.ApplyResources(this.fonctionsToolStripMenuItem, "fonctionsToolStripMenuItem");
-            // 
-            // conversationPrivéeToolStripMenuItem
-            // 
-            this.conversationPrivéeToolStripMenuItem.Name = "conversationPrivéeToolStripMenuItem";
-            resources.ApplyResources(this.conversationPrivéeToolStripMenuItem, "conversationPrivéeToolStripMenuItem");
-            this.conversationPrivéeToolStripMenuItem.Click += new System.EventHandler(this.conversationPrivéeToolStripMenuItem_Click);
-            // 
-            // arrêtDeConversationPrivéeToolStripMenuItem
-            // 
-            resources.ApplyResources(this.arrêtDeConversationPrivéeToolStripMenuItem, "arrêtDeConversationPrivéeToolStripMenuItem");
-            this.arrêtDeConversationPrivéeToolStripMenuItem.Name = "arrêtDeConversationPrivéeToolStripMenuItem";
-            this.arrêtDeConversationPrivéeToolStripMenuItem.Click += new System.EventHandler(this.arrêtDeConversationPrivéeToolStripMenuItem_Click);
             // 
             // transfertDeFichierToolStripMenuItem
             // 
@@ -128,6 +113,7 @@
             this.users_list.ShowGroups = false;
             this.users_list.UseCompatibleStateImageBehavior = false;
             this.users_list.View = System.Windows.Forms.View.List;
+            this.users_list.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.users_list_ItemSelectionChanged);
             // 
             // pubic_text
             // 
@@ -160,18 +146,23 @@
             resources.ApplyResources(this.private_lbl, "private_lbl");
             this.private_lbl.Name = "private_lbl";
             // 
-            // private_combo
+            // label1
             // 
-            resources.ApplyResources(this.private_combo, "private_combo");
-            this.private_combo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.private_combo.FormattingEnabled = true;
-            this.private_combo.Name = "private_combo";
+            resources.ApplyResources(this.label1, "label1");
+            this.label1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.label1.Name = "label1";
+            // 
+            // private_to_txt
+            // 
+            resources.ApplyResources(this.private_to_txt, "private_to_txt");
+            this.private_to_txt.Name = "private_to_txt";
             // 
             // Main_form
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.private_combo);
+            this.Controls.Add(this.private_to_txt);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.private_lbl);
             this.Controls.Add(this.private_btn);
             this.Controls.Add(this.private_text);
@@ -198,8 +189,6 @@
         private System.Windows.Forms.ToolStripMenuItem fonctionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem outilsToolStripMenuItem;
         private System.Windows.Forms.MenuStrip menuStrip;
-        private System.Windows.Forms.ToolStripMenuItem conversationPrivéeToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem arrêtDeConversationPrivéeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem transfertDeFichierToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem changerDeNomToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem déconnexionToolStripMenuItem;
@@ -211,8 +200,8 @@
         private System.Windows.Forms.Button private_btn;
         private System.Windows.Forms.TextBox private_text;
         private System.Windows.Forms.Label private_lbl;
-        private System.Windows.Forms.ComboBox private_combo;
-
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox private_to_txt;
     }
 }
 

@@ -48,10 +48,6 @@ namespace ProjetDNC_client
         public delegate void close_fromserv();
         public close_fromserv del_close_fromserv;
 
-        //Fonction déléguée de traitement des signaux privés
-        public delegate void private_msg(string type, string sender, string content);
-        public private_msg del_private_msg;
-
         //Fonction déléguée d'affichage d'erreurs reçues inopinément
         public delegate void error_show(int code, string contenu);
         public error_show del_error_show;
@@ -71,7 +67,6 @@ namespace ProjetDNC_client
             del_reg_err = new reg_err(Reg_err);
             del_traiter_who = new traiter_who(Traiter_who);
             del_close_fromserv = new close_fromserv(Close_fromserv);
-            del_private_msg = new private_msg(Private_msg);
             del_error_show = new error_show(Error_show);
         }
 
@@ -220,7 +215,7 @@ namespace ProjetDNC_client
         {
             if (this.private_text.Text.Trim() != "")
             {
-                Envoyer(private_combo.SelectedItem.ToString(), "/pm", private_text.Text);
+                Envoyer(private_to_txt.Text, "/pm", private_text.Text);
                 this.private_text.Clear();
             }
         }
@@ -255,10 +250,7 @@ namespace ProjetDNC_client
         /// <param name="from">nouvel utilisateur</param>
         public void New_user(string from)
         {
-            Font f = new Font(FontFamily.GenericSansSerif, 14.0f, FontStyle.Bold, GraphicsUnit.Pixel);
-            ListViewItem cur = users_list.Items.Add(from);
-            cur.Font = f;
-            clients_actifs.Add(from);
+            Envoyer("/userlist");
             Chat_append("*", from + " joined the chat");
         }
 
@@ -278,8 +270,7 @@ namespace ProjetDNC_client
                 }
             }
 
-            users_list.Items.Remove(sup);
-            clients_actifs.Remove(from);
+            Envoyer("/userlist");
 
             Chat_append("*", from + " left the chat");
         }
@@ -301,12 +292,7 @@ namespace ProjetDNC_client
                 }
             }
 
-            users_list.Items.Remove(sup);
-            clients_actifs.Remove(ancien);
-            Font f = new Font(FontFamily.GenericSansSerif, 14.0f, FontStyle.Bold, GraphicsUnit.Pixel);
-            ListViewItem cur = users_list.Items.Add(nouveau);
-            cur.Font = f;
-            clients_actifs.Add(nouveau);
+            Envoyer("/userlist");
 
 
             Chat_append("*", ancien + " is now known as " + nouveau);
@@ -407,85 +393,6 @@ namespace ProjetDNC_client
         }
 
         /// <summary>
-        /// Traitement des requetes privées reçues et leurs conséquences graphiques
-        /// </summary>
-        /// <param name="type">Type de la requete reçue</param>
-        /// <param name="sender">Nom de l'envoyeur</param>
-        /// <param name="content">Contenu de la requete</param>
-        private void Private_msg(string type, string sender, string content)
-        {
-            switch (type)
-            {
-                case "dit":
-                    {
-                        Chat_append("PRIVÉ - <" + sender + ">", content);
-                        break;
-                    }
-                case "demande":
-                    {
-                        DialogResult res = MessageBox.Show(sender + " voudrait engager une conversation privée avec vous. Acceptez-vous ?", "Demande privée", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
-
-                        if (res == DialogResult.Yes)
-                        {
-                            Envoyer(sender, "accept");
-                            sessions_privees.Add(sender);
-                            this.private_combo.Items.Add(sender);
-                            this.private_text.Visible = true;
-                            this.private_lbl.Visible = true;
-                            this.private_btn.Visible = true;
-                            this.private_combo.Visible = true;
-                            this.private_combo.SelectedIndex = 0;
-                            this.arrêtDeConversationPrivéeToolStripMenuItem.Enabled = true;
-                        }
-                        else
-                        {
-                            Envoyer(sender, "decline");
-                        }
-
-                        break;
-                    }
-                case "accepte":
-                    {
-                        sessions_privees.Add(sender);
-                        this.private_combo.Items.Add(sender);
-                        this.private_text.Visible = true;
-                        this.private_btn.Visible = true;
-                        this.private_lbl.Visible = true;
-                        this.private_combo.Visible = true;
-                        this.private_combo.SelectedIndex = 0;
-                        Chat_append("*", sender + " a acctepté une conversation privée avec vous.\r\n");
-                        this.arrêtDeConversationPrivéeToolStripMenuItem.Enabled = true;
-
-                        break;
-                    }
-                case "refuse":
-                    {
-                        Chat_append("*", sender + " a refusé d'ouvrir une conversation privée avec vous.\r\n");
-                        break;
-                    }
-                case "quitte":
-                    {
-                        sessions_privees.Remove(sender);
-                        this.private_combo.Items.Remove(sender);
-                        if (private_combo.Items.Count == 0)
-                        {
-                            this.private_text.Visible = false;
-                            this.private_text.Clear();
-                            this.private_lbl.Visible = false;
-                            this.private_btn.Visible = false;
-                            this.private_combo.Visible = false;
-                            this.arrêtDeConversationPrivéeToolStripMenuItem.Enabled = false;
-                        }
-                        else
-                            this.private_combo.SelectedIndex = 0;
-
-                        Chat_append("*", sender + " a quitté la conversation privée avec vous.\r\n");
-                        break;
-                    }
-            }
-        }
-
-        /// <summary>
         /// Affichage des erreurs inconnues
         /// </summary>
         private void Error_show(int code, string content)
@@ -493,25 +400,22 @@ namespace ProjetDNC_client
             MessageBox.Show(code + " -> " + content, "Erreur inattendue", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
+
         /// <summary>
-        /// Gère les conséquences graphiques de l'arret d'une session privée
+        /// Sélection d'un item dans la liste
         /// </summary>
-        /// <param name="pseudo">Utilisateur avec qui la session se termine</param>
-        public void Fin_conv(string pseudo)
+        private void users_list_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
-            this.sessions_privees.Remove(pseudo);
-            this.private_combo.Items.Remove(pseudo);
-            if (private_combo.Items.Count == 0)
+            ListView lv = (ListView)sender;
+            if (lv.SelectedItems.Count > 0)
             {
-                this.private_text.Visible = false;
-                this.private_text.Clear();
-                this.private_lbl.Visible = false;
-                this.private_btn.Visible = false;
-                this.private_combo.Visible = false;
-                this.arrêtDeConversationPrivéeToolStripMenuItem.Enabled = false;
+                ListViewItem lvi = lv.SelectedItems[0];
+
+                if (lvi.BackColor != Color.LightGreen)
+                    private_to_txt.Text = lvi.Text;
             }
             else
-                this.private_combo.SelectedIndex = 0;
+                private_to_txt.Text = "(Cliquer sur le nom)";
         }
     }
 }

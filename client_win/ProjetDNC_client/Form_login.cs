@@ -54,6 +54,10 @@ namespace ProjetDNC_client
             {
                 MessageBox.Show("Pseudo incorrect !\n(" + reponse.Code + ")", "Erreur de connexion", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
+            else if (reponse.Code == 400)
+            {
+                MessageBox.Show("Pseudo déjà utilisé !\n(" + reponse.Code + ")", "Erreur de connexion", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
             else
             {
                 MessageBox.Show("Erreur inconnue !\n(" + reponse.Code + ")", "Erreur de connexion", MessageBoxButtons.OK, MessageBoxIcon.Error);

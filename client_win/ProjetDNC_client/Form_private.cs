@@ -36,23 +36,5 @@ namespace ProjetDNC_client
             else
                 this.pseudo_combo.SelectedIndex = 0;
         }
-
-        /// <summary>
-        /// Action au clic sur le bouton
-        /// </summary>
-        private void demand_btn_Click(object sender, EventArgs e)
-        {
-            if (arret)
-            {
-                mf.Envoyer(this.pseudo_combo.SelectedItem.ToString(), "end");
-                mf.Fin_conv(this.pseudo_combo.SelectedItem.ToString());
-            }
-            else
-            {
-                mf.Envoyer(this.pseudo_combo.SelectedItem.ToString(), "private");
-            }
-
-            this.Close();
-        }
     }
 }

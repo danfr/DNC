@@ -176,12 +176,14 @@ namespace ProjetDNC_client
                     case 310: //Fin AFK
                     {
                         form.Invoke(form.del_chat_append, new Object[] { "*", message.Info + " is now available" });
-                        break;
+                            Envoyer("/userlist");
+                            break;
                     }
                     case 311: //Début AFK
                     {
                         form.Invoke(form.del_chat_append, new Object[] { "*", message.Info + " is AFK" });
-                        break;
+                            Envoyer("/userlist");
+                            break;
                     }
                     case 300: //Réponse à la requête :who
                     {

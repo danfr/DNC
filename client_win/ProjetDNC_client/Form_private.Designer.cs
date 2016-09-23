@@ -50,7 +50,6 @@
             this.demand_btn.TabIndex = 5;
             this.demand_btn.Text = "Demander une conversation privée";
             this.demand_btn.UseVisualStyleBackColor = true;
-            this.demand_btn.Click += new System.EventHandler(this.demand_btn_Click);
             // 
             // pseudo_combo
             // 
