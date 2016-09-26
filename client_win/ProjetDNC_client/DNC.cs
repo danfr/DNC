@@ -15,6 +15,7 @@ namespace ProjetDNC_client
         public string tmp_pseudo = null;
         private byte[] myBuff = new byte[512];
         private Thread t = null;
+        private Thread t2 = null;
         private System.Windows.Forms.Timer timer;
 
         /// <summary>
@@ -121,6 +122,7 @@ namespace ProjetDNC_client
 
                 //Réception du message
                 sock.Receive(Buff);
+
                 string reponse = Encoding.UTF8.GetString(Buff);
                 reponse = reponse.Replace('\0', ' ').Trim(); //Enlèvement des caractères nuls
 

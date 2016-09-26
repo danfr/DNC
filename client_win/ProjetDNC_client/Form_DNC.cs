@@ -10,6 +10,8 @@ using System.Windows.Forms;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using System.Runtime.InteropServices;
+using System.Diagnostics;
 
 namespace ProjetDNC_client
 {
@@ -19,6 +21,7 @@ namespace ProjetDNC_client
         public List<string> clients_actifs = new List<string>();
         public List<ListViewItem> liste_items = new List<ListViewItem>();
         public List<string> sessions_privees = new List<string>();
+        public bool notif;
 
         //Fonction déléguée d'ajout dans le chat
         public delegate void chat_append(string from, string contenu);
@@ -52,6 +55,8 @@ namespace ProjetDNC_client
         public delegate void error_show(int code, string contenu);
         public error_show del_error_show;
 
+        System.Media.SoundPlayer player = new System.Media.SoundPlayer();
+
         /// <summary>
         /// Initialistation du formulaire principal
         /// </summary>
@@ -68,6 +73,9 @@ namespace ProjetDNC_client
             del_traiter_who = new traiter_who(Traiter_who);
             del_close_fromserv = new close_fromserv(Close_fromserv);
             del_error_show = new error_show(Error_show);
+
+            player.Stream = Properties.Resources.notif;
+            notif = true;
         }
 
         /// <summary>
@@ -229,6 +237,29 @@ namespace ProjetDNC_client
             fp.ShowDialog(this);
         }
 
+        /// <summary>Returns true if the current application has focus, false otherwise</summary>
+        public static bool ApplicationIsActivated()
+        {
+            var activatedHandle = GetForegroundWindow();
+            if (activatedHandle == IntPtr.Zero)
+            {
+                return false;       // No window is currently activated
+            }
+
+            var procId = Process.GetCurrentProcess().Id;
+            int activeProcId;
+            GetWindowThreadProcessId(activatedHandle, out activeProcId);
+
+            return activeProcId == procId;
+        }
+
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
+        private static extern IntPtr GetForegroundWindow();
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern int GetWindowThreadProcessId(IntPtr handle, out int processId);
+
         /// <summary>
         /// Ajoute le message entré en paramètre à la fenetre de chat principale
         /// </summary>
@@ -242,6 +273,12 @@ namespace ProjetDNC_client
                 chat_window.AppendText("[" + time.ToString(format) + "] " + from + "  " + content);
             else
                 chat_window.AppendText("\r\n" + "[" + time.ToString(format) + "] " + from + "  " + content);
+
+            // Notif sonore
+            if(!ApplicationIsActivated() && notif)
+                player.Play();
+
+            chat_window.ScrollToCaret();
         }
 
         /// <summary>
@@ -416,6 +453,11 @@ namespace ProjetDNC_client
             }
             else
                 private_to_txt.Text = "(Cliquer sur le nom)";
+        }
+
+        private void sonActive_CheckStateChanged(object sender, EventArgs e)
+        {
+            this.notif = son_active.Checked;
         }
     }
 }

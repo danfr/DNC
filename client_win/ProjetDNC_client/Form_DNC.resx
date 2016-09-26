@@ -144,15 +144,6 @@
   <data name="transfertDeFichierToolStripMenuItem.Text" xml:space="preserve">
     <value>Transfert de fichier...</value>
   </data>
-  <data name="outilsToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Alt+S</value>
-  </data>
-  <data name="outilsToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>58, 20</value>
-  </data>
-  <data name="outilsToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;Session</value>
-  </data>
   <data name="changerDeNomToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
     <value>Ctrl+Alt+N</value>
   </data>
@@ -171,6 +162,15 @@
   <data name="déconnexionToolStripMenuItem.Text" xml:space="preserve">
     <value>Pause</value>
   </data>
+  <data name="son_active.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+Alt+S</value>
+  </data>
+  <data name="son_active.Size" type="System.Drawing.Size, System.Drawing">
+    <value>238, 22</value>
+  </data>
+  <data name="son_active.Text" xml:space="preserve">
+    <value>Son activé</value>
+  </data>
   <data name="déconnexionToolStripMenuItem1.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
     <value>Ctrl+Alt+Q</value>
   </data>
@@ -179,6 +179,15 @@
   </data>
   <data name="déconnexionToolStripMenuItem1.Text" xml:space="preserve">
     <value>Quitter</value>
+  </data>
+  <data name="outilsToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Alt+S</value>
+  </data>
+  <data name="outilsToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>58, 20</value>
+  </data>
+  <data name="outilsToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Session</value>
   </data>
   <metadata name="menuStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
@@ -206,39 +215,6 @@
   </data>
   <data name="&gt;&gt;menuStrip.ZOrder" xml:space="preserve">
     <value>9</value>
-  </data>
-  <data name="chat_window.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Top, Bottom, Left, Right</value>
-  </data>
-  <data name="chat_window.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Microsoft Sans Serif, 11.25pt</value>
-  </data>
-  <data name="chat_window.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 27</value>
-  </data>
-  <data name="chat_window.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>5, 5, 5, 5</value>
-  </data>
-  <data name="chat_window.Multiline" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="chat_window.Size" type="System.Drawing.Size, System.Drawing">
-    <value>566, 405</value>
-  </data>
-  <data name="chat_window.TabIndex" type="System.Int32, mscorlib">
-    <value>100</value>
-  </data>
-  <data name="&gt;&gt;chat_window.Name" xml:space="preserve">
-    <value>chat_window</value>
-  </data>
-  <data name="&gt;&gt;chat_window.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;chat_window.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;chat_window.ZOrder" xml:space="preserve">
-    <value>8</value>
   </data>
   <data name="users_list.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Bottom, Right</value>
@@ -271,7 +247,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;users_list.ZOrder" xml:space="preserve">
-    <value>7</value>
+    <value>8</value>
   </data>
   <data name="pubic_text.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Left, Right</value>
@@ -301,7 +277,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;pubic_text.ZOrder" xml:space="preserve">
-    <value>6</value>
+    <value>7</value>
   </data>
   <data name="public_btn.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Right</value>
@@ -328,7 +304,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;public_btn.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>6</value>
   </data>
   <data name="private_btn.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Right</value>
@@ -358,7 +334,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;private_btn.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>4</value>
   </data>
   <data name="private_text.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Left, Right</value>
@@ -388,7 +364,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;private_text.ZOrder" xml:space="preserve">
-    <value>4</value>
+    <value>5</value>
   </data>
   <data name="private_lbl.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Right</value>
@@ -418,7 +394,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;private_lbl.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>3</value>
   </data>
   <data name="label1.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Left, Right</value>
@@ -442,7 +418,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>2</value>
   </data>
   <data name="private_to_txt.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Right</value>
@@ -478,6 +454,39 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;private_to_txt.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="chat_window.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Bottom, Left, Right</value>
+  </data>
+  <data name="chat_window.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Microsoft Sans Serif, 11.25pt</value>
+  </data>
+  <data name="chat_window.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 27</value>
+  </data>
+  <data name="chat_window.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>5, 5, 5, 5</value>
+  </data>
+  <data name="chat_window.Size" type="System.Drawing.Size, System.Drawing">
+    <value>566, 405</value>
+  </data>
+  <data name="chat_window.TabIndex" type="System.Int32, mscorlib">
+    <value>100</value>
+  </data>
+  <data name="chat_window.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;chat_window.Name" xml:space="preserve">
+    <value>chat_window</value>
+  </data>
+  <data name="&gt;&gt;chat_window.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RichTextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;chat_window.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;chat_window.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
@@ -718,7 +727,7 @@
     <value>CenterScreen</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>Dog is Not a Chat - Client</value>
+    <value>DNC42 - Client</value>
   </data>
   <data name="&gt;&gt;fonctionsToolStripMenuItem.Name" xml:space="preserve">
     <value>fonctionsToolStripMenuItem</value>
@@ -754,6 +763,12 @@
     <value>déconnexionToolStripMenuItem1</value>
   </data>
   <data name="&gt;&gt;déconnexionToolStripMenuItem1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;son_active.Name" xml:space="preserve">
+    <value>son_active</value>
+  </data>
+  <data name="&gt;&gt;son_active.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">

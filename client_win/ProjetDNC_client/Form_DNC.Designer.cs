@@ -36,7 +36,6 @@
             this.déconnexionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.déconnexionToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip = new System.Windows.Forms.MenuStrip();
-            this.chat_window = new System.Windows.Forms.TextBox();
             this.users_list = new System.Windows.Forms.ListView();
             this.pubic_text = new System.Windows.Forms.TextBox();
             this.public_btn = new System.Windows.Forms.Button();
@@ -45,6 +44,8 @@
             this.private_lbl = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.private_to_txt = new System.Windows.Forms.TextBox();
+            this.chat_window = new System.Windows.Forms.RichTextBox();
+            this.son_active = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -65,6 +66,7 @@
             this.outilsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.changerDeNomToolStripMenuItem,
             this.déconnexionToolStripMenuItem,
+            this.son_active,
             this.déconnexionToolStripMenuItem1});
             this.outilsToolStripMenuItem.Name = "outilsToolStripMenuItem";
             resources.ApplyResources(this.outilsToolStripMenuItem, "outilsToolStripMenuItem");
@@ -96,13 +98,6 @@
             resources.ApplyResources(this.menuStrip, "menuStrip");
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-            // 
-            // chat_window
-            // 
-            resources.ApplyResources(this.chat_window, "chat_window");
-            this.chat_window.BackColor = System.Drawing.SystemColors.InactiveBorder;
-            this.chat_window.Name = "chat_window";
-            this.chat_window.ReadOnly = true;
             // 
             // users_list
             // 
@@ -157,10 +152,27 @@
             resources.ApplyResources(this.private_to_txt, "private_to_txt");
             this.private_to_txt.Name = "private_to_txt";
             // 
+            // chat_window
+            // 
+            resources.ApplyResources(this.chat_window, "chat_window");
+            this.chat_window.BackColor = System.Drawing.SystemColors.Window;
+            this.chat_window.Name = "chat_window";
+            this.chat_window.ReadOnly = true;
+            // 
+            // son_active
+            // 
+            this.son_active.Checked = true;
+            this.son_active.CheckOnClick = true;
+            this.son_active.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.son_active.Name = "son_active";
+            resources.ApplyResources(this.son_active, "son_active");
+            this.son_active.CheckStateChanged += new System.EventHandler(this.sonActive_CheckStateChanged);
+            // 
             // Main_form
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.chat_window);
             this.Controls.Add(this.private_to_txt);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.private_lbl);
@@ -169,7 +181,6 @@
             this.Controls.Add(this.public_btn);
             this.Controls.Add(this.pubic_text);
             this.Controls.Add(this.users_list);
-            this.Controls.Add(this.chat_window);
             this.Controls.Add(this.menuStrip);
             this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip;
@@ -193,7 +204,6 @@
         private System.Windows.Forms.ToolStripMenuItem changerDeNomToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem déconnexionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem déconnexionToolStripMenuItem1;
-        private System.Windows.Forms.TextBox chat_window;
         private System.Windows.Forms.ListView users_list;
         private System.Windows.Forms.TextBox pubic_text;
         private System.Windows.Forms.Button public_btn;
@@ -202,6 +212,8 @@
         private System.Windows.Forms.Label private_lbl;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox private_to_txt;
+        private System.Windows.Forms.RichTextBox chat_window;
+        private System.Windows.Forms.ToolStripMenuItem son_active;
     }
 }
 
