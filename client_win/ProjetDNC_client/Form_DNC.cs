@@ -126,7 +126,7 @@ namespace ProjetDNC_client
                 MessageBox.Show("Le fichier de configuration DNC_client.ini est introuvable !", "Erreur de connexion", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Application.Exit();
             }
-            catch (FormatException) //Echec de conversion du numéro de port en int.
+            catch (FormatException err) //Echec de conversion du numéro de port en int.
             {
                 MessageBox.Show("La lecture du fichier de configuration DNC_client.ini à échoué, peut être est-il mal formé !", "Erreur de connexion", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Application.Exit();

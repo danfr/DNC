@@ -34,7 +34,7 @@ namespace ProjetDNC_client
         /// <param name="contenu">Contenu de la requête</param>
         public void Envoyer(string pseudo, string commande, string contenu)
         {
-            contenu = contenu.Replace('\r', ' ').Replace('\n', ' ').Trim();
+            contenu = contenu.Replace('\r', ' ').Replace('\n', ' ').Replace('|', ' ').Trim();
 
             if (pseudo != null && pseudo != "")
             {
@@ -77,8 +77,10 @@ namespace ProjetDNC_client
         /// <returns>Mess représentant le message reçu</returns>
         public Mess Recevoir()
         {
+            myBuff = new byte[512];
             sock.Receive(myBuff);
             string reponse = Encoding.UTF8.GetString(myBuff);
+            reponse = reponse.TrimEnd('|', ' ', '\0');
             string[] tab = reponse.Split(new char[] { ' ' }, 3);
 
             if(tab.Length == 1)
@@ -115,16 +117,17 @@ namespace ProjetDNC_client
         public void Ecoute(Main_form form, Socket sock)
         {
             Thread.CurrentThread.IsBackground = true;
+            byte[] Buff;
 
             while (true)
             {
-                byte[] Buff = new byte[512];
                 StringBuilder builder = new StringBuilder();
 
                 string reponse, part = "";
 
                 do
                 {
+                    Buff = new byte[512];
                     //Réception du message
                     sock.Receive(Buff);
 
@@ -136,79 +139,96 @@ namespace ProjetDNC_client
 
                 reponse = builder.ToString().TrimEnd('|', ' ');
 
-                if (reponse.Length == 0) //Déconnexion à l'initiative du serveur
+                if (reponse.Contains("|")) // En cas de double écriture dans la socket
                 {
-                    form.Invoke(form.del_close_fromserv);
-                    return;
+                    string[] reponses = reponse.Split('|');
+                    foreach(string rep in reponses)
+                    {
+                        Traiter(form, rep);
+                    }
                 }
-
-                string[] tab = reponse.Split(new char[] { ' ' }, 3);
-
-                Mess message = null;
-
-                if (tab.Length == 1)
-                    message =  new Mess(tab[0], "", "");
-                else if (tab.Length == 2)
-                    message = new Mess(tab[0], tab[1], "");
                 else
-                    message = new Mess(tab[0], tab[1], tab[2]);
-
-                //Traitement
-                switch (message.Code)
                 {
-                    case 302: //Utilisateur connecté
+                    Traiter(form, reponse);
+                }
+            }
+        }
+
+        private void Traiter(Main_form form, string reponse)
+        {
+            if (reponse.Length == 0) //Déconnexion à l'initiative du serveur
+            {
+                form.Invoke(form.del_close_fromserv);
+                return;
+            }
+
+            string[] tab = reponse.Split(new char[] { ' ' }, 3);
+
+            Mess message = null;
+
+            if (tab.Length == 1)
+                message = new Mess(tab[0], "", "");
+            else if (tab.Length == 2)
+                message = new Mess(tab[0], tab[1], "");
+            else
+                message = new Mess(tab[0], tab[1], tab[2]);
+
+            //Traitement
+            switch (message.Code)
+            {
+                case 302: //Utilisateur connecté
                     {
                         form.Invoke(form.del_new_user, new Object[] { message.Info });
                         break;
                     }
-                    case 303: //Utilisateur déconnecté
+                case 303: //Utilisateur déconnecté
                     {
                         form.Invoke(form.del_del_user, new Object[] { message.Info });
                         break;
                     }
-                    case 304: //Message public
+                case 304: //Message public
                     {
                         form.Invoke(form.del_chat_append, new Object[] { "<" + message.Info + "> :", message.Content });
                         break;
                     }
-                    case 305: //Changement de nom
+                case 305: //Changement de nom
                     {
-                        form.Invoke(form.del_pseudo_change, new Object[] {  message.Info , message.Content });
+                        form.Invoke(form.del_pseudo_change, new Object[] { message.Info, message.Content });
                         break;
                     }
-                    case 306: //Message privé
+                case 306: //Message privé
                     {
                         form.Invoke(form.del_chat_append, new Object[] { "<" + message.Info + "> PRIVATE:", message.Content });
                         break;
                     }
-                    case 307: //On ignore la négociation des messages privés
-                    case 308:
-                    case 309:
-                        break;
-                    case 310: //Fin AFK
+                case 307: //On ignore la négociation des messages privés
+                case 308:
+                case 309:
+                    break;
+                case 310: //Fin AFK
                     {
                         form.Invoke(form.del_chat_append, new Object[] { "*", message.Info + " is now available" });
-                            Envoyer("/userlist");
-                            break;
+                        Envoyer("/userlist");
+                        break;
                     }
-                    case 311: //Début AFK
+                case 311: //Début AFK
                     {
                         form.Invoke(form.del_chat_append, new Object[] { "*", message.Info + " is AFK" });
-                            Envoyer("/userlist");
-                            break;
+                        Envoyer("/userlist");
+                        break;
                     }
-                    case 300: //Réponse à la requête :who
+                case 300: //Réponse à la requête :who
                     {
                         form.Invoke(form.del_traiter_who, new Object[] { message.Info + " " + message.Content });
                         Envoyer("/userlistaway");
                         break;
                     }
-                    case 301:
+                case 301:
                     {
                         form.Invoke(form.del_traiter_who, new Object[] { "AWAY " + message.Info + " " + message.Content });
                         break;
                     }
-                    case 203: //Succès
+                case 203: //Succès
                     {
                         if (form.tmp_pseudo != null) //Succès après un changement de pseudo
                         {
@@ -218,25 +238,24 @@ namespace ProjetDNC_client
 
                         break;
                     }
-                    case 201: //Différents codes de succès (osef)
-                    case 202:
-                    case 204:
-                    case 205:
-                    case 206:
-                    case 207:
-                    case 208:
-                    case 209:
-                    case 210:
-                    case 211:
-                    case 212:
-                    case 213:
-                        break;
-                    default:
+                case 201: //Différents codes de succès (osef)
+                case 202:
+                case 204:
+                case 205:
+                case 206:
+                case 207:
+                case 208:
+                case 209:
+                case 210:
+                case 211:
+                case 212:
+                case 213:
+                    break;
+                default:
                     {
                         form.Invoke(form.del_error_show, new Object[] { message.Code, message.Content });
                         break;
                     }
-                }
             }
         }
     }
