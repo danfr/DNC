@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Net;
 using System.Net.Sockets;
@@ -79,7 +74,7 @@ namespace ProjetDNC_client
             notif = true;
 
             //Détection du ScreenLock
-            SystemEvents.SessionSwitch += new Microsoft.Win32.SessionSwitchEventHandler(SystemEvents_SessionSwitch);
+            SystemEvents.SessionSwitch += new SessionSwitchEventHandler(SystemEvents_SessionSwitch);
         }
 
         /// <summary>
@@ -241,6 +236,10 @@ namespace ProjetDNC_client
             fp.ShowDialog(this);
         }
 
+        [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
+        private static extern IntPtr GetForegroundWindow();
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern int GetWindowThreadProcessId(IntPtr handle, out int processId);
         /// <summary>Returns true if the current application has focus, false otherwise</summary>
         public static bool ApplicationIsActivated()
         {
@@ -257,13 +256,9 @@ namespace ProjetDNC_client
             return activeProcId == procId;
         }
 
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
-        private static extern IntPtr GetForegroundWindow();
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern int GetWindowThreadProcessId(IntPtr handle, out int processId);
-
+        /// <summary>
+        /// Action au Lock de la session (mise AFK)
+        /// </summary>
         void SystemEvents_SessionSwitch(object sender, SessionSwitchEventArgs e)
         {
             switch (e.Reason)
@@ -277,6 +272,10 @@ namespace ProjetDNC_client
             }
         }
 
+
+
+        [DllImport("user32.dll")]
+        static extern bool FlashWindow(IntPtr hwnd, bool bInvert);
         /// <summary>
         /// Ajoute le message entré en paramètre à la fenetre de chat principale
         /// </summary>
@@ -291,9 +290,16 @@ namespace ProjetDNC_client
             else
                 chat_window.AppendText("\r\n" + "[" + time.ToString(format) + "] " + from + "  " + content);
 
-            // Notif sonore
-            if(!ApplicationIsActivated() && notif)
-                player.Play();
+            if (!ApplicationIsActivated())
+            {
+                // Notif sonore
+                if(notif)
+                    player.Play();
+
+                // Notif visuelle (icone qui clignote)
+                IntPtr handle = this.Handle;
+                FlashWindow(handle, false);
+            }
 
             chat_window.ScrollToCaret();
         }

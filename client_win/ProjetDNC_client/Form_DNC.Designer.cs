@@ -34,6 +34,7 @@
             this.outilsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.changerDeNomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.déconnexionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.son_active = new System.Windows.Forms.ToolStripMenuItem();
             this.déconnexionToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.users_list = new System.Windows.Forms.ListView();
@@ -45,7 +46,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.private_to_txt = new System.Windows.Forms.TextBox();
             this.chat_window = new System.Windows.Forms.RichTextBox();
-            this.son_active = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -82,6 +82,15 @@
             this.déconnexionToolStripMenuItem.Name = "déconnexionToolStripMenuItem";
             resources.ApplyResources(this.déconnexionToolStripMenuItem, "déconnexionToolStripMenuItem");
             this.déconnexionToolStripMenuItem.Click += new System.EventHandler(this.déconnexionToolStripMenuItem_Click);
+            // 
+            // son_active
+            // 
+            this.son_active.Checked = true;
+            this.son_active.CheckOnClick = true;
+            this.son_active.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.son_active.Name = "son_active";
+            resources.ApplyResources(this.son_active, "son_active");
+            this.son_active.CheckStateChanged += new System.EventHandler(this.sonActive_CheckStateChanged);
             // 
             // déconnexionToolStripMenuItem1
             // 
@@ -158,15 +167,6 @@
             this.chat_window.BackColor = System.Drawing.SystemColors.Window;
             this.chat_window.Name = "chat_window";
             this.chat_window.ReadOnly = true;
-            // 
-            // son_active
-            // 
-            this.son_active.Checked = true;
-            this.son_active.CheckOnClick = true;
-            this.son_active.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.son_active.Name = "son_active";
-            resources.ApplyResources(this.son_active, "son_active");
-            this.son_active.CheckStateChanged += new System.EventHandler(this.sonActive_CheckStateChanged);
             // 
             // Main_form
             // 

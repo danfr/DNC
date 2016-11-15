@@ -217,14 +217,28 @@ def handle_request(connection, data):
 #   @param connection the socket descriptor of the request sender
 #   @param message message to broadcast (String)
 def broadcast_message(connection, message):
+    # Adding end delimiter
+    message = message + "|"
+
     # log.printL("User Connected : {}".format(usersConnected), Log.lvl.DEBUG)
     for con, value in usersConnected.items():
         # value 1 : pseudo value 2 : status (enable/disable)
-        if value[1] is not None and con != connection and value[2]:
-            try:
-                con.sendall(message.encode())
-            except Exception as e:
-                log.printL(str(e), Log.lvl.FAIL)
+        
+        ### Client Linux
+        #if value[1] is not None and con != connection and value[2]:
+        #    try:
+        #        con.sendall(message.encode())
+        #    except Exception as e:
+        #        log.printL(str(e), Log.lvl.FAIL)
+        
+        
+        ### Client Windows
+        #if value[1] is not None and con != connection and value[2]:
+        try:
+            con.sendall(message.encode())
+        except Exception as e:
+            log.printL(str(e), Log.lvl.FAIL)
+        
         log.printL("Broadcast : {}".format(message), Log.lvl.INFO)
 
 
@@ -237,7 +251,7 @@ def broadcast_message(connection, message):
 def send_to(target, code, source=None, message=None):
     if message is None:
         if source is not None:
-            target.sendall("{} {}".format(code, usersConnected[source][1]).encode())
+            target.sendall("{} {}|".format(code, usersConnected[source][1]).encode())
             log.printL("Send to {} : {} {}".format(usersConnected[target][0], code, usersConnected[source][1]),
                        Log.lvl.INFO)
         else:
@@ -245,12 +259,12 @@ def send_to(target, code, source=None, message=None):
             log.printL("Send to {} : {}".format(usersConnected[target][0], code), Log.lvl.INFO)
     else:
         if source is not None:
-            target.sendall("{} {} {}".format(code, usersConnected[source][1], message).encode())
+            target.sendall("{} {} {}|".format(code, usersConnected[source][1], message).encode())
             log.printL(
                 "Send to {} : {} {} {}".format(usersConnected[target][0], code, usersConnected[source][1], message),
                 Log.lvl.INFO)
         else:
-            target.sendall("{} {}".format(code, message).encode())
+            target.sendall("{} {}|".format(code, message).encode())
             log.printL("Send to {} : {} {}".format(usersConnected[target][0], code, message), Log.lvl.INFO)
 
 
