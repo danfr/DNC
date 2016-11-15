@@ -2,8 +2,7 @@
 
 # Form implementation generated from reading ui file 'main.ui'
 #
-# Created: Thu Apr  9 00:04:59 2015
-#      by: PyQt4 UI code generator 4.11.3
+# Created by: PyQt4 UI code generator 4.11.4
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -27,12 +26,19 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
         MainWindow.resize(800, 567)
-        MainWindow.setMaximumSize(QtCore.QSize(800, 567))
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8("../img/42.ico")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        MainWindow.setWindowIcon(icon)
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
         self.txtOutput = QtGui.QTextEdit(self.centralwidget)
-        self.txtOutput.setGeometry(QtCore.QRect(10, 150, 561, 361))
-        self.txtOutput.setMinimumSize(QtCore.QSize(400, 0))
+        self.txtOutput.setGeometry(QtCore.QRect(14, 151, 100, 361))
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.txtOutput.sizePolicy().hasHeightForWidth())
+        self.txtOutput.setSizePolicy(sizePolicy)
+        self.txtOutput.setMinimumSize(QtCore.QSize(100, 0))
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Arial"))
         font.setPointSize(14)
@@ -53,7 +59,6 @@ class Ui_MainWindow(object):
         self.horizontalLayoutWidget_2.setGeometry(QtCore.QRect(10, 40, 781, 51))
         self.horizontalLayoutWidget_2.setObjectName(_fromUtf8("horizontalLayoutWidget_2"))
         self.horizontalLayout_2 = QtGui.QHBoxLayout(self.horizontalLayoutWidget_2)
-        self.horizontalLayout_2.setMargin(0)
         self.horizontalLayout_2.setObjectName(_fromUtf8("horizontalLayout_2"))
         self.label_3 = QtGui.QLabel(self.horizontalLayoutWidget_2)
         self.label_3.setObjectName(_fromUtf8("label_3"))
@@ -118,7 +123,7 @@ class Ui_MainWindow(object):
         self.pushButton_2.setObjectName(_fromUtf8("pushButton_2"))
         self.horizontalLayout_2.addWidget(self.pushButton_2)
         self.label_2 = QtGui.QLabel(self.centralwidget)
-        self.label_2.setGeometry(QtCore.QRect(10, 10, 171, 31))
+        self.label_2.setGeometry(QtCore.QRect(10, 10, 251, 31))
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setBold(True)
@@ -129,7 +134,6 @@ class Ui_MainWindow(object):
         self.horizontalLayoutWidget.setGeometry(QtCore.QRect(10, 520, 781, 41))
         self.horizontalLayoutWidget.setObjectName(_fromUtf8("horizontalLayoutWidget"))
         self.horizontalLayout = QtGui.QHBoxLayout(self.horizontalLayoutWidget)
-        self.horizontalLayout.setMargin(0)
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
         self.lineEdit = QtGui.QLineEdit(self.horizontalLayoutWidget)
         self.lineEdit.setStyleSheet(_fromUtf8("    border: solid 1px #ccc;\n"
@@ -167,7 +171,7 @@ class Ui_MainWindow(object):
         self.horizontalLayoutWidget_3.setGeometry(QtCore.QRect(10, 100, 561, 40))
         self.horizontalLayoutWidget_3.setObjectName(_fromUtf8("horizontalLayoutWidget_3"))
         self.horizontalLayout_3 = QtGui.QHBoxLayout(self.horizontalLayoutWidget_3)
-        self.horizontalLayout_3.setMargin(0)
+        self.horizontalLayout_3.setSizeConstraint(QtGui.QLayout.SetNoConstraint)
         self.horizontalLayout_3.setObjectName(_fromUtf8("horizontalLayout_3"))
         self.pushButton_5 = QtGui.QPushButton(self.horizontalLayoutWidget_3)
         self.pushButton_5.setStyleSheet(_fromUtf8("\n"
@@ -184,7 +188,7 @@ class Ui_MainWindow(object):
         self.verticalLayoutWidget.setGeometry(QtCore.QRect(590, 100, 201, 411))
         self.verticalLayoutWidget.setObjectName(_fromUtf8("verticalLayoutWidget"))
         self.verticalLayout = QtGui.QVBoxLayout(self.verticalLayoutWidget)
-        self.verticalLayout.setMargin(0)
+        self.verticalLayout.setSizeConstraint(QtGui.QLayout.SetNoConstraint)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
         self.label = QtGui.QLabel(self.verticalLayoutWidget)
         font = QtGui.QFont()
@@ -247,6 +251,15 @@ class Ui_MainWindow(object):
         self.listNames_2.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.listNames_2.setObjectName(_fromUtf8("listNames_2"))
         self.verticalLayout.addWidget(self.listNames_2)
+        self.label_6 = QtGui.QLabel(self.centralwidget)
+        self.label_6.setGeometry(QtCore.QRect(748, 6, 41, 41))
+        self.label_6.setText(_fromUtf8(""))
+        self.label_6.setPixmap(QtGui.QPixmap(_fromUtf8("../img/42.png")))
+        self.label_6.setScaledContents(True)
+        self.label_6.setObjectName(_fromUtf8("label_6"))
+        self.webView = QtWebKit.QWebView(self.centralwidget)
+        self.webView.setGeometry(QtCore.QRect(125, 149, 456, 360))
+        self.webView.setObjectName(_fromUtf8("webView"))
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
@@ -268,10 +281,11 @@ class Ui_MainWindow(object):
         self.pushButton_6.setText(_translate("MainWindow", "Change pseudo", None))
         self.pushButton_3.setText(_translate("MainWindow", "Disconnect", None))
         self.pushButton_2.setText(_translate("MainWindow", "Connect", None))
-        self.label_2.setText(_translate("MainWindow", "Welcome to DNC", None))
+        self.label_2.setText(_translate("MainWindow", "Welcome to DNC42", None))
         self.pushButton.setText(_translate("MainWindow", "Send message", None))
         self.pushButton_5.setText(_translate("MainWindow", "Away From Keyboard", None))
         self.label.setText(_translate("MainWindow", "Nick list", None))
         self.listNames.setSortingEnabled(True)
         self.listNames_2.setSortingEnabled(True)
 
+from PyQt4 import QtWebKit

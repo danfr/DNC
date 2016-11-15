@@ -220,11 +220,11 @@ def broadcast_message(connection, message):
     # log.printL("User Connected : {}".format(usersConnected), Log.lvl.DEBUG)
     for con, value in usersConnected.items():
         # value 1 : pseudo value 2 : status (enable/disable)
-        # if value[1] is not None and con != connection and value[2]:
-        try:
-            con.sendall(message.encode())
-        except Exception as e:
-            log.printL(str(e), Log.lvl.FAIL)
+        if value[1] is not None and con != connection and value[2]:
+            try:
+                con.sendall(message.encode())
+            except Exception as e:
+                log.printL(str(e), Log.lvl.FAIL)
         log.printL("Broadcast : {}".format(message), Log.lvl.INFO)
 
 

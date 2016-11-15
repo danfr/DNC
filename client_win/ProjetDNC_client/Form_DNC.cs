@@ -12,6 +12,7 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
+using Microsoft.Win32;
 
 namespace ProjetDNC_client
 {
@@ -76,6 +77,9 @@ namespace ProjetDNC_client
 
             player.Stream = Properties.Resources.notif;
             notif = true;
+
+            //Détection du ScreenLock
+            SystemEvents.SessionSwitch += new Microsoft.Win32.SessionSwitchEventHandler(SystemEvents_SessionSwitch);
         }
 
         /// <summary>
@@ -259,6 +263,19 @@ namespace ProjetDNC_client
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         private static extern int GetWindowThreadProcessId(IntPtr handle, out int processId);
+
+        void SystemEvents_SessionSwitch(object sender, SessionSwitchEventArgs e)
+        {
+            switch (e.Reason)
+            {
+                case SessionSwitchReason.SessionLock:
+                    Envoyer("/disable");
+                    break;
+                case SessionSwitchReason.SessionUnlock:
+                    Envoyer("/enable");
+                    break;
+            }
+        }
 
         /// <summary>
         /// Ajoute le message entré en paramètre à la fenetre de chat principale

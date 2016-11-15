@@ -794,6 +794,8 @@ class start(QtGui.QMainWindow):
                 self.thread.start()
                 self.ShowMessageAsText(m)
                 self.ui.txtOutput.setText(self.message_buffer)
+                with open('console.html', 'w') as file:
+                    file.write("" + self.message_buffer)
                 sb = self.ui.txtOutput.verticalScrollBar()
                 sb.setValue(sb.maximum())
 
