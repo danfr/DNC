@@ -128,8 +128,16 @@ namespace ProjetDNC_client
                 do
                 {
                     Buff = new byte[512];
-                    //Réception du message
-                    sock.Receive(Buff);
+                    try
+                    {
+                        //Réception du message
+                        sock.Receive(Buff);
+                    }
+                    catch(SocketException) //Déconnexion à l'initiative du serveur
+                    {
+                        form.Invoke(form.del_close_fromserv);
+                        return;
+                    }
 
                     part = Encoding.UTF8.GetString(Buff);
                     part = part.Replace('\0', ' ').Trim(); //Enlèvement des caractères nuls
