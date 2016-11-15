@@ -6,6 +6,7 @@ import re
 import socket
 import sys
 import threading
+from time import sleep
 
 import Log
 
@@ -64,10 +65,11 @@ config = configparser.ConfigParser()
 #   Load Configuration and Start the Server
 def main():
     # Global vars
-    global usersConnected, log, sock
+    global usersConnected, log, sock, lock
     global askPM, validatePM
     global askFT
-    usersConnected = {}
+    usersConnected = {}  # Key = socket, values = 0:ip, 1:pseudo, 2:enabled, 3:locked
+    lock = threading.Lock()
     askPM = []
     validatePM = []
     askFT = []
@@ -223,21 +225,34 @@ def broadcast_message(connection, message):
     # log.printL("User Connected : {}".format(usersConnected), Log.lvl.DEBUG)
     for con, value in usersConnected.items():
         # value 1 : pseudo value 2 : status (enable/disable)
-        
+
+        # Wait for socket unlock
+        try:
+            while usersConnected[con][3]:
+                sleep(0.01)
+        except IndexError:
+            log.printL("User disconnected", Log.lvl.INFO)
+            return
+
         ### Client Linux
         #if value[1] is not None and con != connection and value[2]:
         #    try:
+        #        usersConnected[con][3] = True
         #        con.sendall(message.encode())
         #    except Exception as e:
         #        log.printL(str(e), Log.lvl.FAIL)
-        
-        
+        #    finally:
+        #        usersConnected[con][3] = False
+
         ### Client Windows
-        #if value[1] is not None and con != connection and value[2]:
-        try:
-            con.sendall(message.encode())
-        except Exception as e:
-            log.printL(str(e), Log.lvl.FAIL)
+        with lock:
+            try:
+                usersConnected[con][3] = True
+                con.sendall(message.encode())
+            except Exception as e:
+                log.printL(str(e), Log.lvl.FAIL)
+            finally:
+                usersConnected[con][3] = False
         
         log.printL("Broadcast : {}".format(message), Log.lvl.INFO)
 
@@ -249,24 +264,39 @@ def broadcast_message(connection, message):
 #   @param source : (optional) the socket descriptor of the source
 #   @param message : (optional) textual message
 def send_to(target, code, source=None, message=None):
-    if message is None:
-        if source is not None:
-            target.sendall("{} {}|".format(code, usersConnected[source][1]).encode())
-            log.printL("Send to {} : {} {}".format(usersConnected[target][0], code, usersConnected[source][1]),
-                       Log.lvl.INFO)
-        else:
-            target.sendall("{}|".format(code).encode())
-            log.printL("Send to {} : {}".format(usersConnected[target][0], code), Log.lvl.INFO)
-    else:
-        if source is not None:
-            target.sendall("{} {} {}|".format(code, usersConnected[source][1], message).encode())
-            log.printL(
-                "Send to {} : {} {} {}".format(usersConnected[target][0], code, usersConnected[source][1], message),
-                Log.lvl.INFO)
-        else:
-            target.sendall("{} {}|".format(code, message).encode())
-            log.printL("Send to {} : {} {}".format(usersConnected[target][0], code, message), Log.lvl.INFO)
+    try:
+        while usersConnected[target][3]:
+            sleep(0.01)
+    except IndexError:
+        log.printL("User disconnected", Log.lvl.INFO)
+        return
 
+    with lock:
+        usersConnected[target][3] = True
+
+    try:
+        if message is None:
+            if source is not None:
+                target.sendall("{} {}|".format(code, usersConnected[source][1]).encode())
+                log.printL("Send to {} : {} {}".format(usersConnected[target][0], code, usersConnected[source][1]),
+                           Log.lvl.INFO)
+            else:
+                target.sendall("{}|".format(code).encode())
+                log.printL("Send to {} : {}".format(usersConnected[target][0], code), Log.lvl.INFO)
+        else:
+            if source is not None:
+                target.sendall("{} {} {}|".format(code, usersConnected[source][1], message).encode())
+                log.printL(
+                    "Send to {} : {} {} {}".format(usersConnected[target][0], code, usersConnected[source][1], message),
+                    Log.lvl.INFO)
+            else:
+                target.sendall("{} {}|".format(code, message).encode())
+                log.printL("Send to {} : {} {}".format(usersConnected[target][0], code, message), Log.lvl.INFO)
+    except Exception as e:
+        log.printL(str(e), Log.lvl.FAIL)
+    finally:
+        with lock:
+            usersConnected[target][3] = False
 
 ##
 #   Send the list of enable user
@@ -310,6 +340,7 @@ def change_name(connection, pseudo):
 #   @param connection the socket descriptor of the target
 #   @param pseudo nickname for the user (String)
 def new_name(connection, pseudo):
+    usersConnected[connection][3] = False
     if not re.match("^\w{3,15}$", pseudo):
         send_to(connection, ERR_INVALID_NICKNAME)
     elif get_connection_by_pseudo(pseudo) is not None:
