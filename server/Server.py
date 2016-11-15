@@ -144,7 +144,7 @@ def handle_request(connection, data):
         if usersConnected[connection][1] is not None:
             ### No command -> new message ###
             if not array_data[0][0] == "/" and usersConnected[connection][2]:
-                connection.sendall("{}".format(SUCC_MESSAGE_SENDED).encode())
+                connection.sendall("{}|".format(SUCC_MESSAGE_SENDED).encode())
                 broadcast_message(connection, "{} {} {} ".format(NEW_MSG, usersConnected[connection][1], data))
                 return
             else:
@@ -170,7 +170,7 @@ def handle_request(connection, data):
 
                 ### Command available for enable only ###
                 if not usersConnected[connection][2]:
-                    connection.sendall("{}".format(ERR_CONV_NOT_ALLOWED).encode())
+                    connection.sendall("{}|".format(ERR_CONV_NOT_ALLOWED).encode())
                     return
                 else:
                     if array_data[0] == config["COMMAND"]["askpm"]:
@@ -194,7 +194,7 @@ def handle_request(connection, data):
                     if array_data[0] == config["COMMAND"]["rejectfile"]:
                         reject_file(connection, array_data[1], " ".join(array_data[2:]).strip())
                         return
-            connection.sendall("{}".format(COMMAND_NOT_FOUND).encode())
+            connection.sendall("{}|".format(COMMAND_NOT_FOUND).encode())
         else:
             ### Command for user without nickname ###
             if array_data[0] == config["COMMAND"]["newname"]:
@@ -203,13 +203,13 @@ def handle_request(connection, data):
             if array_data[0] == config["COMMAND"]["quit"]:
                 connection.shutdown(socket.SHUT_RD)
                 return
-            connection.sendall("{}".format(ERR_NO_NICKNAME).encode())
+            connection.sendall("{}|".format(ERR_NO_NICKNAME).encode())
     except IndexError:
         log.printL("Parameter missing in the request", Log.lvl.WARNING)
-        connection.sendall("{}".format(COMMAND_NOT_FOUND).encode())
+        connection.sendall("{}|".format(COMMAND_NOT_FOUND).encode())
     except Exception as e:
         log.printL("Handle request fail : {}".format(str(e)), Log.lvl.FAIL)
-        connection.sendall("{}".format(ERR_INTERNAL_SERVER_ERROR).encode())
+        connection.sendall("{}|".format(ERR_INTERNAL_SERVER_ERROR).encode())
 
 
 ##
@@ -441,10 +441,10 @@ def accept_file(connection, pseudo, file, port):
             send_to(connection, ERR_UNKNOWN_ACCEPTED_FILE)
         else:
             askFT.remove(f)
-            connection.sendall("{} {}".format(SUCC_ACCEPTED_FILE, usersConnected[c][0][0]).encode())
+            connection.sendall("{} {}|".format(SUCC_ACCEPTED_FILE, usersConnected[c][0][0]).encode())
             log.printL("Send to {} : {}".format(usersConnected[connection][0],
                                                 SUCC_ACCEPTED_FILE), Log.lvl.INFO)
-            c.sendall("{} {} {} {} {}".format(CAN_SEND_FILE, pseudo, usersConnected[connection][0][0],
+            c.sendall("{} {} {} {} {}|".format(CAN_SEND_FILE, pseudo, usersConnected[connection][0][0],
                                               port, file).encode())
             log.printL("Send to {} : {} {} {} {} {}".format(usersConnected[c][0], CAN_SEND_FILE, pseudo,
                                                             usersConnected[connection][0][0], port,
