@@ -119,12 +119,22 @@ namespace ProjetDNC_client
             while (true)
             {
                 byte[] Buff = new byte[512];
+                StringBuilder builder = new StringBuilder();
 
-                //Réception du message
-                sock.Receive(Buff);
+                string reponse, part = "";
 
-                string reponse = Encoding.UTF8.GetString(Buff);
-                reponse = reponse.Replace('\0', ' ').Trim(); //Enlèvement des caractères nuls
+                do
+                {
+                    //Réception du message
+                    sock.Receive(Buff);
+
+                    part = Encoding.UTF8.GetString(Buff);
+                    part = part.Replace('\0', ' ').Trim(); //Enlèvement des caractères nuls
+
+                    builder.Append(part);
+                } while (!builder.ToString().EndsWith("|")); //La fin du message est marquée par un |
+
+                reponse = builder.ToString().TrimEnd('|', ' ');
 
                 if (reponse.Length == 0) //Déconnexion à l'initiative du serveur
                 {

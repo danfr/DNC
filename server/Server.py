@@ -255,7 +255,7 @@ def send_to(target, code, source=None, message=None):
             log.printL("Send to {} : {} {}".format(usersConnected[target][0], code, usersConnected[source][1]),
                        Log.lvl.INFO)
         else:
-            target.sendall("{}".format(code).encode())
+            target.sendall("{}|".format(code).encode())
             log.printL("Send to {} : {}".format(usersConnected[target][0], code), Log.lvl.INFO)
     else:
         if source is not None:
