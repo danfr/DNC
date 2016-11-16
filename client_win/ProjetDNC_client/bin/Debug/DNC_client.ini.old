@@ -1,6 +1,0 @@
-# Configuration de l'application client
-# Adresse ip du serveur
-SERVER_IP=172.31.190.135
-
-# Port du serveur
-SERVER_PORT=2222

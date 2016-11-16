@@ -140,6 +140,7 @@ def handle_connection(connection, client_address):
 #   @param data the request to handle in String
 def handle_request(connection, data):
     try:
+        data = data.rstrip(' \n\r')
         array_data = data.split(" ")
 
         ### Command for user with nickname ###
