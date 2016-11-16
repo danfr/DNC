@@ -121,7 +121,6 @@ def handle_connection(connection, client_address):
     try:
         log.printL("Connection from IP -> {}".format(client_address), Log.lvl.INFO)
         while True:
-            connection.settimeout(5.0)
             data = connection.recv(4096)
             if data:
                 log.printL("Request from IP -> {}"
