@@ -48,7 +48,8 @@ namespace ProjetDNC_client
             string mess = commande + pseudo + contenu;
             mess = mess.Trim();
 
-            sock.Send(Encoding.UTF8.GetBytes(mess));
+            if(sock.Connected)
+                sock.Send(Encoding.UTF8.GetBytes(mess));
         }
 
         /// <summary>

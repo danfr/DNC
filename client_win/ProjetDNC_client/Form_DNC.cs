@@ -469,9 +469,54 @@ namespace ProjetDNC_client
             if (sock.Connected)
                 sock.Close();
 
-            MessageBox.Show("Le serveur s'est arrêté !", "Arret du serveur", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            DialogResult res = MessageBox.Show("Vous avez été déconnecté du serveur !\nVoulez vous tenter de vous reconnecter ?", "Le serveur ne répond pas", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            
 
-            this.Close();
+            if(res == DialogResult.Yes)
+            {
+                bool ok = false;
+                do
+                {
+                    try
+                    {
+                        string adresse = "";
+                        string port = "";
+
+                        // Lecture du fichier DNC_client.ini
+                        adresse = conf.GetValue("IP", "SERVER");
+                        port = conf.GetValue("PORT", "SERVER");
+
+                        IPAddress adr = IPAddress.Parse(adresse);
+                        this.sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                        sock.Connect(adr, int.Parse(port));
+
+                        ok = true;
+                    }
+                    catch (SocketException err) //Echec de connexion
+                    {
+                        MessageBox.Show("Connexion au serveur impossible !\n(" + err.Message + ")", "Erreur de connexion", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        res = MessageBox.Show("La connexion au serveur n'a pas été rétablie !\nVoulez vous tenter de vous reconnecter ?", "Le serveur ne répond pas", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                        ok = (res == DialogResult.No);
+                    }
+                    catch (System.IO.IOException) //Echec d'ouverture du fichier de configuration
+                    {
+                        MessageBox.Show("Le fichier de configuration DNC_client.ini est introuvable !", "Erreur de connexion", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        res = MessageBox.Show("La connexion au serveur n'a pas été rétablie !\nVoulez vous tenter de vous reconnecter ?", "Le serveur ne répond pas", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                        ok = (res == DialogResult.No);
+                    }
+                    catch (FormatException) //Echec de conversion du numéro de port en int.
+                    {
+                        MessageBox.Show("La lecture du fichier de configuration DNC_client.ini à échoué, peut être est-il mal formé !", "Erreur de connexion", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        res = MessageBox.Show("La connexion au serveur n'a pas été rétablie !\nVoulez vous tenter de vous reconnecter ?", "Le serveur ne répond pas", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                        ok = (res == DialogResult.No);
+                    }
+                } while (!ok);
+
+                Form_login fl = new Form_login(this);
+                fl.Connexion(this.mon_pseudo);
+            }
+            else
+                this.Close();
         }
 
         /// <summary>
