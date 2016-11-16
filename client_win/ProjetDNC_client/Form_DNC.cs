@@ -101,8 +101,10 @@ namespace ProjetDNC_client
 
             //Initialisation des notifications
             player.Stream = Properties.Resources.notif;
-            notif = (conf.GetValue("SON_NOTIF", "USER") == "1");
+            notif = (conf.GetValue("SOUND_NOTIF", "USER") == "1");
             son_active.Checked = notif;
+
+            mon_pseudo = conf.GetValue("DEFAULT_PSEUDO", "USER");
 
             //Détection du ScreenLock
             SystemEvents.SessionSwitch += new SessionSwitchEventHandler(SystemEvents_SessionSwitch);
@@ -141,7 +143,7 @@ namespace ProjetDNC_client
                 MessageBox.Show("Le fichier de configuration DNC_client.ini est introuvable !", "Erreur de connexion", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Application.Exit();
             }
-            catch (FormatException err) //Echec de conversion du numéro de port en int.
+            catch (FormatException) //Echec de conversion du numéro de port en int.
             {
                 MessageBox.Show("La lecture du fichier de configuration DNC_client.ini à échoué, peut être est-il mal formé !", "Erreur de connexion", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Application.Exit();
@@ -166,7 +168,7 @@ namespace ProjetDNC_client
 
             // Sauvegarde de la conf actuelle
             conf.WriteValue("DEFAULT_PSEUDO", "USER", this.mon_pseudo);
-            conf.WriteValue("SON_NOTIF", "USER", (this.notif) ? "1" : "0");
+            conf.WriteValue("SOUND_NOTIF", "USER", (this.notif) ? "1" : "0");
             conf.Save();
         }
 

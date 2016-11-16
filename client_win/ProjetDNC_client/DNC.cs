@@ -15,7 +15,6 @@ namespace ProjetDNC_client
         public string tmp_pseudo = null;
         private byte[] myBuff = new byte[512];
         private Thread t = null;
-        private Thread t2 = null;
         private System.Windows.Forms.Timer timer;
 
         /// <summary>

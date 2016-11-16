@@ -142,14 +142,21 @@ public class Ini
 
     bool endWithCRLF(StringBuilder sb)
     {
-        if (sb.Length < 4)
-            return sb[sb.Length - 2] == '\r' &&
-                   sb[sb.Length - 1] == '\n';
+        if (sb.Length > 0)
+        {
+            if (sb.Length < 4)
+                return sb[sb.Length - 2] == '\r' &&
+                       sb[sb.Length - 1] == '\n';
+            else
+                return sb[sb.Length - 4] == '\r' &&
+                       sb[sb.Length - 3] == '\n' &&
+                       sb[sb.Length - 2] == '\r' &&
+                       sb[sb.Length - 1] == '\n';
+        }
         else
-            return sb[sb.Length - 4] == '\r' &&
-                   sb[sb.Length - 3] == '\n' &&
-                   sb[sb.Length - 2] == '\r' &&
-                   sb[sb.Length - 1] == '\n';
+        {
+            return true;
+        }
     }
 
     /// <summary>
