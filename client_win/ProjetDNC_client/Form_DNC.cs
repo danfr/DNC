@@ -19,6 +19,8 @@ namespace ProjetDNC_client
         public List<string> sessions_privees = new List<string>();
         public bool notif;
         Ini conf;
+        Color[] colors = new Color[] { Color.Blue, Color.BlueViolet, Color.Azure, Color.Brown, Color.DarkBlue, Color.DarkCyan, Color.DarkGray, Color.DarkGreen, Color.DarkMagenta,Color.DarkOrange, Color.DarkRed, Color.DarkViolet, Color.ForestGreen, Color.Fuchsia, Color.Indigo, Color.Lavender, Color.Magenta, Color.Maroon, Color.Olive, Color.Orange, Color.Pink, Color.Purple, Color.Red, Color.Violet};
+        Dictionary<string, Color> dict_colors = new Dictionary<string, Color>();
 
         //Fonction déléguée d'ajout dans le chat
         public delegate void chat_append(string from, string contenu);
@@ -108,6 +110,9 @@ namespace ProjetDNC_client
 
             //Détection du ScreenLock
             SystemEvents.SessionSwitch += new SessionSwitchEventHandler(SystemEvents_SessionSwitch);
+
+            //Couleur des messages du serveur
+            dict_colors.Add("*", Color.Green);
         }
 
         /// <summary>
@@ -214,6 +219,7 @@ namespace ProjetDNC_client
             Envoyer(conf.GetValue("DISABLE", "COMMAND"));
             MessageBox.Show("Session en pause, cliquez sur OK pour reprendre.", "Pause", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
             Envoyer(conf.GetValue("ENABLE", "COMMAND"));
+            Thread.Sleep(500);
             Envoyer(conf.GetValue("USERLIST", "COMMAND"));
             timer.Start();
         }
@@ -242,7 +248,7 @@ namespace ProjetDNC_client
         /// </summary>
         private void private_btn_Click(object sender, EventArgs e)
         {
-            if (this.private_text.Text.Trim() != "")
+            if (this.private_text.Text.Trim() != "" && private_to_txt.Text != "(Cliquer sur le nom)")
             {
                 Envoyer(private_to_txt.Text, conf.GetValue("PM", "COMMAND"), private_text.Text);
                 this.private_text.Clear();
@@ -287,9 +293,12 @@ namespace ProjetDNC_client
             {
                 case SessionSwitchReason.SessionLock:
                     Envoyer(conf.GetValue("DISABLE", "COMMAND"));
+                    timer.Stop();
                     break;
                 case SessionSwitchReason.SessionUnlock:
                     Envoyer(conf.GetValue("ENABLE", "COMMAND"));
+                    timer.Start();
+                    Envoyer(conf.GetValue("USERLIST", "COMMAND"));
                     break;
             }
         }
@@ -307,10 +316,38 @@ namespace ProjetDNC_client
         {
             DateTime time = DateTime.Now;
             string format = "HH:mm:ss";
-            if(chat_window.TextLength == 0)
-                chat_window.AppendText("[" + time.ToString(format) + "] " + from + "  " + content);
+            Color col;
+
+            if(dict_colors.ContainsKey(from))
+            {
+                col = dict_colors[from];
+            }
             else
-                chat_window.AppendText("\r\n" + "[" + time.ToString(format) + "] " + from + "  " + content);
+            {
+                Random rnd = new Random();
+                col = colors[rnd.Next(0, colors.Length - 1)];
+                dict_colors.Add(from, col);
+            }
+
+            if (chat_window.TextLength == 0)
+            {
+                AppendText(chat_window, "[" + time.ToString(format) + "] ", Color.LightGray);
+                AppendText(chat_window, from+" ", col);
+                if(from == "*")
+                    AppendText(chat_window, content, col);
+                else
+                    AppendText(chat_window, content, Color.Black);
+            }
+            else
+            {
+                chat_window.AppendText(Environment.NewLine);
+                AppendText(chat_window, "[" + time.ToString(format) + "] ", Color.LightGray);
+                AppendText(chat_window, from + " ", col);
+                if (from == "*")
+                    AppendText(chat_window, content, col);
+                else
+                    AppendText(chat_window, content, Color.Black);
+            }
 
             if (!ApplicationIsActivated())
             {
@@ -324,6 +361,16 @@ namespace ProjetDNC_client
             }
 
             chat_window.ScrollToCaret();
+        }
+
+        public void AppendText(RichTextBox box, string text, Color color)
+        {
+            box.SelectionStart = box.TextLength;
+            box.SelectionLength = 0;
+
+            box.SelectionColor = color;
+            box.AppendText(text);
+            box.SelectionColor = box.ForeColor;
         }
 
         /// <summary>
