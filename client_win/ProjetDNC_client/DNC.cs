@@ -227,7 +227,7 @@ namespace ProjetDNC_client
                 case 300: //Réponse à la requête :who
                     {
                         form.Invoke(form.del_traiter_who, new Object[] { message.Info + " " + message.Content });
-                        Envoyer(conf.GetValue("NEWNAME", "COMMAND"));
+                        Envoyer(conf.GetValue("USERLISTAWAY", "COMMAND"));
                         break;
                     }
                 case 301:
