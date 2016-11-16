@@ -23,7 +23,7 @@ namespace ProjetDNC_client
         /// </summary>
         private void timer_Tick(object sender, EventArgs e)
         {
-            Envoyer("/userlist");
+            Envoyer(conf.GetValue("USERLIST", "COMMAND"));
         }
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace ProjetDNC_client
             timer.Interval = 10000; // Toutes les 10 secondes
             timer.Start();
 
-            Envoyer("/userlist"); //Récupération de la liste des clients connectés
+            Envoyer(conf.GetValue("USERLIST", "COMMAND")); //Récupération de la liste des clients connectés
             t = new Thread(() => Ecoute(this, sock));
             t.Start();
         }
@@ -216,19 +216,19 @@ namespace ProjetDNC_client
                 case 310: //Fin AFK
                     {
                         form.Invoke(form.del_chat_append, new Object[] { "*", message.Info + " is now available" });
-                        Envoyer("/userlist");
+                        Envoyer(conf.GetValue("USERLIST", "COMMAND"));
                         break;
                     }
                 case 311: //Début AFK
                     {
                         form.Invoke(form.del_chat_append, new Object[] { "*", message.Info + " is AFK" });
-                        Envoyer("/userlist");
+                        Envoyer(conf.GetValue("USERLIST", "COMMAND"));
                         break;
                     }
                 case 300: //Réponse à la requête :who
                     {
                         form.Invoke(form.del_traiter_who, new Object[] { message.Info + " " + message.Content });
-                        Envoyer("/userlistaway");
+                        Envoyer(conf.GetValue("NEWNAME", "COMMAND"));
                         break;
                     }
                 case 301:

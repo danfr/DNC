@@ -15,11 +15,14 @@ namespace ProjetDNC_client
     {
         private Main_form mf;
         private bool ok = false;
+        Ini conf;
 
         public Form_login(Main_form main_form)
         {
             InitializeComponent();
             this.mf = main_form;
+            conf = new Ini("DNC_client.ini");
+            pseudo_txt.Text = conf.GetValue("DEFAULT_PSEUDO", "USER");
         }
 
         /// <summary>
@@ -36,7 +39,7 @@ namespace ProjetDNC_client
         /// </summary>
         private void connexion_btn_Click(object sender, EventArgs e)
         {
-            mf.Envoyer("", "/newname", pseudo_txt.Text);
+            mf.Envoyer("", conf.GetValue("NEWNAME", "COMMAND"), pseudo_txt.Text);
             Mess reponse = mf.Recevoir(); 
 
             if(reponse.Code == 302) //On ignore le 302

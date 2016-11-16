@@ -18,6 +18,7 @@ namespace ProjetDNC_client
         public List<ListViewItem> liste_items = new List<ListViewItem>();
         public List<string> sessions_privees = new List<string>();
         public bool notif;
+        Ini conf;
 
         //Fonction déléguée d'ajout dans le chat
         public delegate void chat_append(string from, string contenu);
@@ -58,6 +59,34 @@ namespace ProjetDNC_client
         /// </summary>
         public Main_form()
         {
+            //Création du fichier ini si nécessaire
+            conf = new Ini("DNC_client.ini");
+            if (conf.GetSections().Length == 0)
+            {
+                conf.WriteValue("IP", "SERVER", "127.0.0.1");
+                conf.WriteValue("PORT", "SERVER", "2222");
+
+                conf.WriteValue("DEFAULT_PSEUDO", "USER", "Bob");
+                conf.WriteValue("SOUND_NOTIF", "USER", "1");
+
+                conf.WriteValue("USERNAME", "COMMAND", "/name");
+                conf.WriteValue("NEWNAME", "COMMAND", "/newname");
+                conf.WriteValue("USERLIST", "COMMAND", "/userlist");
+                conf.WriteValue("USERLISTAWAY", "COMMAND", "/userlistaway");
+                conf.WriteValue("ENABLE", "COMMAND", "/enable");
+                conf.WriteValue("DISABLE", "COMMAND", "/disable");
+                conf.WriteValue("QUIT", "COMMAND", "/quit");
+                conf.WriteValue("ASKPM", "COMMAND", "/askpm");
+                conf.WriteValue("ACCEPTPM", "COMMAND", "/acceptpm");
+                conf.WriteValue("REJECTPM", "COMMAND", "/rejectpm");
+                conf.WriteValue("PM", "COMMAND", "/pm");
+                conf.WriteValue("PMFILE", "COMMAND", "/pmfile");
+                conf.WriteValue("ACCEPTFILE", "COMMAND", "/acceptfile");
+                conf.WriteValue("REJECTFILE", "COMMAND", "/rejectfile");
+
+                conf.Save();
+            }
+
             InitializeComponent();
 
             //Instanciation des méthodes déléguées
@@ -70,8 +99,10 @@ namespace ProjetDNC_client
             del_close_fromserv = new close_fromserv(Close_fromserv);
             del_error_show = new error_show(Error_show);
 
+            //Initialisation des notifications
             player.Stream = Properties.Resources.notif;
-            notif = true;
+            notif = (conf.GetValue("SON_NOTIF", "USER") == "1");
+            son_active.Checked = notif;
 
             //Détection du ScreenLock
             SystemEvents.SessionSwitch += new SessionSwitchEventHandler(SystemEvents_SessionSwitch);
@@ -84,28 +115,12 @@ namespace ProjetDNC_client
         {
             try //Connexion au seveur
             {
-                string line;
                 string adresse = "";
                 string port = "";
 
                 // Lecture du fichier DNC_client.ini
-                System.IO.StreamReader file = new System.IO.StreamReader("DNC_client.ini");
-                while ((line = file.ReadLine()) != null)
-                {
-                    line = line.ToUpper();
-                    if (line.Contains("SERVER_IP"))
-                    {
-                        string[] tab = line.Split('=');
-                        adresse = tab[1];
-                    }
-                    else if (line.Contains("SERVER_PORT"))
-                    {
-                        string[] tab = line.Split('=');
-                        port = tab[1];
-                    }
-                }
-
-                file.Close();
+                adresse = conf.GetValue("IP", "SERVER");
+                port = conf.GetValue("PORT", "SERVER");
 
                 //IPHostEntry ipHostInfo = Dns.GetHostEntry("mass-cara2.univ-tlse2.fr");
                 IPAddress adr = IPAddress.Parse(adresse); //ipHostInfo.AddressList[0]; //ou 
@@ -142,12 +157,17 @@ namespace ProjetDNC_client
                 t.Abort(); //Arret de l'écoute si le thread est lancé
 
             if(sock.Connected)
-                Envoyer("/quit"); //Envoi de la commande de déconnexion
+                Envoyer(conf.GetValue("QUIT", "COMMAND")); //Envoi de la commande de déconnexion
 
             Thread.Sleep(1000); //Attente du traitement des requetes par le serveur
 
             if (sock.Connected)
                 sock.Close(); //Fermeture le la socket client
+
+            // Sauvegarde de la conf actuelle
+            conf.WriteValue("DEFAULT_PSEUDO", "USER", this.mon_pseudo);
+            conf.WriteValue("SON_NOTIF", "USER", (this.notif) ? "1" : "0");
+            conf.Save();
         }
 
         /// <summary>
@@ -189,10 +209,10 @@ namespace ProjetDNC_client
         private void déconnexionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             timer.Stop(); //Arret des requetes automatiques
-            Envoyer("/disable");
+            Envoyer(conf.GetValue("DISABLE", "COMMAND"));
             MessageBox.Show("Session en pause, cliquez sur OK pour reprendre.", "Pause", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-            Envoyer("/enable");
-            Envoyer("/userlist");
+            Envoyer(conf.GetValue("ENABLE", "COMMAND"));
+            Envoyer(conf.GetValue("USERLIST", "COMMAND"));
             timer.Start();
         }
 
@@ -222,7 +242,7 @@ namespace ProjetDNC_client
         {
             if (this.private_text.Text.Trim() != "")
             {
-                Envoyer(private_to_txt.Text, "/pm", private_text.Text);
+                Envoyer(private_to_txt.Text, conf.GetValue("PM", "COMMAND"), private_text.Text);
                 this.private_text.Clear();
             }
         }
@@ -264,10 +284,10 @@ namespace ProjetDNC_client
             switch (e.Reason)
             {
                 case SessionSwitchReason.SessionLock:
-                    Envoyer("/disable");
+                    Envoyer(conf.GetValue("DISABLE", "COMMAND"));
                     break;
                 case SessionSwitchReason.SessionUnlock:
-                    Envoyer("/enable");
+                    Envoyer(conf.GetValue("ENABLE", "COMMAND"));
                     break;
             }
         }
@@ -310,7 +330,7 @@ namespace ProjetDNC_client
         /// <param name="from">nouvel utilisateur</param>
         public void New_user(string from)
         {
-            Envoyer("/userlist");
+            Envoyer(conf.GetValue("USERLIST", "COMMAND"));
             Chat_append("*", from + " joined the chat");
         }
 
@@ -330,7 +350,7 @@ namespace ProjetDNC_client
                 }
             }
 
-            Envoyer("/userlist");
+            Envoyer(conf.GetValue("USERLIST", "COMMAND"));
 
             Chat_append("*", from + " left the chat");
         }
@@ -352,7 +372,7 @@ namespace ProjetDNC_client
                 }
             }
 
-            Envoyer("/userlist");
+            Envoyer(conf.GetValue("USERLIST", "COMMAND"));
 
 
             Chat_append("*", ancien + " is now known as " + nouveau);
