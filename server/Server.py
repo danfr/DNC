@@ -340,7 +340,7 @@ def change_name(connection, pseudo):
 #   @param connection the socket descriptor of the target
 #   @param pseudo nickname for the user (String)
 def new_name(connection, pseudo):
-    usersConnected[connection][3] = False
+    usersConnected[connection].append(False)
     if not re.match("^\w{3,15}$", pseudo):
         send_to(connection, ERR_INVALID_NICKNAME)
     elif get_connection_by_pseudo(pseudo) is not None:
