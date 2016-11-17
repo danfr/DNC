@@ -244,7 +244,7 @@ namespace ProjetDNC_client
         }
 
         /// <summary>
-        /// Action au cli sur le bouton de chat privé -> envoi du message au destinataire sélectionné
+        /// Action au clic sur le bouton de chat privé -> envoi du message au destinataire sélectionné
         /// </summary>
         private void private_btn_Click(object sender, EventArgs e)
         {
@@ -595,6 +595,12 @@ namespace ProjetDNC_client
         private void sonActive_CheckStateChanged(object sender, EventArgs e)
         {
             this.notif = son_active.Checked;
+        }
+
+        private void infoMenuItem_Click(object sender, EventArgs e)
+        {
+            Informations info_form = new Informations();
+            info_form.ShowDialog(this);
         }
     }
 }

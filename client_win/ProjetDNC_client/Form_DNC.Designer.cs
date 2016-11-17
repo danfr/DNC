@@ -46,6 +46,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.private_to_txt = new System.Windows.Forms.TextBox();
             this.chat_window = new System.Windows.Forms.RichTextBox();
+            this.infoMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -103,7 +104,8 @@
             this.menuStrip.BackColor = System.Drawing.SystemColors.MenuBar;
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.outilsToolStripMenuItem,
-            this.fonctionsToolStripMenuItem});
+            this.fonctionsToolStripMenuItem,
+            this.infoMenuItem});
             resources.ApplyResources(this.menuStrip, "menuStrip");
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
@@ -168,6 +170,13 @@
             this.chat_window.Name = "chat_window";
             this.chat_window.ReadOnly = true;
             // 
+            // infoMenuItem
+            // 
+            this.infoMenuItem.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.infoMenuItem.Name = "infoMenuItem";
+            resources.ApplyResources(this.infoMenuItem, "infoMenuItem");
+            this.infoMenuItem.Click += new System.EventHandler(this.infoMenuItem_Click);
+            // 
             // Main_form
             // 
             resources.ApplyResources(this, "$this");
@@ -214,6 +223,7 @@
         private System.Windows.Forms.TextBox private_to_txt;
         private System.Windows.Forms.RichTextBox chat_window;
         private System.Windows.Forms.ToolStripMenuItem son_active;
+        private System.Windows.Forms.ToolStripMenuItem infoMenuItem;
     }
 }
 

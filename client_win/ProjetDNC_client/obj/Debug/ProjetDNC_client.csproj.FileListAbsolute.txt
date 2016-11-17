@@ -28,3 +28,4 @@ C:\Users\DYNAMITE\Documents\Visual Studio 2015\Projects\DNC42\client_win\ProjetD
 C:\Users\DYNAMITE\Documents\Visual Studio 2015\Projects\DNC42\client_win\ProjetDNC_client\obj\Debug\ProjetDNC_client.exe
 C:\Users\DYNAMITE\Documents\Visual Studio 2015\Projects\DNC42\client_win\ProjetDNC_client\obj\Debug\ProjetDNC_client.pdb
 C:\Users\DYNAMITE\Documents\Visual Studio 2015\Projects\DNC42\client_win\ProjetDNC_client\obj\Debug\ProjetDNC_client.csprojResolveAssemblyReference.cache
+C:\Users\DYNAMITE\Documents\Visual Studio 2015\Projects\DNC42\client_win\ProjetDNC_client\obj\Debug\ProjetDNC_client.Informations.resources
