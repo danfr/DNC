@@ -17,7 +17,7 @@ namespace ProjetDNC_client
         public List<string> clients_actifs = new List<string>();
         public List<ListViewItem> liste_items = new List<ListViewItem>();
         public List<string> sessions_privees = new List<string>();
-        public bool notif;
+        public bool notif, afk;
         Ini conf;
         Color[] colors = new Color[] { Color.Blue, Color.BlueViolet, Color.Azure, Color.Brown, Color.DarkBlue, Color.DarkCyan, Color.DarkGray, Color.DarkGreen, Color.DarkMagenta,Color.DarkOrange, Color.DarkRed, Color.DarkViolet, Color.ForestGreen, Color.Fuchsia, Color.Indigo, Color.Lavender, Color.Magenta, Color.Maroon, Color.Olive, Color.Orange, Color.Pink, Color.Purple, Color.Red, Color.Violet};
         Dictionary<string, Color> dict_colors = new Dictionary<string, Color>();
@@ -108,6 +108,7 @@ namespace ProjetDNC_client
             player.Stream = Properties.Resources.notif;
             notif = (conf.GetValue("SOUND_NOTIF", "USER") == "1");
             son_active.Checked = notif;
+            afk = false;
 
             mon_pseudo = conf.GetValue("DEFAULT_PSEUDO", "USER");
 
@@ -242,11 +243,13 @@ namespace ProjetDNC_client
         private void déconnexionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             timer.Stop(); //Arret des requetes automatiques
+            afk = true;
             Envoyer(conf.GetValue("DISABLE", "COMMAND"));
             MessageBox.Show("Session en pause, cliquez sur OK pour reprendre.", "Pause", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
             Envoyer(conf.GetValue("ENABLE", "COMMAND"));
             Thread.Sleep(500);
             Envoyer(conf.GetValue("USERLIST", "COMMAND"));
+            afk = false;
             timer.Start();
         }
 
@@ -379,7 +382,7 @@ namespace ProjetDNC_client
                     AppendText(chat_window, content, Color.Black);
             }
 
-            if (!ApplicationIsActivated() && !serveur)
+            if (!ApplicationIsActivated() && !serveur && !afk)
             {
                 // Notif sonore
                 if(notif)
