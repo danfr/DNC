@@ -221,7 +221,7 @@
         private System.Windows.Forms.Label private_lbl;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox private_to_txt;
-        private System.Windows.Forms.RichTextBox chat_window;
+        public System.Windows.Forms.RichTextBox chat_window;
         private System.Windows.Forms.ToolStripMenuItem son_active;
         private System.Windows.Forms.ToolStripMenuItem infoMenuItem;
     }

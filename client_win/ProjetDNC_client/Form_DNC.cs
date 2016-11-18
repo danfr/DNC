@@ -21,6 +21,9 @@ namespace ProjetDNC_client
         Ini conf;
         Color[] colors = new Color[] { Color.Blue, Color.BlueViolet, Color.Azure, Color.Brown, Color.DarkBlue, Color.DarkCyan, Color.DarkGray, Color.DarkGreen, Color.DarkMagenta,Color.DarkOrange, Color.DarkRed, Color.DarkViolet, Color.ForestGreen, Color.Fuchsia, Color.Indigo, Color.Lavender, Color.Magenta, Color.Maroon, Color.Olive, Color.Orange, Color.Pink, Color.Purple, Color.Red, Color.Violet};
         Dictionary<string, Color> dict_colors = new Dictionary<string, Color>();
+        Dictionary<string, string> smileys = new Dictionary<string, string>();
+        int currentIndex = 0;
+
 
         //Fonction déléguée d'ajout dans le chat
         public delegate void chat_append(string from, string contenu);
@@ -113,6 +116,29 @@ namespace ProjetDNC_client
 
             //Couleur des messages du serveur
             dict_colors.Add("*", Color.Green);
+
+            //Ajout des smileys
+            smileys.Add(":)", "img/Emoticons/sourire_ico.png");
+            smileys.Add(":-)", "img/Emoticons/sourire_ico.png");
+            smileys.Add(";)", "img/Emoticons/clin-d-oeil_ico.png");
+            smileys.Add(";-)", "img/Emoticons/clin-d-oeil_ico.png");
+            smileys.Add(":s", "img/Emoticons/confus_ico.png");
+            smileys.Add(":D", "img/Emoticons/grand-sourire_ico.png");
+            smileys.Add("XD", "img/Emoticons/mdr_ico.png");
+            smileys.Add("xD", "img/Emoticons/mdr_ico.png");
+            smileys.Add("B)", "img/Emoticons/like-a-boss_ico.png");
+            smileys.Add(":'(", "img/Emoticons/pleure_ico.png");
+            smileys.Add(":(", "img/Emoticons/serieux_ico.png");
+            smileys.Add(":/", "img/Emoticons/decu_ico.png");
+            smileys.Add(":p", "img/Emoticons/tire-la-langue_ico.png");
+            smileys.Add(":P", "img/Emoticons/tire-la-langue_ico.png");
+            smileys.Add(":o", "img/Emoticons/surpris_ico.png");
+            smileys.Add(":O", "img/Emoticons/en-colere_ico.png");
+            smileys.Add(":@", "img/Emoticons/en-colere_ico.png");
+            smileys.Add(":faceplam:", "img/Emoticons/faceplam_ico.png");
+            smileys.Add("<3", "img/Emoticons/coeur_ico.png");
+            smileys.Add(":beer:", "img/Emoticons/beer_ico.png");
+            smileys.Add(":cawa:", "img/Emoticons/cawa_ico.png");
         }
 
         /// <summary>
@@ -317,8 +343,9 @@ namespace ProjetDNC_client
             DateTime time = DateTime.Now;
             string format = "HH:mm:ss";
             Color col;
+            bool serveur = (from == "*");
 
-            if(dict_colors.ContainsKey(from))
+            if (dict_colors.ContainsKey(from))
             {
                 col = dict_colors[from];
             }
@@ -329,11 +356,14 @@ namespace ProjetDNC_client
                 dict_colors.Add(from, col);
             }
 
+            currentIndex = chat_window.TextLength;
+
             if (chat_window.TextLength == 0)
             {
                 AppendText(chat_window, "[" + time.ToString(format) + "] ", Color.LightGray);
                 AppendText(chat_window, from+" ", col);
-                if(from == "*")
+
+                if(serveur)
                     AppendText(chat_window, content, col);
                 else
                     AppendText(chat_window, content, Color.Black);
@@ -343,13 +373,13 @@ namespace ProjetDNC_client
                 chat_window.AppendText(Environment.NewLine);
                 AppendText(chat_window, "[" + time.ToString(format) + "] ", Color.LightGray);
                 AppendText(chat_window, from + " ", col);
-                if (from == "*")
+                if (serveur)
                     AppendText(chat_window, content, col);
                 else
                     AppendText(chat_window, content, Color.Black);
             }
 
-            if (!ApplicationIsActivated())
+            if (!ApplicationIsActivated() && !serveur)
             {
                 // Notif sonore
                 if(notif)
@@ -361,6 +391,15 @@ namespace ProjetDNC_client
             }
 
             chat_window.ScrollToCaret();
+
+            if (!serveur)
+            {
+                // AJout des smileys de base
+                foreach (KeyValuePair<string, string> kv in smileys)
+                {
+                    AddSmileys(kv.Key, currentIndex, kv.Value);
+                }
+            }
         }
 
         public void AppendText(RichTextBox box, string text, Color color)
@@ -371,6 +410,25 @@ namespace ProjetDNC_client
             box.SelectionColor = color;
             box.AppendText(text);
             box.SelectionColor = box.ForeColor;
+        }
+
+        public void AddSmileys(string word, int startIndex, string filename)
+        {
+
+            if (word == string.Empty)
+                return;
+
+            int s_start = chat_window.SelectionStart, index;
+
+            while ((index = chat_window.Text.IndexOf(word, startIndex)) != -1)
+            {
+                chat_window.Select(index, word.Length);
+                Image_RTF img = new Image_RTF(this);
+                img.addImage(filename);
+            }
+
+            chat_window.SelectionStart = s_start;
+            chat_window.SelectionLength = 0;
         }
 
         /// <summary>
