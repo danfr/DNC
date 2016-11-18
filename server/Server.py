@@ -121,11 +121,26 @@ def handle_connection(connection, client_address):
     try:
         log.printL("Connection from IP -> {}".format(client_address), Log.lvl.INFO)
         while True:
-            data = connection.recv(4096)
+            data = ""
+            while True:
+                buff = connection.recv(4096)
+                data += buff.decode('utf-8').rstrip('\r\n')
+                if data[-1] == "|":  # La fin du message est délimitée par un |
+                    break
+
+            data = data.rstrip(' |\r\n')
+
             if data:
-                log.printL("Request from IP -> {}"
-                           " {}".format(client_address, data.decode('utf-8')), Log.lvl.INFO)
-                threading.Thread(target=handle_request, args=(connection, data.decode('utf-8'))).start()
+                if "|" in data:  # En cas de double buffering
+                    tab = data.split("|")
+                    for val in tab:
+                        log.printL("Request from IP -> {}"
+                                   " {}".format(client_address, val), Log.lvl.INFO)
+                        threading.Thread(target=handle_request, args=(connection, val)).start()
+                else:
+                    log.printL("Request from IP -> {}"
+                               " {}".format(client_address, data), Log.lvl.INFO)
+                    threading.Thread(target=handle_request, args=(connection, data)).start()
             else:
                 break
     except Exception as e:
@@ -141,7 +156,6 @@ def handle_connection(connection, client_address):
 #   @param data the request to handle in String
 def handle_request(connection, data):
     try:
-        data = data.rstrip(' \n\r')
         array_data = data.split(" ")
 
         ### Command for user with nickname ###
