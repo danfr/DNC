@@ -130,6 +130,7 @@ def handle_connection(connection, client_address):
                 break
     except Exception as e:
         log.printL("Handle connection fail : ".format(str(e)), Log.lvl.FAIL)
+        usersConnected.pop(connection)
     finally:
         quit_user(connection)
 
@@ -529,16 +530,18 @@ def disable_user(connection):
 #   Disconnect user
 #   @param connection the socket descriptor of the person to disconnect
 def quit_user(connection):
+    pseudo = usersConnected[connection][1]
+    ip = usersConnected[connection][0]
     try:
         send_to(connection, SUCC_CHANNEL_QUIT)
-    except OSError:  # Client close the socket in this side not properly
+        connection.close()
+        log.printL("Disconnected from IP -> {}".format(usersConnected[connection][0]), Log.lvl.INFO)
+        broadcast_message(connection, "{} {}".format(HAS_LEFT, pseudo))
+    except Exception:  # Client close the socket in this side not properly
         log.printL("Client IP -> {} close connection not properly"
-                   "".format(usersConnected[connection][0]), Log.lvl.WARNING)
-    connection.close()
-    log.printL("Disconnected from IP -> {}".format(usersConnected[connection][0]), Log.lvl.INFO)
-    pseudo = usersConnected[connection][1]
-    usersConnected.pop(connection)
-    broadcast_message(connection, "{} {}".format(HAS_LEFT, pseudo))
+                   "".format(ip), Log.lvl.WARNING)
+    finally:
+        usersConnected.pop(connection)
 
 
 ##

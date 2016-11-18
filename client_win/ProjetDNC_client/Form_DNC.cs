@@ -17,8 +17,13 @@ namespace ProjetDNC_client
         public List<string> clients_actifs = new List<string>();
         public List<ListViewItem> liste_items = new List<ListViewItem>();
         public List<string> sessions_privees = new List<string>();
-        public bool notif;
+        public bool notif, afk;
         Ini conf;
+        Color[] colors = new Color[] { Color.Blue, Color.BlueViolet, Color.Azure, Color.Brown, Color.DarkBlue, Color.DarkCyan, Color.DarkGray, Color.DarkGreen, Color.DarkMagenta,Color.DarkOrange, Color.DarkRed, Color.DarkViolet, Color.ForestGreen, Color.Fuchsia, Color.Indigo, Color.Lavender, Color.Magenta, Color.Maroon, Color.Olive, Color.Orange, Color.Pink, Color.Purple, Color.Red, Color.Violet};
+        Dictionary<string, Color> dict_colors = new Dictionary<string, Color>();
+        Dictionary<string, string> smileys = new Dictionary<string, string>();
+        int currentIndex = 0;
+
 
         //Fonction déléguée d'ajout dans le chat
         public delegate void chat_append(string from, string contenu);
@@ -103,11 +108,38 @@ namespace ProjetDNC_client
             player.Stream = Properties.Resources.notif;
             notif = (conf.GetValue("SOUND_NOTIF", "USER") == "1");
             son_active.Checked = notif;
+            afk = false;
 
             mon_pseudo = conf.GetValue("DEFAULT_PSEUDO", "USER");
 
             //Détection du ScreenLock
             SystemEvents.SessionSwitch += new SessionSwitchEventHandler(SystemEvents_SessionSwitch);
+
+            //Couleur des messages du serveur
+            dict_colors.Add("*", Color.Green);
+
+            //Ajout des smileys
+            smileys.Add(":)", "img/Emoticons/sourire_ico.png");
+            smileys.Add(":-)", "img/Emoticons/sourire_ico.png");
+            smileys.Add(";)", "img/Emoticons/clin-d-oeil_ico.png");
+            smileys.Add(";-)", "img/Emoticons/clin-d-oeil_ico.png");
+            smileys.Add(":s", "img/Emoticons/confus_ico.png");
+            smileys.Add(":D", "img/Emoticons/grand-sourire_ico.png");
+            smileys.Add("XD", "img/Emoticons/mdr_ico.png");
+            smileys.Add("xD", "img/Emoticons/mdr_ico.png");
+            smileys.Add("B)", "img/Emoticons/like-a-boss_ico.png");
+            smileys.Add(":'(", "img/Emoticons/pleure_ico.png");
+            smileys.Add(":(", "img/Emoticons/serieux_ico.png");
+            smileys.Add(":/", "img/Emoticons/decu_ico.png");
+            smileys.Add(":p", "img/Emoticons/tire-la-langue_ico.png");
+            smileys.Add(":P", "img/Emoticons/tire-la-langue_ico.png");
+            smileys.Add(":o", "img/Emoticons/surpris_ico.png");
+            smileys.Add(":O", "img/Emoticons/en-colere_ico.png");
+            smileys.Add(":@", "img/Emoticons/en-colere_ico.png");
+            smileys.Add(":faceplam:", "img/Emoticons/faceplam_ico.png");
+            smileys.Add("<3", "img/Emoticons/coeur_ico.png");
+            smileys.Add(":beer:", "img/Emoticons/beer_ico.png");
+            smileys.Add(":cawa:", "img/Emoticons/cawa_ico.png");
         }
 
         /// <summary>
@@ -211,10 +243,13 @@ namespace ProjetDNC_client
         private void déconnexionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             timer.Stop(); //Arret des requetes automatiques
+            afk = true;
             Envoyer(conf.GetValue("DISABLE", "COMMAND"));
             MessageBox.Show("Session en pause, cliquez sur OK pour reprendre.", "Pause", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
             Envoyer(conf.GetValue("ENABLE", "COMMAND"));
+            Thread.Sleep(500);
             Envoyer(conf.GetValue("USERLIST", "COMMAND"));
+            afk = false;
             timer.Start();
         }
 
@@ -238,11 +273,11 @@ namespace ProjetDNC_client
         }
 
         /// <summary>
-        /// Action au cli sur le bouton de chat privé -> envoi du message au destinataire sélectionné
+        /// Action au clic sur le bouton de chat privé -> envoi du message au destinataire sélectionné
         /// </summary>
         private void private_btn_Click(object sender, EventArgs e)
         {
-            if (this.private_text.Text.Trim() != "")
+            if (this.private_text.Text.Trim() != "" && private_to_txt.Text != "(Cliquer sur le nom)")
             {
                 Envoyer(private_to_txt.Text, conf.GetValue("PM", "COMMAND"), private_text.Text);
                 this.private_text.Clear();
@@ -287,9 +322,12 @@ namespace ProjetDNC_client
             {
                 case SessionSwitchReason.SessionLock:
                     Envoyer(conf.GetValue("DISABLE", "COMMAND"));
+                    timer.Stop();
                     break;
                 case SessionSwitchReason.SessionUnlock:
                     Envoyer(conf.GetValue("ENABLE", "COMMAND"));
+                    timer.Start();
+                    Envoyer(conf.GetValue("USERLIST", "COMMAND"));
                     break;
             }
         }
@@ -307,12 +345,44 @@ namespace ProjetDNC_client
         {
             DateTime time = DateTime.Now;
             string format = "HH:mm:ss";
-            if(chat_window.TextLength == 0)
-                chat_window.AppendText("[" + time.ToString(format) + "] " + from + "  " + content);
-            else
-                chat_window.AppendText("\r\n" + "[" + time.ToString(format) + "] " + from + "  " + content);
+            Color col;
+            bool serveur = (from == "*");
 
-            if (!ApplicationIsActivated())
+            if (dict_colors.ContainsKey(from))
+            {
+                col = dict_colors[from];
+            }
+            else
+            {
+                Random rnd = new Random();
+                col = colors[rnd.Next(0, colors.Length - 1)];
+                dict_colors.Add(from, col);
+            }
+
+            currentIndex = chat_window.TextLength;
+
+            if (chat_window.TextLength == 0)
+            {
+                AppendText(chat_window, "[" + time.ToString(format) + "] ", Color.LightGray);
+                AppendText(chat_window, from+" ", col);
+
+                if(serveur)
+                    AppendText(chat_window, content, col);
+                else
+                    AppendText(chat_window, content, Color.Black);
+            }
+            else
+            {
+                chat_window.AppendText(Environment.NewLine);
+                AppendText(chat_window, "[" + time.ToString(format) + "] ", Color.LightGray);
+                AppendText(chat_window, from + " ", col);
+                if (serveur)
+                    AppendText(chat_window, content, col);
+                else
+                    AppendText(chat_window, content, Color.Black);
+            }
+
+            if (!ApplicationIsActivated() && !serveur && !afk)
             {
                 // Notif sonore
                 if(notif)
@@ -324,6 +394,44 @@ namespace ProjetDNC_client
             }
 
             chat_window.ScrollToCaret();
+
+            if (!serveur)
+            {
+                // AJout des smileys de base
+                foreach (KeyValuePair<string, string> kv in smileys)
+                {
+                    AddSmileys(kv.Key, currentIndex, kv.Value);
+                }
+            }
+        }
+
+        public void AppendText(RichTextBox box, string text, Color color)
+        {
+            box.SelectionStart = box.TextLength;
+            box.SelectionLength = 0;
+
+            box.SelectionColor = color;
+            box.AppendText(text);
+            box.SelectionColor = box.ForeColor;
+        }
+
+        public void AddSmileys(string word, int startIndex, string filename)
+        {
+
+            if (word == string.Empty)
+                return;
+
+            int s_start = chat_window.SelectionStart, index;
+
+            while ((index = chat_window.Text.IndexOf(word, startIndex)) != -1)
+            {
+                chat_window.Select(index, word.Length);
+                Image_RTF img = new Image_RTF(this);
+                img.addImage(filename);
+            }
+
+            chat_window.SelectionStart = s_start;
+            chat_window.SelectionLength = 0;
         }
 
         /// <summary>
@@ -469,9 +577,54 @@ namespace ProjetDNC_client
             if (sock.Connected)
                 sock.Close();
 
-            MessageBox.Show("Le serveur s'est arrêté !", "Arret du serveur", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            DialogResult res = MessageBox.Show("Vous avez été déconnecté du serveur !\nVoulez vous tenter de vous reconnecter ?", "Le serveur ne répond pas", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            
 
-            this.Close();
+            if(res == DialogResult.Yes)
+            {
+                bool ok = false;
+                do
+                {
+                    try
+                    {
+                        string adresse = "";
+                        string port = "";
+
+                        // Lecture du fichier DNC_client.ini
+                        adresse = conf.GetValue("IP", "SERVER");
+                        port = conf.GetValue("PORT", "SERVER");
+
+                        IPAddress adr = IPAddress.Parse(adresse);
+                        this.sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                        sock.Connect(adr, int.Parse(port));
+
+                        ok = true;
+                    }
+                    catch (SocketException err) //Echec de connexion
+                    {
+                        MessageBox.Show("Connexion au serveur impossible !\n(" + err.Message + ")", "Erreur de connexion", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        res = MessageBox.Show("La connexion au serveur n'a pas été rétablie !\nVoulez vous tenter de vous reconnecter ?", "Le serveur ne répond pas", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                        ok = (res == DialogResult.No);
+                    }
+                    catch (System.IO.IOException) //Echec d'ouverture du fichier de configuration
+                    {
+                        MessageBox.Show("Le fichier de configuration DNC_client.ini est introuvable !", "Erreur de connexion", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        res = MessageBox.Show("La connexion au serveur n'a pas été rétablie !\nVoulez vous tenter de vous reconnecter ?", "Le serveur ne répond pas", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                        ok = (res == DialogResult.No);
+                    }
+                    catch (FormatException) //Echec de conversion du numéro de port en int.
+                    {
+                        MessageBox.Show("La lecture du fichier de configuration DNC_client.ini à échoué, peut être est-il mal formé !", "Erreur de connexion", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        res = MessageBox.Show("La connexion au serveur n'a pas été rétablie !\nVoulez vous tenter de vous reconnecter ?", "Le serveur ne répond pas", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                        ok = (res == DialogResult.No);
+                    }
+                } while (!ok);
+
+                Form_login fl = new Form_login(this);
+                fl.Connexion(this.mon_pseudo);
+            }
+            else
+                this.Close();
         }
 
         /// <summary>
@@ -503,6 +656,12 @@ namespace ProjetDNC_client
         private void sonActive_CheckStateChanged(object sender, EventArgs e)
         {
             this.notif = son_active.Checked;
+        }
+
+        private void infoMenuItem_Click(object sender, EventArgs e)
+        {
+            Informations info_form = new Informations();
+            info_form.ShowDialog(this);
         }
     }
 }

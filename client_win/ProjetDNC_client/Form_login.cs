@@ -39,10 +39,24 @@ namespace ProjetDNC_client
         /// </summary>
         private void connexion_btn_Click(object sender, EventArgs e)
         {
-            mf.Envoyer("", conf.GetValue("NEWNAME", "COMMAND"), pseudo_txt.Text);
-            Mess reponse = mf.Recevoir(); 
+            Connexion();
+        }
 
-            if(reponse.Code == 302) //On ignore le 302
+        public void Connexion()
+        {
+            Connexion(pseudo_txt.Text);
+        }
+
+        /// <summary>
+        /// Envoie une demande de connexion au serveur avec le pseudo demandé
+        /// </summary>
+        /// <param name="pseudo">Pseudo demandé au serveur</param>
+        public void Connexion(string pseudo)
+        {
+            mf.Envoyer("", conf.GetValue("NEWNAME", "COMMAND"), pseudo);
+            Mess reponse = mf.Recevoir();
+
+            if (reponse.Code == 302) //On ignore le 302
             {
                 reponse = mf.Recevoir();
             }
@@ -50,7 +64,7 @@ namespace ProjetDNC_client
             if (reponse.Code == 200)
             {
                 ok = true;
-                mf.Lancer_ecoute(pseudo_txt.Text.Trim());
+                mf.Lancer_ecoute(pseudo.Trim());
                 this.Close();
             }
             else if (reponse.Code == 408)
