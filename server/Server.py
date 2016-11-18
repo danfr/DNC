@@ -124,8 +124,8 @@ def handle_connection(connection, client_address):
             data = connection.recv(4096)
             if data:
                 log.printL("Request from IP -> {}"
-                           " {}".format(client_address, data.decode()), Log.lvl.INFO)
-                threading.Thread(target=handle_request, args=(connection, data.decode())).start()
+                           " {}".format(client_address, data.decode('utf-8')), Log.lvl.INFO)
+                threading.Thread(target=handle_request, args=(connection, data.decode('utf-8'))).start()
             else:
                 break
     except Exception as e:
