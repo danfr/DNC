@@ -25,15 +25,23 @@ namespace ProjetDNC_client
         private  bool CheckIfImage(string filename)
         {
             var valids = new[] { ".jpeg", ".jpg", ".png", ".ico", ".gif", ".bmp", ".emp", ".wmf", ".tiff" };
-            return valids.Contains(System.IO.Path.GetExtension(filename));
+            if (File.Exists(filename))
+                return valids.Contains(System.IO.Path.GetExtension(filename));
+            else
+                return false;
         }
 
         public  void addImage(string filename)
         {
             if (CheckIfImage(filename.ToLower()) == true)
-                embedImage(Image.FromFile(filename));
+            {
+                using (Image img = Image.FromFile(filename))
+                {
+                    embedImage(img);
+                }
+            }
             else
-                MessageBox.Show("Invalid Image File Selected");
+                MessageBox.Show("Le fichier " + filename + " n'existe pas !", "Emoticone introuvable", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
         private  void embedImage(Image img)

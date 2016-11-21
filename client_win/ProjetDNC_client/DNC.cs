@@ -13,7 +13,7 @@ namespace ProjetDNC_client
     {
         public string mon_pseudo;
         public string tmp_pseudo = null;
-        private byte[] myBuff = new byte[512];
+        private byte[] myBuff = new byte[4096];
         private Thread t = null;
         private System.Windows.Forms.Timer timer;
 
@@ -49,7 +49,7 @@ namespace ProjetDNC_client
             mess = mess.Trim();
 
             if(sock.Connected)
-                sock.Send(Encoding.UTF8.GetBytes(mess));
+                sock.Send(Encoding.UTF8.GetBytes(mess + "|"));
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace ProjetDNC_client
         /// <returns>Mess représentant le message reçu</returns>
         public Mess Recevoir()
         {
-            myBuff = new byte[512];
+            myBuff = new byte[4096];
             sock.Receive(myBuff);
             string reponse = Encoding.UTF8.GetString(myBuff);
             reponse = reponse.TrimEnd('|', ' ', '\0');
@@ -127,7 +127,7 @@ namespace ProjetDNC_client
 
                 do
                 {
-                    Buff = new byte[512];
+                    Buff = new byte[4096];
                     try
                     {
                         //Réception du message
@@ -143,7 +143,13 @@ namespace ProjetDNC_client
                     part = part.Replace('\0', ' ').Trim(); //Enlèvement des caractères nuls
 
                     builder.Append(part);
-                } while (!builder.ToString().EndsWith("|")); //La fin du message est marquée par un |
+
+                    if (builder.Length == 0) //Déconnexion à l'initiative du serveur
+                    {
+                        form.Invoke(form.del_close_fromserv);
+                        return;
+                    }
+                } while (!(builder[builder.Length-1] == '|')); //La fin du message est marquée par un |
 
                 reponse = builder.ToString().TrimEnd('|', ' ');
 
@@ -164,12 +170,6 @@ namespace ProjetDNC_client
 
         private void Traiter(Main_form form, string reponse)
         {
-            if (reponse.Length == 0) //Déconnexion à l'initiative du serveur
-            {
-                form.Invoke(form.del_close_fromserv);
-                return;
-            }
-
             string[] tab = reponse.Split(new char[] { ' ' }, 3);
 
             Mess message = null;

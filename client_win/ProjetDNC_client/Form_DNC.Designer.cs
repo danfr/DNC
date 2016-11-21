@@ -37,6 +37,7 @@
             this.son_active = new System.Windows.Forms.ToolStripMenuItem();
             this.déconnexionToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip = new System.Windows.Forms.MenuStrip();
+            this.infoMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.users_list = new System.Windows.Forms.ListView();
             this.pubic_text = new System.Windows.Forms.TextBox();
             this.public_btn = new System.Windows.Forms.Button();
@@ -46,14 +47,15 @@
             this.label1 = new System.Windows.Forms.Label();
             this.private_to_txt = new System.Windows.Forms.TextBox();
             this.chat_window = new System.Windows.Forms.RichTextBox();
-            this.infoMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.rechargerLesImagesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // fonctionsToolStripMenuItem
             // 
             this.fonctionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.transfertDeFichierToolStripMenuItem});
+            this.transfertDeFichierToolStripMenuItem,
+            this.rechargerLesImagesMenuItem});
             this.fonctionsToolStripMenuItem.Name = "fonctionsToolStripMenuItem";
             resources.ApplyResources(this.fonctionsToolStripMenuItem, "fonctionsToolStripMenuItem");
             // 
@@ -109,6 +111,13 @@
             resources.ApplyResources(this.menuStrip, "menuStrip");
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
+            // 
+            // infoMenuItem
+            // 
+            this.infoMenuItem.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.infoMenuItem.Name = "infoMenuItem";
+            resources.ApplyResources(this.infoMenuItem, "infoMenuItem");
+            this.infoMenuItem.Click += new System.EventHandler(this.infoMenuItem_Click);
             // 
             // users_list
             // 
@@ -170,12 +179,11 @@
             this.chat_window.Name = "chat_window";
             this.chat_window.ReadOnly = true;
             // 
-            // infoMenuItem
+            // rechargerLesImagesMenuItem
             // 
-            this.infoMenuItem.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.infoMenuItem.Name = "infoMenuItem";
-            resources.ApplyResources(this.infoMenuItem, "infoMenuItem");
-            this.infoMenuItem.Click += new System.EventHandler(this.infoMenuItem_Click);
+            this.rechargerLesImagesMenuItem.Name = "rechargerLesImagesMenuItem";
+            resources.ApplyResources(this.rechargerLesImagesMenuItem, "rechargerLesImagesMenuItem");
+            this.rechargerLesImagesMenuItem.Click += new System.EventHandler(this.rechargerLesImagesMenuItem_Click);
             // 
             // Main_form
             // 
@@ -224,6 +232,7 @@
         public System.Windows.Forms.RichTextBox chat_window;
         private System.Windows.Forms.ToolStripMenuItem son_active;
         private System.Windows.Forms.ToolStripMenuItem infoMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem rechargerLesImagesMenuItem;
     }
 }
 

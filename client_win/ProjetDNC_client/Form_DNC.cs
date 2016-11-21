@@ -8,6 +8,8 @@ using System.Threading;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using Microsoft.Win32;
+using System.IO;
+using System.Linq;
 
 namespace ProjetDNC_client
 {
@@ -19,9 +21,10 @@ namespace ProjetDNC_client
         public List<string> sessions_privees = new List<string>();
         public bool notif, afk;
         Ini conf;
-        Color[] colors = new Color[] { Color.Blue, Color.BlueViolet, Color.Azure, Color.Brown, Color.DarkBlue, Color.DarkCyan, Color.DarkGray, Color.DarkGreen, Color.DarkMagenta,Color.DarkOrange, Color.DarkRed, Color.DarkViolet, Color.ForestGreen, Color.Fuchsia, Color.Indigo, Color.Lavender, Color.Magenta, Color.Maroon, Color.Olive, Color.Orange, Color.Pink, Color.Purple, Color.Red, Color.Violet};
+        Color[] colors = new Color[] { Color.Blue, Color.BlueViolet, Color.Brown, Color.DarkBlue, Color.DarkCyan, Color.DarkGray, Color.DarkGreen, Color.DarkMagenta,Color.DarkOrange, Color.DarkRed, Color.DarkViolet, Color.ForestGreen, Color.Fuchsia, Color.Indigo, Color.Lavender, Color.Magenta, Color.Maroon, Color.Olive, Color.Orange, Color.Pink, Color.Purple, Color.Red, Color.Violet};
         Dictionary<string, Color> dict_colors = new Dictionary<string, Color>();
         Dictionary<string, string> smileys = new Dictionary<string, string>();
+        Dictionary<string, string> images = new Dictionary<string, string>();
         int currentIndex = 0;
 
 
@@ -140,6 +143,43 @@ namespace ProjetDNC_client
             smileys.Add("<3", "img/Emoticons/coeur_ico.png");
             smileys.Add(":beer:", "img/Emoticons/beer_ico.png");
             smileys.Add(":cawa:", "img/Emoticons/cawa_ico.png");
+
+            //Ajout des images présentes dans le dossier img
+            LoadCustom();
+        }
+
+        private void LoadCustom()
+        {
+            String[] ext = new String[] { "jpg", "jpeg", "png", "bmp" };
+            if (Directory.Exists("img"))
+            {
+                string[] myFiles = GetFilesFrom("img", ext, false);
+                foreach (string file in myFiles)
+                {
+                    FileInfo fi = new FileInfo(file);
+                    if (fi.Length < 2097152) // Taille du fichier < 2Mo
+                    {
+                        string nom = Path.GetFileNameWithoutExtension(fi.Name);
+                        images.Add(":" + nom + ":", file);
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("Le dossier 'img' n'est pas présent dans le répertoire d'exécution du programme !", "Dossier manquant", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                this.Close();
+            }
+        }
+
+        public static String[] GetFilesFrom(String searchFolder, String[] filters, bool isRecursive)
+        {
+            List<String> filesFound = new List<String>();
+            var searchOption = isRecursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+            foreach (var filter in filters)
+            {
+                filesFound.AddRange(Directory.GetFiles(searchFolder, String.Format("*.{0}", filter), searchOption));
+            }
+            return filesFound.ToArray();
         }
 
         /// <summary>
@@ -222,10 +262,37 @@ namespace ProjetDNC_client
 
         private void public_btn_Click(object sender, EventArgs e)
         {
-            if (this.pubic_text.Text.Trim() != "")
+            String text = this.pubic_text.Text;
+
+            if (text.Trim() != "")
             {
-                Envoyer("", "", this.pubic_text.Text);
+                foreach(KeyValuePair<string, string> img in images)
+                {
+                    if(text.Contains(img.Key))
+                    {
+                        text = "<BASE64IMG>!" + Path.GetExtension(img.Value) + "!" + imageToBase64(img.Value);
+                        break;
+                    }
+                }
+
+                Envoyer("", "", text);
                 this.pubic_text.Clear();
+            }
+        }
+
+        private string imageToBase64(string filename)
+        {
+            using (Image image = Image.FromFile(filename))
+            {
+                using (MemoryStream m = new MemoryStream())
+                {
+                    image.Save(m, image.RawFormat);
+                    byte[] imageBytes = m.ToArray();
+
+                    // Convert byte[] to Base64 String
+                    string base64String = Convert.ToBase64String(imageBytes);
+                    return base64String;
+                }
             }
         }
 
@@ -277,10 +344,23 @@ namespace ProjetDNC_client
         /// </summary>
         private void private_btn_Click(object sender, EventArgs e)
         {
-            if (this.private_text.Text.Trim() != "" && private_to_txt.Text != "(Cliquer sur le nom)")
+            if (private_to_txt.Text != "(Cliquer sur le nom)")
             {
-                Envoyer(private_to_txt.Text, conf.GetValue("PM", "COMMAND"), private_text.Text);
-                this.private_text.Clear();
+                String text = this.private_text.Text;
+
+                if (text.Trim() != "")
+                {
+                    foreach (KeyValuePair<string, string> img in images)
+                    {
+                        if (text.Contains(img.Key))
+                        {
+                            text = "<BASE64IMG>!" + Path.GetExtension(img.Value) + "!" + imageToBase64(img.Value);
+                            break;
+                        }
+                    }
+                    Envoyer(private_to_txt.Text, conf.GetValue("PM", "COMMAND"), text);
+                    this.private_text.Clear();
+                }
             }
         }
 
@@ -347,6 +427,7 @@ namespace ProjetDNC_client
             string format = "HH:mm:ss";
             Color col;
             bool serveur = (from == "*");
+            bool image = false;
 
             if (dict_colors.ContainsKey(from))
             {
@@ -360,6 +441,17 @@ namespace ProjetDNC_client
             }
 
             currentIndex = chat_window.TextLength;
+            string filename = "";
+
+            if (content.StartsWith("<BASE64IMG>")) // Transfert d'image = '<BASE64IMG>'!<EXTENSION>!<DATA>
+            {
+                image = true;
+                string[] tab = content.Split('!');
+                string ext = tab[1];
+                filename = @"img/tmp/TURING" + ext;
+                base64ToImage(filename, tab[2]);
+                content = "TURING";
+            }
 
             if (chat_window.TextLength == 0)
             {
@@ -394,8 +486,17 @@ namespace ProjetDNC_client
             }
 
             chat_window.ScrollToCaret();
-
-            if (!serveur)
+            if(image)
+            {
+                AddSmileys("TURING", currentIndex, filename);
+                try
+                {
+                    File.Delete(filename);
+                }
+                catch(IOException)
+                { }
+            }
+            else if (!serveur)
             {
                 // AJout des smileys de base
                 foreach (KeyValuePair<string, string> kv in smileys)
@@ -432,6 +533,16 @@ namespace ProjetDNC_client
 
             chat_window.SelectionStart = s_start;
             chat_window.SelectionLength = 0;
+        }
+
+        private void base64ToImage(string filename, string data)
+        {
+            var bytes = Convert.FromBase64String(data);
+            using (var imageFile = new FileStream(filename, FileMode.Create))
+            {
+                imageFile.Write(bytes, 0, bytes.Length);
+                imageFile.Flush();
+            }
         }
 
         /// <summary>
@@ -656,6 +767,12 @@ namespace ProjetDNC_client
         private void sonActive_CheckStateChanged(object sender, EventArgs e)
         {
             this.notif = son_active.Checked;
+        }
+
+        private void rechargerLesImagesMenuItem_Click(object sender, EventArgs e)
+        {
+            this.images.Clear();
+            LoadCustom();
         }
 
         private void infoMenuItem_Click(object sender, EventArgs e)

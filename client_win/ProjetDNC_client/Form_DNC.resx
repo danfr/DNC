@@ -132,6 +132,15 @@
   <data name="transfertDeFichierToolStripMenuItem.Text" xml:space="preserve">
     <value>Transfert de fichier...</value>
   </data>
+  <data name="rechargerLesImagesMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+F5</value>
+  </data>
+  <data name="rechargerLesImagesMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>246, 22</value>
+  </data>
+  <data name="rechargerLesImagesMenuItem.Text" xml:space="preserve">
+    <value>Recharger les images</value>
+  </data>
   <data name="fonctionsToolStripMenuItem.ShortcutKeyDisplayString" xml:space="preserve">
     <value />
   </data>
@@ -143,6 +152,15 @@
   </data>
   <data name="fonctionsToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Commandes</value>
+  </data>
+  <data name="outilsToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Alt+S</value>
+  </data>
+  <data name="outilsToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>58, 20</value>
+  </data>
+  <data name="outilsToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Session</value>
   </data>
   <data name="changerDeNomToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
     <value>Ctrl+Alt+N</value>
@@ -179,15 +197,6 @@
   </data>
   <data name="déconnexionToolStripMenuItem1.Text" xml:space="preserve">
     <value>Quitter</value>
-  </data>
-  <data name="outilsToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Alt+S</value>
-  </data>
-  <data name="outilsToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>58, 20</value>
-  </data>
-  <data name="outilsToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;Session</value>
   </data>
   <metadata name="menuStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
@@ -259,16 +268,16 @@
     <value>Bottom, Left, Right</value>
   </data>
   <data name="pubic_text.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Microsoft Sans Serif, 11.25pt</value>
+    <value>Lucida Sans, 11.25pt</value>
   </data>
   <data name="pubic_text.Location" type="System.Drawing.Point, System.Drawing">
     <value>12, 451</value>
   </data>
   <data name="pubic_text.MaxLength" type="System.Int32, mscorlib">
-    <value>492</value>
+    <value>0</value>
   </data>
   <data name="pubic_text.Size" type="System.Drawing.Size, System.Drawing">
-    <value>566, 24</value>
+    <value>566, 25</value>
   </data>
   <data name="pubic_text.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
@@ -346,7 +355,7 @@
     <value>Bottom, Left, Right</value>
   </data>
   <data name="private_text.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Microsoft Sans Serif, 11.25pt</value>
+    <value>Lucida Sans, 11.25pt</value>
   </data>
   <data name="private_text.Location" type="System.Drawing.Point, System.Drawing">
     <value>12, 499</value>
@@ -355,7 +364,7 @@
     <value>492</value>
   </data>
   <data name="private_text.Size" type="System.Drawing.Size, System.Drawing">
-    <value>566, 24</value>
+    <value>566, 25</value>
   </data>
   <data name="private_text.TabIndex" type="System.Int32, mscorlib">
     <value>5</value>
@@ -466,7 +475,7 @@
     <value>Top, Bottom, Left, Right</value>
   </data>
   <data name="chat_window.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Microsoft Sans Serif, 11.25pt</value>
+    <value>Lucida Sans, 11.25pt</value>
   </data>
   <data name="chat_window.Location" type="System.Drawing.Point, System.Drawing">
     <value>12, 27</value>
@@ -1421,6 +1430,12 @@
     <value>infoMenuItem</value>
   </data>
   <data name="&gt;&gt;infoMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;rechargerLesImagesMenuItem.Name" xml:space="preserve">
+    <value>rechargerLesImagesMenuItem</value>
+  </data>
+  <data name="&gt;&gt;rechargerLesImagesMenuItem.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
