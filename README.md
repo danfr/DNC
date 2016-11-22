@@ -6,8 +6,8 @@ Clément ARNAUDEAU - Renan HUSSON - Quentin ROULAND
 
 ## Usage
 
-Run the Server as decribed in the Server/README.md file
-Unzip the latest Windows client release and run the DNC42_client.exe (the server configuration must be defined in the DNC_client.ini file)
+- Run the Server as decribed in the Server/README.md file
+- Unzip the latest Windows client release and run the DNC42_client.exe (the server configuration must be defined in the DNC_client.ini file)
 
 WARNING : At the moment, only the Windows client is compatible with this server !
 
