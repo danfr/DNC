@@ -1,11 +1,11 @@
 # DNC Server
 
-Requirement :
+Requirements :
     
--> python 3.4
+- python 3.4+
+- python-configparser
 
-Start :
+Usage :
 
-->Configure the server port and log directory in dncserver.conf
-
-->Start the server with the following command : python startServer.py
+- Configure the server port and log directory in dncServer.conf
+- Start the server with the following command : python3 startServer.py
