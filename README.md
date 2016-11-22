@@ -2,7 +2,7 @@
 
 Network Project for local IRC-like chat
 
-Renand HUSSON - Quentin ROULAND - Clément ARNAUDEAU
+Clément ARNAUDEAU - Renan HUSSON - Quentin ROULAND
 
 ## Usage
 
