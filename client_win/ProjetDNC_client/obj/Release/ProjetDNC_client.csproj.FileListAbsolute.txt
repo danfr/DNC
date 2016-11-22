@@ -13,8 +13,6 @@ D:\Mes documents\Visual Studio\ProjetDNC_client\ProjetDNC_client\obj\Release\fr-
 D:\Mes documents\Visual Studio\ProjetDNC_client\ProjetDNC_client\obj\Release\ProjetDNC_client.exe
 D:\Mes documents\Visual Studio\ProjetDNC_client\ProjetDNC_client\obj\Release\ProjetDNC_client.pdb
 C:\Users\DYNAMITE\Documents\Visual Studio 2015\Projects\DNC42\client_win\ProjetDNC_client\bin\Release\ProjetDNC_client.exe.config
-C:\Users\DYNAMITE\Documents\Visual Studio 2015\Projects\DNC42\client_win\ProjetDNC_client\obj\Release\ProjetDNC_client.exe
-C:\Users\DYNAMITE\Documents\Visual Studio 2015\Projects\DNC42\client_win\ProjetDNC_client\obj\Release\ProjetDNC_client.pdb
 C:\Users\DYNAMITE\Documents\Visual Studio 2015\Projects\DNC42\client_win\ProjetDNC_client\bin\Release\ProjetDNC_client.exe
 C:\Users\DYNAMITE\Documents\Visual Studio 2015\Projects\DNC42\client_win\ProjetDNC_client\bin\Release\ProjetDNC_client.pdb
 C:\Users\DYNAMITE\Documents\Visual Studio 2015\Projects\DNC42\client_win\ProjetDNC_client\bin\Release\fr-FR\ProjetDNC_client.resources.dll
@@ -23,7 +21,10 @@ C:\Users\DYNAMITE\Documents\Visual Studio 2015\Projects\DNC42\client_win\ProjetD
 C:\Users\DYNAMITE\Documents\Visual Studio 2015\Projects\DNC42\client_win\ProjetDNC_client\obj\Release\ProjetDNC_client.Form_login.resources
 C:\Users\DYNAMITE\Documents\Visual Studio 2015\Projects\DNC42\client_win\ProjetDNC_client\obj\Release\ProjetDNC_client.Form_nickname.resources
 C:\Users\DYNAMITE\Documents\Visual Studio 2015\Projects\DNC42\client_win\ProjetDNC_client\obj\Release\ProjetDNC_client.Form_private.resources
+C:\Users\DYNAMITE\Documents\Visual Studio 2015\Projects\DNC42\client_win\ProjetDNC_client\obj\Release\ProjetDNC_client.Informations.resources
 C:\Users\DYNAMITE\Documents\Visual Studio 2015\Projects\DNC42\client_win\ProjetDNC_client\obj\Release\ProjetDNC_client.Properties.Resources.resources
 C:\Users\DYNAMITE\Documents\Visual Studio 2015\Projects\DNC42\client_win\ProjetDNC_client\obj\Release\ProjetDNC_client.Main_form.fr-FR.resources
 C:\Users\DYNAMITE\Documents\Visual Studio 2015\Projects\DNC42\client_win\ProjetDNC_client\obj\Release\ProjetDNC_client.csproj.GenerateResource.Cache
 C:\Users\DYNAMITE\Documents\Visual Studio 2015\Projects\DNC42\client_win\ProjetDNC_client\obj\Release\fr-FR\ProjetDNC_client.resources.dll
+C:\Users\DYNAMITE\Documents\Visual Studio 2015\Projects\DNC42\client_win\ProjetDNC_client\obj\Release\ProjetDNC_client.exe
+C:\Users\DYNAMITE\Documents\Visual Studio 2015\Projects\DNC42\client_win\ProjetDNC_client\obj\Release\ProjetDNC_client.pdb

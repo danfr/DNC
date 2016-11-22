@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ProjetDNC_client
@@ -33,7 +30,7 @@ namespace ProjetDNC_client
         /// <param name="contenu">Contenu de la requête</param>
         public void Envoyer(string pseudo, string commande, string contenu)
         {
-            contenu = contenu.Replace('\r', ' ').Replace('\n', ' ').Replace('|', ' ').Trim();
+            contenu = contenu.Replace('\r', ' ').Replace('\n', ' ').Replace('|', ' ').Trim(); // Les sauts de ligne et le | sont indedits
 
             if (pseudo != null && pseudo != "")
             {
@@ -168,6 +165,11 @@ namespace ProjetDNC_client
             }
         }
 
+        /// <summary>
+        /// Traitement des messages du serveur
+        /// </summary>
+        /// <param name="form">Formulaire principal</param>
+        /// <param name="reponse">Réponse formattée du serveur</param>
         private void Traiter(Main_form form, string reponse)
         {
             string[] tab = reponse.Split(new char[] { ' ' }, 3);
@@ -184,6 +186,40 @@ namespace ProjetDNC_client
             //Traitement
             switch (message.Code)
             {
+                case 203: //Succès
+                    {
+                        if (form.tmp_pseudo != null) //Succès après un changement de pseudo
+                        {
+                            form.mon_pseudo = form.tmp_pseudo;
+                            tmp_pseudo = null;
+                        }
+
+                        break;
+                    }
+                case 201: //Différents codes de succès (osef)
+                case 202:
+                case 204:
+                case 205:
+                case 206:
+                case 207:
+                case 208:
+                case 209:
+                case 210:
+                case 211:
+                case 212:
+                case 213:
+                    break;
+                case 300: //Réponse à la requête :who
+                    {
+                        form.Invoke(form.del_traiter_who, new Object[] { message.Info + " " + message.Content });
+                        Envoyer(conf.GetValue("USERLISTAWAY", "COMMAND"));
+                        break;
+                    }
+                case 301:
+                    {
+                        form.Invoke(form.del_traiter_who, new Object[] { "AWAY " + message.Info + " " + message.Content });
+                        break;
+                    }
                 case 302: //Utilisateur connecté
                     {
                         form.Invoke(form.del_new_user, new Object[] { message.Info });
@@ -225,40 +261,6 @@ namespace ProjetDNC_client
                         Envoyer(conf.GetValue("USERLIST", "COMMAND"));
                         break;
                     }
-                case 300: //Réponse à la requête :who
-                    {
-                        form.Invoke(form.del_traiter_who, new Object[] { message.Info + " " + message.Content });
-                        Envoyer(conf.GetValue("USERLISTAWAY", "COMMAND"));
-                        break;
-                    }
-                case 301:
-                    {
-                        form.Invoke(form.del_traiter_who, new Object[] { "AWAY " + message.Info + " " + message.Content });
-                        break;
-                    }
-                case 203: //Succès
-                    {
-                        if (form.tmp_pseudo != null) //Succès après un changement de pseudo
-                        {
-                            form.mon_pseudo = form.tmp_pseudo;
-                            tmp_pseudo = null;
-                        }
-
-                        break;
-                    }
-                case 201: //Différents codes de succès (osef)
-                case 202:
-                case 204:
-                case 205:
-                case 206:
-                case 207:
-                case 208:
-                case 209:
-                case 210:
-                case 211:
-                case 212:
-                case 213:
-                    break;
                 default:
                     {
                         form.Invoke(form.del_error_show, new Object[] { message.Code, message.Content });

@@ -9,7 +9,6 @@ using System.Runtime.InteropServices;
 using System.Diagnostics;
 using Microsoft.Win32;
 using System.IO;
-using System.Linq;
 
 namespace ProjetDNC_client
 {
@@ -21,11 +20,12 @@ namespace ProjetDNC_client
         public List<string> sessions_privees = new List<string>();
         public bool notif, afk;
         Ini conf;
-        Color[] colors = new Color[] { Color.Blue, Color.BlueViolet, Color.Brown, Color.DarkBlue, Color.DarkCyan, Color.DarkGray, Color.DarkGreen, Color.DarkMagenta,Color.DarkOrange, Color.DarkRed, Color.DarkViolet, Color.ForestGreen, Color.Fuchsia, Color.Indigo, Color.Lavender, Color.Magenta, Color.Maroon, Color.Olive, Color.Orange, Color.Pink, Color.Purple, Color.Red, Color.Violet};
-        Dictionary<string, Color> dict_colors = new Dictionary<string, Color>();
-        Dictionary<string, string> smileys = new Dictionary<string, string>();
-        Dictionary<string, string> images = new Dictionary<string, string>();
+        Color[] colors = new Color[] { Color.Blue, Color.BlueViolet, Color.Brown, Color.DarkBlue, Color.DarkCyan, Color.DarkGray, Color.DarkGreen, Color.DarkMagenta, Color.DarkOrange, Color.DarkRed, Color.DarkViolet, Color.ForestGreen, Color.Fuchsia, Color.Indigo, Color.Lavender, Color.Magenta, Color.Maroon, Color.Olive, Color.Orange, Color.Pink, Color.Purple, Color.Red, Color.Violet };
+        Dictionary<string, Color> dict_colors = new Dictionary<string, Color>(); // Couleurs associées aux pseudos <pseudo,couleur>
+        Dictionary<string, string> smileys = new Dictionary<string, string>(); // Répertoire des smileys de base <raccourci clavier, chemin du fichier>
+        Dictionary<string, string> images = new Dictionary<string, string>(); // Répertoire des émoticones custom <raccourci clavier (:nom_du_fichier:), chemin du fichier>
         int currentIndex = 0;
+        System.Media.SoundPlayer player = new System.Media.SoundPlayer();
 
 
         //Fonction déléguée d'ajout dans le chat
@@ -59,8 +59,6 @@ namespace ProjetDNC_client
         //Fonction déléguée d'affichage d'erreurs reçues inopinément
         public delegate void error_show(int code, string contenu);
         public error_show del_error_show;
-
-        System.Media.SoundPlayer player = new System.Media.SoundPlayer();
 
         /// <summary>
         /// Initialistation du formulaire principal
@@ -148,6 +146,9 @@ namespace ProjetDNC_client
             LoadCustom();
         }
 
+        /// <summary>
+        /// Chargement des images contenues à la racine du dossier img (émoticones custom)
+        /// </summary>
         private void LoadCustom()
         {
             String[] ext = new String[] { "jpg", "jpeg", "png", "bmp" };
@@ -171,6 +172,13 @@ namespace ProjetDNC_client
             }
         }
 
+        /// <summary>
+        /// Récupère la liste des fichiers dans un répertoire
+        /// </summary>
+        /// <param name="searchFolder">Répertoire racine de la recherche</param>
+        /// <param name="filters">Liste des extensions de fichier acceptées</param>
+        /// <param name="isRecursive">Recherche dans les sous-dossiers ?</param>
+        /// <returns>Liste des chemins de fichier correcpondants</returns>
         public static String[] GetFilesFrom(String searchFolder, String[] filters, bool isRecursive)
         {
             List<String> filesFound = new List<String>();
@@ -227,10 +235,10 @@ namespace ProjetDNC_client
         /// </summary>
         private void Main_form_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if(t != null)
+            if (t != null)
                 t.Abort(); //Arret de l'écoute si le thread est lancé
 
-            if(sock.Connected)
+            if (sock.Connected)
                 Envoyer(conf.GetValue("QUIT", "COMMAND")); //Envoi de la commande de déconnexion
 
             Thread.Sleep(1000); //Attente du traitement des requetes par le serveur
@@ -260,17 +268,21 @@ namespace ProjetDNC_client
             this.AcceptButton = this.private_btn;
         }
 
+        /// <summary>
+        /// Clic sur le bouton d'envoi de essage public
+        /// </summary>
         private void public_btn_Click(object sender, EventArgs e)
         {
             String text = this.pubic_text.Text;
 
             if (text.Trim() != "")
             {
-                foreach(KeyValuePair<string, string> img in images)
+                foreach (KeyValuePair<string, string> img in images) // Détection de l'envoi d'image
                 {
-                    if(text.Contains(img.Key))
+                    if (text.Contains(img.Key))
                     {
-                        text = "<BASE64IMG>!" + Path.GetExtension(img.Value) + "!" + imageToBase64(img.Value);
+                        if (File.Exists(img.Value))
+                            text = "<BASE64IMG>!" + Path.GetExtension(img.Value) + "!" + imageToBase64(img.Value);
                         break;
                     }
                 }
@@ -280,6 +292,11 @@ namespace ProjetDNC_client
             }
         }
 
+        /// <summary>
+        /// Convertit une image locale en Base64
+        /// </summary>
+        /// <param name="filename">Chemin de l'image</param>
+        /// <returns>Une chaine encodée en Base64</returns>
         private string imageToBase64(string filename)
         {
             using (Image image = Image.FromFile(filename))
@@ -314,7 +331,6 @@ namespace ProjetDNC_client
             Envoyer(conf.GetValue("DISABLE", "COMMAND"));
             MessageBox.Show("Session en pause, cliquez sur OK pour reprendre.", "Pause", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
             Envoyer(conf.GetValue("ENABLE", "COMMAND"));
-            Thread.Sleep(500);
             Envoyer(conf.GetValue("USERLIST", "COMMAND"));
             afk = false;
             timer.Start();
@@ -354,7 +370,8 @@ namespace ProjetDNC_client
                     {
                         if (text.Contains(img.Key))
                         {
-                            text = "<BASE64IMG>!" + Path.GetExtension(img.Value) + "!" + imageToBase64(img.Value);
+                            if (File.Exists(img.Value))
+                                text = "<BASE64IMG>!" + Path.GetExtension(img.Value) + "!" + imageToBase64(img.Value);
                             break;
                         }
                     }
@@ -429,6 +446,7 @@ namespace ProjetDNC_client
             bool serveur = (from == "*");
             bool image = false;
 
+            // Association pseudo/couleur
             if (dict_colors.ContainsKey(from))
             {
                 col = dict_colors[from];
@@ -440,6 +458,7 @@ namespace ProjetDNC_client
                 dict_colors.Add(from, col);
             }
 
+            // On enregiste l'index actuel pour la recherche des smileys
             currentIndex = chat_window.TextLength;
             string filename = "";
 
@@ -448,17 +467,18 @@ namespace ProjetDNC_client
                 image = true;
                 string[] tab = content.Split('!');
                 string ext = tab[1];
-                filename = @"img/tmp/TURING" + ext;
+                filename = @"img/tmp/TURING" + ext; // Fichier temporaire
                 base64ToImage(filename, tab[2]);
                 content = "TURING";
             }
 
+            // Ajout du texte formatté dans le chat
             if (chat_window.TextLength == 0)
             {
                 AppendText(chat_window, "[" + time.ToString(format) + "] ", Color.LightGray);
-                AppendText(chat_window, from+" ", col);
+                AppendText(chat_window, from + " ", col);
 
-                if(serveur)
+                if (serveur)
                     AppendText(chat_window, content, col);
                 else
                     AppendText(chat_window, content, Color.Black);
@@ -474,10 +494,11 @@ namespace ProjetDNC_client
                     AppendText(chat_window, content, Color.Black);
             }
 
+            // Gestion des notifications
             if (!ApplicationIsActivated() && !serveur && !afk)
             {
                 // Notif sonore
-                if(notif)
+                if (notif)
                     player.Play();
 
                 // Notif visuelle (icone qui clignote)
@@ -486,14 +507,16 @@ namespace ProjetDNC_client
             }
 
             chat_window.ScrollToCaret();
-            if(image)
+
+            // Ajout des smileys/images
+            if (image)
             {
                 AddSmileys("TURING", currentIndex, filename);
                 try
                 {
-                    File.Delete(filename);
+                    File.Delete(filename); // Supression du fichier temporaire
                 }
-                catch(IOException)
+                catch (IOException)
                 { }
             }
             else if (!serveur)
@@ -506,6 +529,12 @@ namespace ProjetDNC_client
             }
         }
 
+        /// <summary>
+        /// Ajout d'un texte coloré au chat
+        /// </summary>
+        /// <param name="box">Fenêtre de chat</param>
+        /// <param name="text">Texte à ajouter</param>
+        /// <param name="color">Couleur du texte</param>
         public void AppendText(RichTextBox box, string text, Color color)
         {
             box.SelectionStart = box.TextLength;
@@ -516,6 +545,12 @@ namespace ProjetDNC_client
             box.SelectionColor = box.ForeColor;
         }
 
+        /// <summary>
+        /// Remplace un texte par un smiley/image dans le chat
+        /// </summary>
+        /// <param name="word">Texte à remplacer</param>
+        /// <param name="startIndex">Début de la recherche</param>
+        /// <param name="filename">Chein du fichier à ajouter</param>
         public void AddSmileys(string word, int startIndex, string filename)
         {
 
@@ -535,6 +570,12 @@ namespace ProjetDNC_client
             chat_window.SelectionLength = 0;
         }
 
+
+        /// <summary>
+        /// Convertit une chaine Base64 en fichier
+        /// </summary>
+        /// <param name="filename">Chemin du fichier à écrire</param>
+        /// <param name="data">Chaine Base 64</param>
         private void base64ToImage(string filename, string data)
         {
             var bytes = Convert.FromBase64String(data);
@@ -564,7 +605,7 @@ namespace ProjetDNC_client
             ListViewItem sup = null;
             foreach (ListViewItem cur in users_list.Items)
             {
-                if(cur.Text == from)
+                if (cur.Text == from)
                 {
                     sup = cur;
                     break;
@@ -595,7 +636,6 @@ namespace ProjetDNC_client
 
             Envoyer(conf.GetValue("USERLIST", "COMMAND"));
 
-
             Chat_append("*", ancien + " is now known as " + nouveau);
         }
 
@@ -616,7 +656,7 @@ namespace ProjetDNC_client
         {
             string[] tab = content.Split(' ');
 
-            if (!content.Contains("AWAY"))
+            if (!content.Contains("AWAY")) // Gestion du retour de /userlistaway
             {
                 liste_items.Clear();
 
@@ -632,7 +672,7 @@ namespace ProjetDNC_client
                         cur.Font = f;
                         liste_items.Add(cur);
                     }
-                    else if(cli == mon_pseudo)
+                    else if (cli == mon_pseudo)
                     {
                         cur = new ListViewItem(cli);
                         cur.Font = f;
@@ -641,7 +681,7 @@ namespace ProjetDNC_client
                     }
                 }
             }
-            else
+            else // Gestion du retour de /userlist
             {
                 ListViewItem cur = null;
                 Font f = new Font(FontFamily.GenericSansSerif, 14.0f, FontStyle.Italic, GraphicsUnit.Pixel);
@@ -689,9 +729,9 @@ namespace ProjetDNC_client
                 sock.Close();
 
             DialogResult res = MessageBox.Show("Vous avez été déconnecté du serveur !\nVoulez vous tenter de vous reconnecter ?", "Le serveur ne répond pas", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-            
 
-            if(res == DialogResult.Yes)
+
+            if (res == DialogResult.Yes) // Séquence de reconnexion au serveur
             {
                 bool ok = false;
                 do
@@ -731,6 +771,7 @@ namespace ProjetDNC_client
                     }
                 } while (!ok);
 
+                // Fermeture de l'application
                 Form_login fl = new Form_login(this);
                 fl.Connexion(this.mon_pseudo);
             }
@@ -764,17 +805,26 @@ namespace ProjetDNC_client
                 private_to_txt.Text = "(Cliquer sur le nom)";
         }
 
+        /// <summary>
+        /// Action au changmeent d'état du paramètre "Son Activé"
+        /// </summary>
         private void sonActive_CheckStateChanged(object sender, EventArgs e)
         {
             this.notif = son_active.Checked;
         }
 
+        /// <summary>
+        /// Action au clic sur "Recharger les images"
+        /// </summary>
         private void rechargerLesImagesMenuItem_Click(object sender, EventArgs e)
         {
             this.images.Clear();
             LoadCustom();
         }
 
+        /// <summary>
+        /// Action au clic sur "?"
+        /// </summary>
         private void infoMenuItem_Click(object sender, EventArgs e)
         {
             Informations info_form = new Informations();

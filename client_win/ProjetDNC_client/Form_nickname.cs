@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ProjetDNC_client
@@ -15,6 +8,10 @@ namespace ProjetDNC_client
         Main_form mf;
         Ini conf;
 
+        /// <summary>
+        /// Conctructeur
+        /// </summary>
+        /// <param name="main">Formuaire principal</param>
         public Form_nickname(Main_form main)
         {
             InitializeComponent();

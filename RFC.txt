@@ -41,7 +41,10 @@ pseudonym having between three (3) and fifteen (15) characters.
 
 2. THE DNC SPECIFICATIONS
 
-2.1 Connection
+2.1 Global specifications
+All DNC messages MUST end with a pipe character ('|')
+
+2.2 Connection
 DNC uses the TCP protocol. The server and the client must implements a TCP 
 socket to communicate together.
 When a client open the connection with the server, he must send /newname 
@@ -53,7 +56,7 @@ He receives one message:
 (Paragraph 2.5 for more details on theses commands)
 
 
-2.2 Nickname format
+2.3 Nickname format
 Everytime you see the tag <nickname> in this document means you have to respect 
 the following rules for this pattern:
 The string must contains between three (3) and fifteen (15) characters.
@@ -63,7 +66,7 @@ and the underscore:
 <number> = '0' .. '9' 
 <underscore> = '_'
 
-2.3 File transfert    
+2.4 File transfert    
 Peer-to-peer (P2P) is a computer network model close to client-server model but 
 where each client is also a server.
 It’s just necessary to specify the receiver, and the port where the transfert 
@@ -77,7 +80,6 @@ wants the file.
 where the tcp is configured. The server also send a confirmation message to the 
 emitter to tell him he can open the socket. Otherwise, the server sends a 
 message to the sender saying the receiver doesn’t want to download the file.
-
 
 2.4 Client commands
 
@@ -183,7 +185,7 @@ The request contains the file name and the ip adress of the sender.
         SUCC_ASKED_FILE 
 
 2.4.10 Accept file transfert
-    Command: /acceptfile 
+    Command: /acceptfile
     Parameters: <nickname> <file> <ip> <port>
     This command is used in parallel with the rejectfile command to reply to 
 the pmfile command. By using this command, the client will accept receiving a 
@@ -258,11 +260,11 @@ CAN_SEND_FILE <file> <nickname> <ip> <port>
 CANNOT_SEND_FILE <file> <nickname>
 
 2.5.2 Transfer private file
-/pmfile jean C:/read.txt
+/pmfile jean C:/read.txt|
 Retour: SUCC_ASKED_FILE | ERR_ALREADY_ONE_FILE_ASKED | ERR_USER_NOT_FOUND....
 Récepteur : HAS_ASKED_FILE michel C:/read.txt
 
-/acceptfile michel 2568 C:/read.txt 
+/acceptfile michel 2568 C:/read.txt|
 Retour: SUCC_ACCEPTED_FILE 21.25.256.13  //ip sender for the client can check 
 the origin of transfert 
 Récepteur : CAN_SEND_FILE jean 31.52.313.123 2568 C:/read.txt 
@@ -296,7 +298,6 @@ sended to: everybody except the user who did it
 313: CAN_SEND_FILE <nick> <ip> <port>  <path>
 314: HAS_REJECT_FILE <nick> <path>
 
-
 3.2 Success 
 200: SUCC_CHANNEL_JOINED
 201: SUCC_CHANNEL_QUIT
@@ -312,10 +313,6 @@ sended to: everybody except the user who did it
 211: SUCC_PMFILE
 212: SUCC_ACCEPTED_FILE <ip>
 213: SUCC_REFUSED_FILE
-
-
-
-
 
 3.3 Error
 400 : ERR_NICKNAME_ALREADY_USED
