@@ -53,7 +53,7 @@ class Log(object):
         if not os.path.exists(directory):
             os.makedirs(directory)
         self.logger = logging.getLogger()
-        self.logger.setLevel(logging.INFO)
+        self.logger.setLevel(logging.DEBUG)
         formatter = logging.Formatter('%(asctime)-15s :: %(levelname)s :: %(message)s')
         file_handler = RotatingFileHandler(directory+'/activity.log', 'a', 1000000, 1)
         file_handler.setLevel(logging.INFO)

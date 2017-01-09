@@ -118,6 +118,7 @@ def main():
 #   @param connection the socket descriptor of the connection
 #   @param client_adress ("ip", port) of the connection
 def handle_connection(connection, client_address):
+    threading.Thread(target=keep_alive, args=(connection, client_address[0])).start()
     try:
         log.printL("Connection from IP -> {}".format(client_address), Log.lvl.INFO)
         while True:
@@ -148,6 +149,21 @@ def handle_connection(connection, client_address):
         usersConnected.pop(connection)
     finally:
         quit_user(connection)
+
+
+##
+#   Check that client is still connected
+#   @param connect the socket descriptor of the client to check
+def keep_alive(connect, ip):
+    while True:
+        sleep(30)
+        response = os.system("ping -c1 -w2 " + ip + " > /dev/null 2>&1")
+        log.printL("Keep alive thread => ping request with IP {} returns : {}".format(ip, response), Log.lvl.DEBUG)
+        if response is not 0:
+            log.printL("Keep alive thread => ping failed with IP {} , disconnecting client...".format(ip), Log.lvl.INFO)
+            connect.shutdown(socket.SHUT_RD)
+            quit_user(connect)
+            return
 
 
 ##
@@ -251,7 +267,7 @@ def broadcast_message(connection, message):
             return
 
         ### Client Linux
-        #if value[1] is not None and con != connection and value[2]:
+        # if value[1] is not None and con != connection and value[2]:
         #    try:
         #        usersConnected[con][3] = True
         #        con.sendall(message.encode())
@@ -313,6 +329,7 @@ def send_to(target, code, source=None, message=None):
     finally:
         with lock:
             usersConnected[target][3] = False
+
 
 ##
 #   Send the list of enable user
@@ -447,7 +464,7 @@ def private_message(connection, pseudo, msg):
         pm = (connection, c)
         pmr = (c, connection)
         # if pm not in validatePM and pmr not in validatePM:
-            # send_to(connection, ERR_CONV_NOT_ALLOWED)
+        # send_to(connection, ERR_CONV_NOT_ALLOWED)
         # else:
         send_to(c, NEW_PM, connection, msg)
         send_to(connection, SUCC_PM_SENDED)
@@ -492,7 +509,7 @@ def accept_file(connection, pseudo, file, port):
             log.printL("Send to {} : {}".format(usersConnected[connection][0],
                                                 SUCC_ACCEPTED_FILE), Log.lvl.DEBUG)
             c.sendall("{} {} {} {} {}|".format(CAN_SEND_FILE, pseudo, usersConnected[connection][0][0],
-                                              port, file).encode())
+                                               port, file).encode())
             log.printL("Send to {} : {} {} {} {} {}".format(usersConnected[c][0], CAN_SEND_FILE, pseudo,
                                                             usersConnected[connection][0][0], port,
                                                             file), Log.lvl.DEBUG)
