@@ -135,11 +135,11 @@ def handle_connection(connection, client_address):
                     tab = data.split("|")
                     for val in tab:
                         log.printL("Request from IP -> {}"
-                                   " {}".format(client_address, val), Log.lvl.INFO)
+                                   " {}".format(client_address, val), Log.lvl.DEBUG)
                         threading.Thread(target=handle_request, args=(connection, val)).start()
                 else:
                     log.printL("Request from IP -> {}"
-                               " {}".format(client_address, data), Log.lvl.INFO)
+                               " {}".format(client_address, data), Log.lvl.DEBUG)
                     threading.Thread(target=handle_request, args=(connection, data)).start()
             else:
                 break
@@ -269,8 +269,8 @@ def broadcast_message(connection, message):
                 log.printL(str(e), Log.lvl.FAIL)
             finally:
                 usersConnected[con][3] = False
-        
-        log.printL("Broadcast : {}".format(message), Log.lvl.INFO)
+
+        log.printL("Broadcast : {}".format(message), Log.lvl.DEBUG)
 
 
 ##
@@ -295,19 +295,19 @@ def send_to(target, code, source=None, message=None):
             if source is not None:
                 target.sendall("{} {}|".format(code, usersConnected[source][1]).encode())
                 log.printL("Send to {} : {} {}".format(usersConnected[target][0], code, usersConnected[source][1]),
-                           Log.lvl.INFO)
+                           Log.lvl.DEBUG)
             else:
                 target.sendall("{}|".format(code).encode())
-                log.printL("Send to {} : {}".format(usersConnected[target][0], code), Log.lvl.INFO)
+                log.printL("Send to {} : {}".format(usersConnected[target][0], code), Log.lvl.DEBUG)
         else:
             if source is not None:
                 target.sendall("{} {} {}|".format(code, usersConnected[source][1], message).encode())
                 log.printL(
                     "Send to {} : {} {} {}".format(usersConnected[target][0], code, usersConnected[source][1], message),
-                    Log.lvl.INFO)
+                    Log.lvl.DEBUG)
             else:
                 target.sendall("{} {}|".format(code, message).encode())
-                log.printL("Send to {} : {} {}".format(usersConnected[target][0], code, message), Log.lvl.INFO)
+                log.printL("Send to {} : {} {}".format(usersConnected[target][0], code, message), Log.lvl.DEBUG)
     except Exception as e:
         log.printL(str(e), Log.lvl.FAIL)
     finally:
@@ -490,12 +490,12 @@ def accept_file(connection, pseudo, file, port):
             askFT.remove(f)
             connection.sendall("{} {}|".format(SUCC_ACCEPTED_FILE, usersConnected[c][0][0]).encode())
             log.printL("Send to {} : {}".format(usersConnected[connection][0],
-                                                SUCC_ACCEPTED_FILE), Log.lvl.INFO)
+                                                SUCC_ACCEPTED_FILE), Log.lvl.DEBUG)
             c.sendall("{} {} {} {} {}|".format(CAN_SEND_FILE, pseudo, usersConnected[connection][0][0],
                                               port, file).encode())
             log.printL("Send to {} : {} {} {} {} {}".format(usersConnected[c][0], CAN_SEND_FILE, pseudo,
                                                             usersConnected[connection][0][0], port,
-                                                            file), Log.lvl.INFO)
+                                                            file), Log.lvl.DEBUG)
 
 
 ##
