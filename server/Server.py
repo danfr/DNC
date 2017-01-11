@@ -96,17 +96,13 @@ def main():
             # Connection client
             connection, client_address = sock.accept()
             usersConnected[connection] = [client_address, None, True]  # (ip,port) pseudo status
-            threading.Thread(target=handle_connection, args=(connection, client_address)).start()
+            threading.Thread(target=handle_connection, args=(connection, client_address), daemon=True).start()
     except KeyboardInterrupt:
+        log.printL("Keyboard interrupt received !", Log.lvl.INFO)
         # Disable to received more requests on socket
         for con, value in usersConnected.items():
             con.shutdown(socket.SHUT_RD)
     finally:
-        # Wait for threads finish
-        log.printL("Wait for threads ending", Log.lvl.INFO)
-        for t in threading.enumerate():
-            if t != threading.main_thread():
-                t.join()
         sock.close()
         log.printL("Server shutdown", Log.lvl.INFO)
         sys.exit(0)
@@ -118,7 +114,7 @@ def main():
 #   @param connection the socket descriptor of the connection
 #   @param client_adress ("ip", port) of the connection
 def handle_connection(connection, client_address):
-    threading.Thread(target=keep_alive, args=(connection, client_address[0])).start()
+    kat = threading.Thread(target=keep_alive, args=(connection, client_address[0]), daemon=True).start()
     try:
         log.printL("Connection from IP -> {}".format(client_address), Log.lvl.INFO)
         while True:
@@ -137,11 +133,11 @@ def handle_connection(connection, client_address):
                     for val in tab:
                         log.printL("Request from IP -> {}"
                                    " {}".format(client_address, val), Log.lvl.DEBUG)
-                        threading.Thread(target=handle_request, args=(connection, val)).start()
+                        threading.Thread(target=handle_request, args=(connection, val), daemon=True).start()
                 else:
                     log.printL("Request from IP -> {}"
                                " {}".format(client_address, data), Log.lvl.DEBUG)
-                    threading.Thread(target=handle_request, args=(connection, data)).start()
+                    threading.Thread(target=handle_request, args=(connection, data), daemon=True).start()
             else:
                 break
     except Exception as e:
