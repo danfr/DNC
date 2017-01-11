@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using System.Diagnostics;
 using Microsoft.Win32;
 using System.IO;
+using System.Linq;
 
 namespace ProjetDNC_client
 {
@@ -20,7 +21,7 @@ namespace ProjetDNC_client
         public List<string> sessions_privees = new List<string>();
         public bool notif, afk;
         Ini conf;
-        Color[] colors = new Color[] { Color.Blue, Color.BlueViolet, Color.Brown, Color.DarkBlue, Color.DarkCyan, Color.DarkGray, Color.DarkGreen, Color.DarkMagenta, Color.DarkOrange, Color.DarkRed, Color.DarkViolet, Color.ForestGreen, Color.Fuchsia, Color.Indigo, Color.Lavender, Color.Magenta, Color.Maroon, Color.Olive, Color.Orange, Color.Pink, Color.Purple, Color.Red, Color.Violet };
+        Dictionary<Color, int> colors = new Dictionary<Color, int> { { Color.Blue, 0 }, { Color.BlueViolet, 0 }, { Color.Brown, 0 }, { Color.DarkCyan, 0 }, { Color.DarkMagenta, 0 }, { Color.DarkOrange, 0 }, { Color.DarkRed, 0 }, { Color.DarkViolet, 0 }, { Color.Fuchsia, 0 }, { Color.Indigo, 0 }, { Color.Purple, 0 }, { Color.Red, 0 } };
         Dictionary<string, Color> dict_colors = new Dictionary<string, Color>(); // Couleurs associées aux pseudos <pseudo,couleur>
         Dictionary<string, string> smileys = new Dictionary<string, string>(); // Répertoire des smileys de base <raccourci clavier, chemin du fichier>
         Dictionary<string, string> images = new Dictionary<string, string>(); // Répertoire des émoticones custom <raccourci clavier (:nom_du_fichier:), chemin du fichier>
@@ -454,7 +455,17 @@ namespace ProjetDNC_client
             else
             {
                 Random rnd = new Random();
-                col = colors[rnd.Next(0, colors.Length - 1)];
+                List<Color> tab_col = new List<Color>();
+
+                //On récupère les couleurs les moins utilisées et on en choisi une au hasard
+                for(int i = 0; i<10 && tab_col.Count < 1; i++)
+                {
+                    Dictionary<Color, int> filtre = colors.Where(kvp => kvp.Value == i).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+                    tab_col = filtre.Keys.ToList();
+                }
+
+                col = tab_col[rnd.Next(0, tab_col.Count - 1)];
+                colors[col] = colors[col] + 1;
                 dict_colors.Add(from, col);
             }
 
