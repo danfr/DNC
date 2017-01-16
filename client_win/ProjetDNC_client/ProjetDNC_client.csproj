@@ -72,6 +72,12 @@
     <Compile Include="Form_private.Designer.cs">
       <DependentUpon>Form_private.cs</DependentUpon>
     </Compile>
+    <Compile Include="Image_picker.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Image_picker.Designer.cs">
+      <DependentUpon>Image_picker.cs</DependentUpon>
+    </Compile>
     <Compile Include="Image_RTF.cs" />
     <Compile Include="Informations.cs">
       <SubType>Form</SubType>
@@ -96,6 +102,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form_private.resx">
       <DependentUpon>Form_private.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Image_picker.resx">
+      <DependentUpon>Image_picker.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Informations.resx">
       <DependentUpon>Informations.cs</DependentUpon>
@@ -126,6 +135,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\notif.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icon-image-28.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\icon-image-25.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

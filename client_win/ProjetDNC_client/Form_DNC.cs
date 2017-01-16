@@ -91,6 +91,8 @@ namespace ProjetDNC_client
                 conf.WriteValue("ACCEPTFILE", "COMMAND", "/acceptfile");
                 conf.WriteValue("REJECTFILE", "COMMAND", "/rejectfile");
 
+                conf.WriteValue("MIN_SIZE", "IMAGE_PICKER", "100");
+
                 conf.Save();
             }
 
@@ -831,6 +833,40 @@ namespace ProjetDNC_client
         {
             this.images.Clear();
             LoadCustom();
+        }
+
+        /// <summary>
+        /// Action au clic sur le bouton de sélection d'image public
+        /// </summary>
+        private void btn_img_pub_Click(object sender, EventArgs e)
+        {
+            string tag = "";
+            Image_picker ip = new Image_picker(images);
+            DialogResult dr = ip.ShowDialog(this);
+
+            if(dr == DialogResult.OK)
+            {
+                tag = ip.ReturnValue; // On récupère le tag associé à l'image sélectionnée et on l'envoie
+                pubic_text.Text = tag;
+                public_btn.PerformClick();
+            }
+        }
+
+        /// <summary>
+        /// Action au clic sur le bouton de sélection d'image privé
+        /// </summary>
+        private void btn_img_pri_Click(object sender, EventArgs e)
+        {
+            string tag = "";
+            Image_picker ip = new Image_picker(images);
+            DialogResult dr = ip.ShowDialog(this);
+
+            if (dr == DialogResult.OK)
+            {
+                tag = ip.ReturnValue; // On récupère le tag associé à l'image sélectionnée et on l'envoie
+                private_text.Text = tag;
+                private_btn.PerformClick();
+            }
         }
 
         /// <summary>

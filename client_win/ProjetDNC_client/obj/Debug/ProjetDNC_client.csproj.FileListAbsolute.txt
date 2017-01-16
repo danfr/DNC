@@ -29,9 +29,9 @@ C:\Users\DYNAMITE\Documents\Visual Studio 2015\Projects\DNC42\client_win\ProjetD
 C:\Users\DYNAMITE\Documents\Visual Studio 2015\Projects\DNC42\client_win\ProjetDNC_client\obj\Debug\ProjetDNC_client.exe
 C:\Users\DYNAMITE\Documents\Visual Studio 2015\Projects\DNC42\client_win\ProjetDNC_client\obj\Debug\ProjetDNC_client.pdb
 C:\Users\dan\VS\DNC42\client_win\ProjetDNC_client\bin\Debug\ProjetDNC_client.exe.config
-C:\Users\dan\VS\DNC42\client_win\ProjetDNC_client\obj\Debug\ProjetDNC_client.exe
-C:\Users\dan\VS\DNC42\client_win\ProjetDNC_client\obj\Debug\ProjetDNC_client.pdb
-C:\Users\dan\VS\DNC42\client_win\ProjetDNC_client\obj\Debug\ProjetDNC_client.csprojResolveAssemblyReference.cache
+C:\Users\dan\VS\DNC42\client_win\ProjetDNC_client\bin\Debug\ProjetDNC_client.exe
+C:\Users\dan\VS\DNC42\client_win\ProjetDNC_client\bin\Debug\ProjetDNC_client.pdb
+C:\Users\dan\VS\DNC42\client_win\ProjetDNC_client\bin\Debug\fr-FR\ProjetDNC_client.resources.dll
 C:\Users\dan\VS\DNC42\client_win\ProjetDNC_client\obj\Debug\ProjetDNC_client.Main_form.resources
 C:\Users\dan\VS\DNC42\client_win\ProjetDNC_client\obj\Debug\ProjetDNC_client.Form_login.resources
 C:\Users\dan\VS\DNC42\client_win\ProjetDNC_client\obj\Debug\ProjetDNC_client.Form_nickname.resources
@@ -40,7 +40,8 @@ C:\Users\dan\VS\DNC42\client_win\ProjetDNC_client\obj\Debug\ProjetDNC_client.Inf
 C:\Users\dan\VS\DNC42\client_win\ProjetDNC_client\obj\Debug\ProjetDNC_client.Properties.Resources.resources
 C:\Users\dan\VS\DNC42\client_win\ProjetDNC_client\obj\Debug\ProjetDNC_client.Main_form.fr-FR.resources
 C:\Users\dan\VS\DNC42\client_win\ProjetDNC_client\obj\Debug\ProjetDNC_client.csproj.GenerateResource.Cache
-C:\Users\dan\VS\DNC42\client_win\ProjetDNC_client\bin\Debug\ProjetDNC_client.exe
-C:\Users\dan\VS\DNC42\client_win\ProjetDNC_client\bin\Debug\ProjetDNC_client.pdb
-C:\Users\dan\VS\DNC42\client_win\ProjetDNC_client\bin\Debug\fr-FR\ProjetDNC_client.resources.dll
 C:\Users\dan\VS\DNC42\client_win\ProjetDNC_client\obj\Debug\fr-FR\ProjetDNC_client.resources.dll
+C:\Users\dan\VS\DNC42\client_win\ProjetDNC_client\obj\Debug\ProjetDNC_client.exe
+C:\Users\dan\VS\DNC42\client_win\ProjetDNC_client\obj\Debug\ProjetDNC_client.pdb
+C:\Users\dan\VS\DNC42\client_win\ProjetDNC_client\obj\Debug\ProjetDNC_client.csprojResolveAssemblyReference.cache
+C:\Users\dan\VS\DNC42\client_win\ProjetDNC_client\obj\Debug\ProjetDNC_client.Image_picker.resources
