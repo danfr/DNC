@@ -15,6 +15,8 @@ namespace ProjetDNC_client
 {
     public partial class Main_form : Form
     {
+        #region Variables
+
         public Socket sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         public List<string> clients_actifs = new List<string>();
         public List<ListViewItem> liste_items = new List<ListViewItem>();
@@ -27,7 +29,13 @@ namespace ProjetDNC_client
         Dictionary<string, string> images = new Dictionary<string, string>(); // Répertoire des émoticones custom <raccourci clavier (:nom_du_fichier:), chemin du fichier>
         int currentIndex = 0;
         System.Media.SoundPlayer player = new System.Media.SoundPlayer();
+        bool scrollAtBottom;
+        private const int WM_VSCROLL = 277;
+        private const int SB_PAGEBOTTOM = 7;
 
+        #endregion
+
+        #region Delegates & Interfaces
 
         //Fonction déléguée d'ajout dans le chat
         public delegate void chat_append(string from, string contenu);
@@ -60,6 +68,178 @@ namespace ProjetDNC_client
         //Fonction déléguée d'affichage d'erreurs reçues inopinément
         public delegate void error_show(int code, string contenu);
         public error_show del_error_show;
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        private static extern int SendMessage(IntPtr hWnd, int wMsg, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("user32.dll")]
+        static extern bool FlashWindow(IntPtr hwnd, bool bInvert);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
+        private static extern IntPtr GetForegroundWindow();
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern int GetWindowThreadProcessId(IntPtr handle, out int processId);
+
+        #endregion
+
+        #region Utilities
+
+        /// <summary>
+        /// Chargement des images contenues à la racine du dossier img (émoticones custom)
+        /// </summary>
+        private void LoadCustom()
+        {
+            String[] ext = new String[] { "jpg", "jpeg", "png", "bmp" };
+            if (Directory.Exists("img"))
+            {
+                string[] myFiles = GetFilesFrom("img", ext, false);
+                foreach (string file in myFiles)
+                {
+                    FileInfo fi = new FileInfo(file);
+                    if (fi.Length < 2097152) // Taille du fichier < 2Mo
+                    {
+                        string nom = Path.GetFileNameWithoutExtension(fi.Name);
+                        images.Add(":" + nom + ":", file);
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("Le dossier 'img' n'est pas présent dans le répertoire d'exécution du programme !", "Dossier manquant", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                this.Close();
+            }
+        }
+
+        /// <summary>
+        /// Récupère la liste des fichiers dans un répertoire
+        /// </summary>
+        /// <param name="searchFolder">Répertoire racine de la recherche</param>
+        /// <param name="filters">Liste des extensions de fichier acceptées</param>
+        /// <param name="isRecursive">Recherche dans les sous-dossiers ?</param>
+        /// <returns>Liste des chemins de fichier correcpondants</returns>
+        public static String[] GetFilesFrom(String searchFolder, String[] filters, bool isRecursive)
+        {
+            List<String> filesFound = new List<String>();
+            var searchOption = isRecursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+            foreach (var filter in filters)
+            {
+                filesFound.AddRange(Directory.GetFiles(searchFolder, String.Format("*.{0}", filter), searchOption));
+            }
+            return filesFound.ToArray();
+        }
+
+        /// <summary>
+        /// Convertit une image locale en Base64
+        /// </summary>
+        /// <param name="filename">Chemin de l'image</param>
+        /// <returns>Une chaine encodée en Base64</returns>
+        private string imageToBase64(string filename)
+        {
+            using (Image image = Image.FromFile(filename))
+            {
+                using (MemoryStream m = new MemoryStream())
+                {
+                    image.Save(m, image.RawFormat);
+                    byte[] imageBytes = m.ToArray();
+
+                    // Convert byte[] to Base64 String
+                    string base64String = Convert.ToBase64String(imageBytes);
+                    return base64String;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Convertit une chaine Base64 en fichier
+        /// </summary>
+        /// <param name="filename">Chemin du fichier à écrire</param>
+        /// <param name="data">Chaine Base 64</param>
+        private void base64ToImage(string filename, string data)
+        {
+            var bytes = Convert.FromBase64String(data);
+            using (var imageFile = new FileStream(filename, FileMode.Create))
+            {
+                imageFile.Write(bytes, 0, bytes.Length);
+                imageFile.Flush();
+            }
+        }
+
+        /// <summary>
+        /// Déplace le scroll au maximum vers le bas
+        /// </summary>
+        /// <param name="MyRichTextBox">RichTextBox à scroller</param>
+        public static void ScrollToBottom(RichTextBox MyRichTextBox)
+        {
+            SendMessage(MyRichTextBox.Handle, WM_VSCROLL, (IntPtr)SB_PAGEBOTTOM, IntPtr.Zero);
+        }
+
+        /// <summary>Returns true if the current application has focus, false otherwise</summary>
+        public static bool ApplicationIsActivated()
+        {
+            var activatedHandle = GetForegroundWindow();
+            if (activatedHandle == IntPtr.Zero)
+            {
+                return false;       // No window is currently activated
+            }
+
+            var procId = Process.GetCurrentProcess().Id;
+            int activeProcId;
+            GetWindowThreadProcessId(activatedHandle, out activeProcId);
+
+            return activeProcId == procId;
+        }
+
+        #region Internal class ScrollInfo
+
+        internal class Scrollinfo
+        {
+            public const uint ObjidVscroll = 0xFFFFFFFB;
+
+            [DllImport("user32.dll", SetLastError = true, EntryPoint = "GetScrollBarInfo")]
+            private static extern int GetScrollBarInfo(IntPtr hWnd,
+                                                       uint idObject,
+                                                       ref Scrollbarinfo psbi);
+
+            internal static bool CheckBottom(RichTextBox rtb)
+            {
+
+
+                var info = new Scrollbarinfo();
+                info.CbSize = Marshal.SizeOf(info);
+
+                var res = GetScrollBarInfo(rtb.Handle,
+                                           ObjidVscroll,
+                                           ref info);
+
+                var isAtBottom = info.XyThumbBottom > (info.RcScrollBar.Bottom - info.RcScrollBar.Top - (info.DxyLineButton * 2));
+                return isAtBottom;
+            }
+        }
+
+        public struct Scrollbarinfo
+        {
+            public int CbSize;
+            public Rect RcScrollBar;
+            public int DxyLineButton;
+            public int XyThumbTop;
+            public int XyThumbBottom;
+            public int Reserved;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)]
+            public int[] Rgstate;
+        }
+
+        public struct Rect
+        {
+            public int Left;
+            public int Top;
+            public int Right;
+            public int Bottom;
+        }
+
+        #endregion
+
+        #endregion
 
         /// <summary>
         /// Initialistation du formulaire principal
@@ -115,6 +295,7 @@ namespace ProjetDNC_client
             afk = false;
 
             mon_pseudo = conf.GetValue("DEFAULT_PSEUDO", "USER");
+            scrollAtBottom = true;
 
             //Détection du ScreenLock
             SystemEvents.SessionSwitch += new SessionSwitchEventHandler(SystemEvents_SessionSwitch);
@@ -149,49 +330,7 @@ namespace ProjetDNC_client
             LoadCustom();
         }
 
-        /// <summary>
-        /// Chargement des images contenues à la racine du dossier img (émoticones custom)
-        /// </summary>
-        private void LoadCustom()
-        {
-            String[] ext = new String[] { "jpg", "jpeg", "png", "bmp" };
-            if (Directory.Exists("img"))
-            {
-                string[] myFiles = GetFilesFrom("img", ext, false);
-                foreach (string file in myFiles)
-                {
-                    FileInfo fi = new FileInfo(file);
-                    if (fi.Length < 2097152) // Taille du fichier < 2Mo
-                    {
-                        string nom = Path.GetFileNameWithoutExtension(fi.Name);
-                        images.Add(":" + nom + ":", file);
-                    }
-                }
-            }
-            else
-            {
-                MessageBox.Show("Le dossier 'img' n'est pas présent dans le répertoire d'exécution du programme !", "Dossier manquant", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                this.Close();
-            }
-        }
-
-        /// <summary>
-        /// Récupère la liste des fichiers dans un répertoire
-        /// </summary>
-        /// <param name="searchFolder">Répertoire racine de la recherche</param>
-        /// <param name="filters">Liste des extensions de fichier acceptées</param>
-        /// <param name="isRecursive">Recherche dans les sous-dossiers ?</param>
-        /// <returns>Liste des chemins de fichier correcpondants</returns>
-        public static String[] GetFilesFrom(String searchFolder, String[] filters, bool isRecursive)
-        {
-            List<String> filesFound = new List<String>();
-            var searchOption = isRecursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
-            foreach (var filter in filters)
-            {
-                filesFound.AddRange(Directory.GetFiles(searchFolder, String.Format("*.{0}", filter), searchOption));
-            }
-            return filesFound.ToArray();
-        }
+        #region Listeners
 
         /// <summary>
         /// Fonction exécutée une fois le formulaire principal affiché (et donc entièrement chargé)
@@ -295,26 +434,7 @@ namespace ProjetDNC_client
             }
         }
 
-        /// <summary>
-        /// Convertit une image locale en Base64
-        /// </summary>
-        /// <param name="filename">Chemin de l'image</param>
-        /// <returns>Une chaine encodée en Base64</returns>
-        private string imageToBase64(string filename)
-        {
-            using (Image image = Image.FromFile(filename))
-            {
-                using (MemoryStream m = new MemoryStream())
-                {
-                    image.Save(m, image.RawFormat);
-                    byte[] imageBytes = m.ToArray();
 
-                    // Convert byte[] to Base64 String
-                    string base64String = Convert.ToBase64String(imageBytes);
-                    return base64String;
-                }
-            }
-        }
 
         /// <summary>
         /// Action au clic sur "Quitter"
@@ -393,25 +513,8 @@ namespace ProjetDNC_client
             fp.ShowDialog(this);
         }
 
-        [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
-        private static extern IntPtr GetForegroundWindow();
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern int GetWindowThreadProcessId(IntPtr handle, out int processId);
-        /// <summary>Returns true if the current application has focus, false otherwise</summary>
-        public static bool ApplicationIsActivated()
-        {
-            var activatedHandle = GetForegroundWindow();
-            if (activatedHandle == IntPtr.Zero)
-            {
-                return false;       // No window is currently activated
-            }
 
-            var procId = Process.GetCurrentProcess().Id;
-            int activeProcId;
-            GetWindowThreadProcessId(activatedHandle, out activeProcId);
 
-            return activeProcId == procId;
-        }
 
         /// <summary>
         /// Action au Lock de la session (mise AFK)
@@ -432,10 +535,91 @@ namespace ProjetDNC_client
             }
         }
 
+        /// <summary>
+        /// Sélection d'un item dans la liste
+        /// </summary>
+        private void users_list_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        {
+            ListView lv = (ListView)sender;
+            if (lv.SelectedItems.Count > 0)
+            {
+                ListViewItem lvi = lv.SelectedItems[0];
+
+                if (lvi.BackColor != Color.LightGreen)
+                    private_to_txt.Text = lvi.Text;
+            }
+            else
+                private_to_txt.Text = "(Cliquer sur le nom)";
+        }
+
+        /// <summary>
+        /// Action au changmeent d'état du paramètre "Son Activé"
+        /// </summary>
+        private void sonActive_CheckStateChanged(object sender, EventArgs e)
+        {
+            this.notif = son_active.Checked;
+        }
+
+        /// <summary>
+        /// Action au clic sur "Recharger les images"
+        /// </summary>
+        private void rechargerLesImagesMenuItem_Click(object sender, EventArgs e)
+        {
+            this.images.Clear();
+            LoadCustom();
+        }
+
+        /// <summary>
+        /// Action au clic sur le bouton de sélection d'image public
+        /// </summary>
+        private void btn_img_pub_Click(object sender, EventArgs e)
+        {
+            string tag = "";
+            Image_picker ip = new Image_picker(images);
+            DialogResult dr = ip.ShowDialog(this);
+
+            if (dr == DialogResult.OK)
+            {
+                tag = ip.ReturnValue; // On récupère le tag associé à l'image sélectionnée et on l'envoie
+                pubic_text.Text = tag;
+                public_btn.PerformClick();
+            }
+
+            pubic_text.Focus();
+        }
+
+        /// <summary>
+        /// Action au clic sur le bouton de sélection d'image privé
+        /// </summary>
+        private void btn_img_pri_Click(object sender, EventArgs e)
+        {
+            string tag = "";
+            Image_picker ip = new Image_picker(images);
+            DialogResult dr = ip.ShowDialog(this);
+
+            if (dr == DialogResult.OK)
+            {
+                tag = ip.ReturnValue; // On récupère le tag associé à l'image sélectionnée et on l'envoie
+                private_text.Text = tag;
+                private_btn.PerformClick();
+            }
+
+            private_text.Focus();
+        }
+
+        /// <summary>
+        /// Action au clic sur "?"
+        /// </summary>
+        private void infoMenuItem_Click(object sender, EventArgs e)
+        {
+            Informations info_form = new Informations();
+            info_form.ShowDialog(this);
+        }
 
 
-        [DllImport("user32.dll")]
-        static extern bool FlashWindow(IntPtr hwnd, bool bInvert);
+        #endregion
+
+
         /// <summary>
         /// Ajoute le message entré en paramètre à la fenetre de chat principale
         /// </summary>
@@ -460,7 +644,7 @@ namespace ProjetDNC_client
                 List<Color> tab_col = new List<Color>();
 
                 //On récupère les couleurs les moins utilisées et on en choisi une au hasard
-                for(int i = 0; i<10 && tab_col.Count < 1; i++)
+                for (int i = 0; i < 10 && tab_col.Count < 1; i++)
                 {
                     Dictionary<Color, int> filtre = colors.Where(kvp => kvp.Value == i).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
                     tab_col = filtre.Keys.ToList();
@@ -519,8 +703,6 @@ namespace ProjetDNC_client
                 FlashWindow(handle, false);
             }
 
-            chat_window.ScrollToCaret();
-
             // Ajout des smileys/images
             if (image)
             {
@@ -540,7 +722,15 @@ namespace ProjetDNC_client
                     AddSmileys(kv.Key, currentIndex, kv.Value);
                 }
             }
+
+            bool isAtBottom = Scrollinfo.CheckBottom(chat_window);
+            // On scroll automatiquement si le scroll est déjà en bas
+            if (isAtBottom)
+            {
+                ScrollToBottom(chat_window);
+            }
         }
+
 
         /// <summary>
         /// Ajout d'un texte coloré au chat
@@ -566,7 +756,6 @@ namespace ProjetDNC_client
         /// <param name="filename">Chein du fichier à ajouter</param>
         public void AddSmileys(string word, int startIndex, string filename)
         {
-
             if (word == string.Empty)
                 return;
 
@@ -583,21 +772,6 @@ namespace ProjetDNC_client
             chat_window.SelectionLength = 0;
         }
 
-
-        /// <summary>
-        /// Convertit une chaine Base64 en fichier
-        /// </summary>
-        /// <param name="filename">Chemin du fichier à écrire</param>
-        /// <param name="data">Chaine Base 64</param>
-        private void base64ToImage(string filename, string data)
-        {
-            var bytes = Convert.FromBase64String(data);
-            using (var imageFile = new FileStream(filename, FileMode.Create))
-            {
-                imageFile.Write(bytes, 0, bytes.Length);
-                imageFile.Flush();
-            }
-        }
 
         /// <summary>
         /// Gère l'ajout d'un nouvel utilisateur
@@ -800,82 +974,6 @@ namespace ProjetDNC_client
             MessageBox.Show(code + " -> " + content, "Erreur inattendue", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
 
-
-        /// <summary>
-        /// Sélection d'un item dans la liste
-        /// </summary>
-        private void users_list_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
-        {
-            ListView lv = (ListView)sender;
-            if (lv.SelectedItems.Count > 0)
-            {
-                ListViewItem lvi = lv.SelectedItems[0];
-
-                if (lvi.BackColor != Color.LightGreen)
-                    private_to_txt.Text = lvi.Text;
-            }
-            else
-                private_to_txt.Text = "(Cliquer sur le nom)";
-        }
-
-        /// <summary>
-        /// Action au changmeent d'état du paramètre "Son Activé"
-        /// </summary>
-        private void sonActive_CheckStateChanged(object sender, EventArgs e)
-        {
-            this.notif = son_active.Checked;
-        }
-
-        /// <summary>
-        /// Action au clic sur "Recharger les images"
-        /// </summary>
-        private void rechargerLesImagesMenuItem_Click(object sender, EventArgs e)
-        {
-            this.images.Clear();
-            LoadCustom();
-        }
-
-        /// <summary>
-        /// Action au clic sur le bouton de sélection d'image public
-        /// </summary>
-        private void btn_img_pub_Click(object sender, EventArgs e)
-        {
-            string tag = "";
-            Image_picker ip = new Image_picker(images);
-            DialogResult dr = ip.ShowDialog(this);
-
-            if(dr == DialogResult.OK)
-            {
-                tag = ip.ReturnValue; // On récupère le tag associé à l'image sélectionnée et on l'envoie
-                pubic_text.Text = tag;
-                public_btn.PerformClick();
-            }
-        }
-
-        /// <summary>
-        /// Action au clic sur le bouton de sélection d'image privé
-        /// </summary>
-        private void btn_img_pri_Click(object sender, EventArgs e)
-        {
-            string tag = "";
-            Image_picker ip = new Image_picker(images);
-            DialogResult dr = ip.ShowDialog(this);
-
-            if (dr == DialogResult.OK)
-            {
-                tag = ip.ReturnValue; // On récupère le tag associé à l'image sélectionnée et on l'envoie
-                private_text.Text = tag;
-                private_btn.PerformClick();
-            }
-        }
-
-        /// <summary>
-        /// Action au clic sur "?"
-        /// </summary>
-        private void infoMenuItem_Click(object sender, EventArgs e)
-        {
-            Informations info_form = new Informations();
-            info_form.ShowDialog(this);
-        }
     }
+
 }
