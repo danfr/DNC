@@ -186,7 +186,6 @@
             this.chat_window.BackColor = System.Drawing.SystemColors.Window;
             this.chat_window.Name = "chat_window";
             this.chat_window.ReadOnly = true;
-            this.chat_window.VScroll += new System.EventHandler(this.chat_window_VScroll);
             // 
             // btn_img_pri
             // 
