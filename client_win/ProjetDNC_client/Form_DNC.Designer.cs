@@ -31,6 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main_form));
             this.fonctionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.transfertDeFichierToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.rechargerLesImagesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.outilsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.changerDeNomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.déconnexionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -47,7 +48,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.private_to_txt = new System.Windows.Forms.TextBox();
             this.chat_window = new System.Windows.Forms.RichTextBox();
-            this.rechargerLesImagesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.btn_img_pri = new System.Windows.Forms.Button();
+            this.btn_img_pub = new System.Windows.Forms.Button();
             this.menuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -63,6 +65,12 @@
             // 
             resources.ApplyResources(this.transfertDeFichierToolStripMenuItem, "transfertDeFichierToolStripMenuItem");
             this.transfertDeFichierToolStripMenuItem.Name = "transfertDeFichierToolStripMenuItem";
+            // 
+            // rechargerLesImagesMenuItem
+            // 
+            this.rechargerLesImagesMenuItem.Name = "rechargerLesImagesMenuItem";
+            resources.ApplyResources(this.rechargerLesImagesMenuItem, "rechargerLesImagesMenuItem");
+            this.rechargerLesImagesMenuItem.Click += new System.EventHandler(this.rechargerLesImagesMenuItem_Click);
             // 
             // outilsToolStripMenuItem
             // 
@@ -179,16 +187,28 @@
             this.chat_window.Name = "chat_window";
             this.chat_window.ReadOnly = true;
             // 
-            // rechargerLesImagesMenuItem
+            // btn_img_pri
             // 
-            this.rechargerLesImagesMenuItem.Name = "rechargerLesImagesMenuItem";
-            resources.ApplyResources(this.rechargerLesImagesMenuItem, "rechargerLesImagesMenuItem");
-            this.rechargerLesImagesMenuItem.Click += new System.EventHandler(this.rechargerLesImagesMenuItem_Click);
+            resources.ApplyResources(this.btn_img_pri, "btn_img_pri");
+            this.btn_img_pri.Image = global::ProjetDNC_client.Properties.Resources.icon_image_25;
+            this.btn_img_pri.Name = "btn_img_pri";
+            this.btn_img_pri.UseVisualStyleBackColor = true;
+            this.btn_img_pri.Click += new System.EventHandler(this.btn_img_pri_Click);
+            // 
+            // btn_img_pub
+            // 
+            resources.ApplyResources(this.btn_img_pub, "btn_img_pub");
+            this.btn_img_pub.Image = global::ProjetDNC_client.Properties.Resources.icon_image_25;
+            this.btn_img_pub.Name = "btn_img_pub";
+            this.btn_img_pub.UseVisualStyleBackColor = true;
+            this.btn_img_pub.Click += new System.EventHandler(this.btn_img_pub_Click);
             // 
             // Main_form
             // 
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.btn_img_pri);
+            this.Controls.Add(this.btn_img_pub);
             this.Controls.Add(this.chat_window);
             this.Controls.Add(this.private_to_txt);
             this.Controls.Add(this.label1);
@@ -233,6 +253,8 @@
         private System.Windows.Forms.ToolStripMenuItem son_active;
         private System.Windows.Forms.ToolStripMenuItem infoMenuItem;
         private System.Windows.Forms.ToolStripMenuItem rechargerLesImagesMenuItem;
+        private System.Windows.Forms.Button btn_img_pub;
+        private System.Windows.Forms.Button btn_img_pri;
     }
 }
 
