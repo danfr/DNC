@@ -142,7 +142,6 @@ def handle_connection(connection, client_address):
                 break
     except Exception as e:
         log.printL("Handle connection fail : ".format(str(e)), Log.lvl.FAIL)
-        usersConnected.pop(connection)
     finally:
         quit_user(connection)
 
@@ -153,12 +152,16 @@ def handle_connection(connection, client_address):
 def keep_alive(connect, ip):
     while True:
         sleep(30)
-        response = os.system("ping -c1 -w2 " + ip + " > /dev/null 2>&1")
-        log.printL("Keep alive thread => ping request with IP {} returns : {}".format(ip, response), Log.lvl.DEBUG)
-        if response is not 0:
-            log.printL("Keep alive thread => ping failed with IP {} , disconnecting client...".format(ip), Log.lvl.INFO)
-            connect.shutdown(socket.SHUT_RD)
-            quit_user(connect)
+        if connect in usersConnected:
+            response = os.system("ping -c1 -w2 " + ip + " > /dev/null 2>&1")
+            log.printL("Keep alive thread => ping request with IP {} returns : {}".format(ip, response), Log.lvl.DEBUG)
+            if response is not 0:
+                log.printL("Keep alive thread => ping failed with IP {} , disconnecting client...".format(ip),
+                           Log.lvl.INFO)
+                connect.shutdown(socket.SHUT_RD)
+                quit_user(connect)
+                return
+        else:
             return
 
 
