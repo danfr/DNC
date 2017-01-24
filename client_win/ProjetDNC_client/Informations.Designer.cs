@@ -43,7 +43,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(121, 13);
             this.label1.TabIndex = 0;
-            this.label1.Text = "DNC42 Client - V2.2";
+            this.label1.Text = "DNC42 Client - V2.5";
             // 
             // label2
             // 
