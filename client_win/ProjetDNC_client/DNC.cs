@@ -261,6 +261,11 @@ namespace ProjetDNC_client
                         Envoyer(conf.GetValue("USERLIST", "COMMAND"));
                         break;
                     }
+                case 666: //Check Alive
+                    {
+                        Envoyer("/PONG");
+                        break;
+                    }
                 default:
                     {
                         form.Invoke(form.del_error_show, new Object[] { message.Code, message.Content });

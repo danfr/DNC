@@ -691,6 +691,13 @@ namespace ProjetDNC_client
                     AppendText(chat_window, content, Color.Black);
             }
 
+            bool isAtBottom = Scrollinfo.CheckBottom(chat_window);
+            // On scroll automatiquement si le scroll est déjà en bas
+            if (isAtBottom)
+            {
+                ScrollToBottom(chat_window);
+            }
+
             // Gestion des notifications
             if (!ApplicationIsActivated() && !serveur && !afk)
             {
@@ -723,7 +730,6 @@ namespace ProjetDNC_client
                 }
             }
 
-            bool isAtBottom = Scrollinfo.CheckBottom(chat_window);
             // On scroll automatiquement si le scroll est déjà en bas
             if (isAtBottom)
             {
