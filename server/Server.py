@@ -57,6 +57,8 @@ ERR_INTERNAL_SERVER_ERROR = 409
 ERR_NOT_DISABLED = 410
 ERR_NOT_ENABLED = 411
 
+PING = 666
+
 # Config
 config = configparser.ConfigParser()
 
@@ -68,7 +70,7 @@ def main():
     global usersConnected, log, sock, lock
     global askPM, validatePM
     global askFT
-    usersConnected = {}  # Key = socket, values = 0:ip, 1:pseudo, 2:enabled, 3:locked
+    usersConnected = {}  # Key = socket, Values = 0:ip, 1:pseudo, 2:enabled, 3:locked, 4:alive
     lock = threading.Lock()
     askPM = []
     validatePM = []
@@ -95,7 +97,7 @@ def main():
         while True:
             # Connection client
             connection, client_address = sock.accept()
-            usersConnected[connection] = [client_address, None, True]  # (ip,port) pseudo status
+            usersConnected[connection] = [client_address, None, True, False, True]  # (ip,port) pseudo enabled locked alive
             threading.Thread(target=handle_connection, args=(connection, client_address), daemon=True).start()
     except KeyboardInterrupt:
         log.printL("Keyboard interrupt received !", Log.lvl.INFO)
@@ -141,9 +143,11 @@ def handle_connection(connection, client_address):
             else:
                 break
     except Exception as e:
-        log.printL("Handle connection fail : ".format(str(e)), Log.lvl.FAIL)
+        if connection in usersConnected:
+            log.printL("Handle connection fail : ".format(str(e)), Log.lvl.FAIL)
     finally:
-        quit_user(connection)
+        if connection in usersConnected:
+            quit_user(connection)
 
 
 ##
@@ -153,12 +157,12 @@ def keep_alive(connect, ip):
     while True:
         sleep(30)
         if connect in usersConnected:
-            response = os.system("ping -c1 -w2 " + ip + " > /dev/null 2>&1")
-            log.printL("Keep alive thread => ping request with IP {} returns : {}".format(ip, response), Log.lvl.DEBUG)
-            if response is not 0:
+            if usersConnected[connect][4] is True:  # If alive
+                send_to(connect, PING)
+                usersConnected[connect][4] = False
+            else:
                 log.printL("Keep alive thread => ping failed with IP {} , disconnecting client...".format(ip),
                            Log.lvl.INFO)
-                connect.shutdown(socket.SHUT_RD)
                 quit_user(connect)
                 return
         else:
@@ -235,6 +239,9 @@ def handle_request(connection, data):
                 return
             if array_data[0] == config["COMMAND"]["quit"]:
                 connection.shutdown(socket.SHUT_RD)
+                return
+            if array_data[0] == "/PONG":  # If command is a Keep-alive response, redeclare thread as alive
+                usersConnected[connection][4] = True
                 return
             connection.sendall("{}|".format(ERR_NO_NICKNAME).encode())
     except IndexError:
@@ -560,18 +567,21 @@ def disable_user(connection):
 #   Disconnect user
 #   @param connection the socket descriptor of the person to disconnect
 def quit_user(connection):
-    pseudo = usersConnected[connection][1]
-    ip = usersConnected[connection][0]
-    try:
-        send_to(connection, SUCC_CHANNEL_QUIT)
-        connection.close()
-        log.printL("Disconnected from IP -> {}".format(usersConnected[connection][0]), Log.lvl.INFO)
-        broadcast_message(connection, "{} {}".format(HAS_LEFT, pseudo))
-    except Exception:  # Client close the socket in this side not properly
-        log.printL("Client IP -> {} close connection not properly"
-                   "".format(ip), Log.lvl.WARNING)
-    finally:
-        usersConnected.pop(connection)
+    if connection in usersConnected:
+        pseudo = usersConnected[connection][1]
+        ip = usersConnected[connection][0]
+        try:
+            send_to(connection, SUCC_CHANNEL_QUIT)
+            log.printL("Disconnected from IP -> {}".format(usersConnected[connection][0]), Log.lvl.INFO)
+            if pseudo is not None:
+                broadcast_message(connection, "{} {}".format(HAS_LEFT, pseudo))
+        except Exception:  # Client close the socket in this side not properly
+            log.printL("Client IP -> {} close connection not properly"
+                       "".format(ip), Log.lvl.WARNING)
+        finally:
+            connection.shutdown(socket.SHUT_RD)
+            connection.close()
+            usersConnected.pop(connection)
 
 
 ##
