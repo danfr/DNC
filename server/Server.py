@@ -204,6 +204,9 @@ def handle_request(connection, data):
                 if array_data[0] == config["COMMAND"]["quit"]:
                     connection.shutdown(socket.SHUT_RD)
                     return
+                if array_data[0] == "/PONG":  # If command is a Keep-alive response, redeclare thread as alive
+                    usersConnected[connection][4] = True
+                    return
 
                 ### Command available for enable only ###
                 if not usersConnected[connection][2]:
