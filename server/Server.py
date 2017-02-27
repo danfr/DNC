@@ -155,7 +155,7 @@ def handle_connection(connection, client_address):
 #   @param connect the socket descriptor of the client to check
 def keep_alive(connect, ip):
     while True:
-        sleep(30)
+        sleep(15)
         if connect in usersConnected:
             if usersConnected[connect][4] is True:  # If alive
                 send_to(connect, PING)
