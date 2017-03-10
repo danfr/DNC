@@ -97,7 +97,9 @@ def main():
         while True:
             # Connection client
             connection, client_address = sock.accept()
-            usersConnected[connection] = [client_address, None, True, False, True]  # (ip,port) pseudo enabled locked alive
+            with lock:
+                usersConnected[connection] = [client_address, None, True, False,
+                                              True]  # (ip,port) pseudo enabled locked alive
             threading.Thread(target=handle_connection, args=(connection, client_address), daemon=True).start()
     except KeyboardInterrupt:
         log.printL("Keyboard interrupt received !", Log.lvl.INFO)
