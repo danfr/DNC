@@ -246,7 +246,9 @@ def handle_request(connection, data):
                 connection.shutdown(socket.SHUT_RD)
                 return
             if array_data[0] == "/PONG":  # If command is a Keep-alive response, redeclare thread as alive
-                usersConnected[connection][4] = True
+                with lock:
+                    if array_data[1] == usersConnected[connection][1]:
+                        usersConnected[connection][4] = True
                 return
             connection.sendall("{}|".format(ERR_NO_NICKNAME).encode())
     except IndexError:
