@@ -263,7 +263,7 @@ namespace ProjetDNC_client
                     }
                 case 666: //Check Alive
                     {
-                        Envoyer("/PONG");
+                        Envoyer(mon_pseudo, "/PONG");
                         break;
                     }
                 default:

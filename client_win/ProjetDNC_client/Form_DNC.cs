@@ -171,7 +171,8 @@ namespace ProjetDNC_client
         /// <param name="MyRichTextBox">RichTextBox à scroller</param>
         public static void ScrollToBottom(RichTextBox MyRichTextBox)
         {
-            SendMessage(MyRichTextBox.Handle, WM_VSCROLL, (IntPtr)SB_PAGEBOTTOM, IntPtr.Zero);
+            MyRichTextBox.Select(MyRichTextBox.Text.Length - 1, 0);
+            MyRichTextBox.ScrollToCaret();
         }
 
         /// <summary>Returns true if the current application has focus, false otherwise</summary>
@@ -203,8 +204,6 @@ namespace ProjetDNC_client
 
             internal static bool CheckBottom(RichTextBox rtb)
             {
-
-
                 var info = new Scrollbarinfo();
                 info.CbSize = Marshal.SizeOf(info);
 
@@ -213,6 +212,10 @@ namespace ProjetDNC_client
                                            ref info);
 
                 var isAtBottom = info.XyThumbBottom > (info.RcScrollBar.Bottom - info.RcScrollBar.Top - (info.DxyLineButton * 2));
+
+                if (info.RcScrollBar.Top == 0 && info.RcScrollBar.Bottom == 0)
+                    return true;
+
                 return isAtBottom;
             }
         }
@@ -625,6 +628,7 @@ namespace ProjetDNC_client
         /// </summary>
         /// <param name="from">Provenance du message</param>
         /// <param name="content">Texte du message</param>
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.Synchronized)]
         public void Chat_append(string from, string content)
         {
             DateTime time = DateTime.Now;
@@ -664,6 +668,7 @@ namespace ProjetDNC_client
                 image = true;
                 string[] tab = content.Split('!');
                 string ext = tab[1];
+                Directory.CreateDirectory(@"img/tmp/");
                 filename = @"img/tmp/TURING" + ext; // Fichier temporaire
                 base64ToImage(filename, tab[2]);
                 content = "TURING";
