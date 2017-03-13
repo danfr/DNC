@@ -294,6 +294,9 @@ def broadcast_message(connection, message):
             try:
                 usersConnected[con][3] = True
                 con.sendall(message.encode())
+            except IOError as ioe:
+                log.printL(str(e) + " Socket has been lost, disconnecting...", Log.lvl.FAIL)
+                quit_user(con)
             except Exception as e:
                 log.printL(str(e), Log.lvl.FAIL)
             finally:
