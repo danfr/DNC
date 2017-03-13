@@ -50,6 +50,7 @@
             this.chat_window = new System.Windows.Forms.RichTextBox();
             this.btn_img_pri = new System.Windows.Forms.Button();
             this.btn_img_pub = new System.Windows.Forms.Button();
+            this.forcerLeScrollToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -57,7 +58,8 @@
             // 
             this.fonctionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.transfertDeFichierToolStripMenuItem,
-            this.rechargerLesImagesMenuItem});
+            this.rechargerLesImagesMenuItem,
+            this.forcerLeScrollToolStripMenuItem});
             this.fonctionsToolStripMenuItem.Name = "fonctionsToolStripMenuItem";
             resources.ApplyResources(this.fonctionsToolStripMenuItem, "fonctionsToolStripMenuItem");
             // 
@@ -140,9 +142,11 @@
             // 
             // pubic_text
             // 
+            this.pubic_text.AcceptsReturn = true;
             resources.ApplyResources(this.pubic_text, "pubic_text");
             this.pubic_text.Name = "pubic_text";
             this.pubic_text.Enter += new System.EventHandler(this.pubic_text_Enter);
+            this.pubic_text.KeyDown += new System.Windows.Forms.KeyEventHandler(this.pubic_text_KeyDown);
             // 
             // public_btn
             // 
@@ -160,9 +164,11 @@
             // 
             // private_text
             // 
+            this.private_text.AcceptsReturn = true;
             resources.ApplyResources(this.private_text, "private_text");
             this.private_text.Name = "private_text";
             this.private_text.Enter += new System.EventHandler(this.private_text_Enter);
+            this.private_text.KeyDown += new System.Windows.Forms.KeyEventHandler(this.private_text_KeyDown);
             // 
             // private_lbl
             // 
@@ -202,6 +208,13 @@
             this.btn_img_pub.Name = "btn_img_pub";
             this.btn_img_pub.UseVisualStyleBackColor = true;
             this.btn_img_pub.Click += new System.EventHandler(this.btn_img_pub_Click);
+            // 
+            // forcerLeScrollToolStripMenuItem
+            // 
+            this.forcerLeScrollToolStripMenuItem.CheckOnClick = true;
+            this.forcerLeScrollToolStripMenuItem.Name = "forcerLeScrollToolStripMenuItem";
+            resources.ApplyResources(this.forcerLeScrollToolStripMenuItem, "forcerLeScrollToolStripMenuItem");
+            this.forcerLeScrollToolStripMenuItem.CheckedChanged += new System.EventHandler(this.forcerLeScrollToolStripMenuItem_CheckedChanged);
             // 
             // Main_form
             // 
@@ -255,6 +268,7 @@
         private System.Windows.Forms.ToolStripMenuItem rechargerLesImagesMenuItem;
         private System.Windows.Forms.Button btn_img_pub;
         private System.Windows.Forms.Button btn_img_pri;
+        private System.Windows.Forms.ToolStripMenuItem forcerLeScrollToolStripMenuItem;
     }
 }
 

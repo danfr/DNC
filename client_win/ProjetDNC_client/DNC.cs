@@ -30,7 +30,7 @@ namespace ProjetDNC_client
         /// <param name="contenu">Contenu de la requête</param>
         public void Envoyer(string pseudo, string commande, string contenu)
         {
-            contenu = contenu.Replace('\r', ' ').Replace('\n', ' ').Replace('|', ' ').Trim(); // Les sauts de ligne et le | sont indedits
+            contenu = contenu.Replace("\n", "\n          ").Replace('|', ' ').Trim(); // Les sauts de ligne et le | sont indedits
 
             if (pseudo != null && pseudo != "")
             {
@@ -263,7 +263,7 @@ namespace ProjetDNC_client
                     }
                 case 666: //Check Alive
                     {
-                        Envoyer("/PONG");
+                        Envoyer(mon_pseudo, "/PONG");
                         break;
                     }
                 default:
