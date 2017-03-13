@@ -295,12 +295,13 @@ def broadcast_message(connection, message):
                 usersConnected[con][3] = True
                 con.sendall(message.encode())
             except IOError as ioe:
-                log.printL(str(e) + " Socket has been lost, disconnecting...", Log.lvl.FAIL)
+                log.printL(str(ioe) + " Socket has been lost, disconnecting...", Log.lvl.FAIL)
                 quit_user(con)
             except Exception as e:
                 log.printL(str(e), Log.lvl.FAIL)
             finally:
-                usersConnected[con][3] = False
+                with lock:
+                    usersConnected[con][3] = False
 
         log.printL("Broadcast : {}".format(message), Log.lvl.DEBUG)
 
@@ -340,6 +341,9 @@ def send_to(target, code, source=None, message=None):
             else:
                 target.sendall("{} {}|".format(code, message).encode())
                 log.printL("Send to {} : {} {}".format(usersConnected[target][0], code, message), Log.lvl.DEBUG)
+    except IOError as ioe:
+        log.printL(str(ioe) + " Socket has been lost, disconnecting...", Log.lvl.FAIL)
+        quit_user(target)
     except Exception as e:
         log.printL(str(e), Log.lvl.FAIL)
     finally:
