@@ -300,8 +300,7 @@ def broadcast_message(connection, message):
             except Exception as e:
                 log.printL(str(e), Log.lvl.FAIL)
             finally:
-                with lock:
-                    usersConnected[con][3] = False
+                usersConnected[con][3] = False
 
         log.printL("Broadcast : {}".format(message), Log.lvl.DEBUG)
 
