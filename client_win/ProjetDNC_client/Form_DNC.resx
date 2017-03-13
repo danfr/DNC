@@ -276,8 +276,14 @@
   <data name="pubic_text.MaxLength" type="System.Int32, mscorlib">
     <value>0</value>
   </data>
+  <data name="pubic_text.Multiline" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="pubic_text.ScrollBars" type="System.Windows.Forms.ScrollBars, System.Windows.Forms">
+    <value>Vertical</value>
+  </data>
   <data name="pubic_text.Size" type="System.Drawing.Size, System.Drawing">
-    <value>529, 31</value>
+    <value>529, 30</value>
   </data>
   <data name="pubic_text.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
@@ -366,8 +372,14 @@
   <data name="private_text.MaxLength" type="System.Int32, mscorlib">
     <value>492</value>
   </data>
+  <data name="private_text.Multiline" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="private_text.ScrollBars" type="System.Windows.Forms.ScrollBars, System.Windows.Forms">
+    <value>Vertical</value>
+  </data>
   <data name="private_text.Size" type="System.Drawing.Size, System.Drawing">
-    <value>529, 31</value>
+    <value>529, 30</value>
   </data>
   <data name="private_text.TabIndex" type="System.Int32, mscorlib">
     <value>5</value>
@@ -566,6 +578,15 @@
   </data>
   <data name="&gt;&gt;btn_img_pub.ZOrder" xml:space="preserve">
     <value>1</value>
+  </data>
+  <data name="forcerLeScrollToolStripMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+Alt+Down</value>
+  </data>
+  <data name="forcerLeScrollToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>246, 22</value>
+  </data>
+  <data name="forcerLeScrollToolStripMenuItem.Text" xml:space="preserve">
+    <value>Forcer le scroll</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -1499,6 +1520,12 @@
     <value>infoMenuItem</value>
   </data>
   <data name="&gt;&gt;infoMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;forcerLeScrollToolStripMenuItem.Name" xml:space="preserve">
+    <value>forcerLeScrollToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;forcerLeScrollToolStripMenuItem.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">

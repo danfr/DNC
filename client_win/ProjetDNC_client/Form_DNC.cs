@@ -10,6 +10,7 @@ using System.Diagnostics;
 using Microsoft.Win32;
 using System.IO;
 using System.Linq;
+using System.Windows.Input;
 
 namespace ProjetDNC_client
 {
@@ -21,7 +22,7 @@ namespace ProjetDNC_client
         public List<string> clients_actifs = new List<string>();
         public List<ListViewItem> liste_items = new List<ListViewItem>();
         public List<string> sessions_privees = new List<string>();
-        public bool notif, afk;
+        public bool notif, afk, scrollF;
         Ini conf;
         Dictionary<Color, int> colors = new Dictionary<Color, int> { { Color.Blue, 0 }, { Color.BlueViolet, 0 }, { Color.Brown, 0 }, { Color.DarkCyan, 0 }, { Color.DarkMagenta, 0 }, { Color.DarkOrange, 0 }, { Color.DarkRed, 0 }, { Color.DarkViolet, 0 }, { Color.Fuchsia, 0 }, { Color.Indigo, 0 }, { Color.Purple, 0 }, { Color.Red, 0 } };
         Dictionary<string, Color> dict_colors = new Dictionary<string, Color>(); // Couleurs associées aux pseudos <pseudo,couleur>
@@ -172,7 +173,7 @@ namespace ProjetDNC_client
         public static void ScrollToBottom(RichTextBox MyRichTextBox)
         {
             MyRichTextBox.Select(MyRichTextBox.Text.Length - 1, 0);
-            MyRichTextBox.ScrollToCaret();
+            SendMessage(MyRichTextBox.Handle, WM_VSCROLL, (IntPtr)SB_PAGEBOTTOM, IntPtr.Zero);
         }
 
         /// <summary>Returns true if the current application has focus, false otherwise</summary>
@@ -196,6 +197,7 @@ namespace ProjetDNC_client
         internal class Scrollinfo
         {
             public const uint ObjidVscroll = 0xFFFFFFFB;
+            private static bool first = true;
 
             [DllImport("user32.dll", SetLastError = true, EntryPoint = "GetScrollBarInfo")]
             private static extern int GetScrollBarInfo(IntPtr hWnd,
@@ -215,6 +217,11 @@ namespace ProjetDNC_client
 
                 if (info.RcScrollBar.Top == 0 && info.RcScrollBar.Bottom == 0)
                     return true;
+                else if (first)
+                {
+                    first = false;
+                    return true;
+                }
 
                 return isAtBottom;
             }
@@ -299,6 +306,7 @@ namespace ProjetDNC_client
 
             mon_pseudo = conf.GetValue("DEFAULT_PSEUDO", "USER");
             scrollAtBottom = true;
+            scrollF = false;
 
             //Détection du ScreenLock
             SystemEvents.SessionSwitch += new SessionSwitchEventHandler(SystemEvents_SessionSwitch);
@@ -698,7 +706,7 @@ namespace ProjetDNC_client
 
             bool isAtBottom = Scrollinfo.CheckBottom(chat_window);
             // On scroll automatiquement si le scroll est déjà en bas
-            if (isAtBottom)
+            if (isAtBottom || scrollF)
             {
                 ScrollToBottom(chat_window);
             }
@@ -736,7 +744,7 @@ namespace ProjetDNC_client
             }
 
             // On scroll automatiquement si le scroll est déjà en bas
-            if (isAtBottom)
+            if (isAtBottom || scrollF)
             {
                 ScrollToBottom(chat_window);
             }
@@ -975,6 +983,37 @@ namespace ProjetDNC_client
             }
             else
                 this.Close();
+        }
+
+        private void pubic_text_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
+        {
+            TextBox tb = (TextBox)sender;
+            if (Keyboard.Modifiers == System.Windows.Input.ModifierKeys.Control && Keyboard.IsKeyDown(Key.Enter))
+            {
+                e.Handled = true;
+            }
+            else if(Keyboard.IsKeyDown(Key.Enter))
+            {
+                public_btn.PerformClick();
+            }
+        }
+
+        private void private_text_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
+        {
+            TextBox tb = (TextBox)sender;
+            if (Keyboard.Modifiers == System.Windows.Input.ModifierKeys.Control && Keyboard.IsKeyDown(Key.Enter))
+            {
+                e.Handled = true;
+            }
+            else if (Keyboard.IsKeyDown(Key.Enter))
+            {
+                private_btn.PerformClick();
+            }
+        }
+
+        private void forcerLeScrollToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+        {
+            this.scrollF = forcerLeScrollToolStripMenuItem.Checked;
         }
 
         /// <summary>
